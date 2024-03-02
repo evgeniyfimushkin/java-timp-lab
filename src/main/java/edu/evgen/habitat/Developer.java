@@ -25,7 +25,7 @@ public class Developer extends Employee{
 
         lastBirthAttempt = now;
 
-        return (random.nextDouble() > birthProbability) ? Optional.of(new Developer(birthDelay, birthProbability)) : Optional.empty();
+        return (random.nextDouble() <= birthProbability) ? Optional.of(new Developer(birthDelay, birthProbability)) : Optional.empty();
 
     }
 }

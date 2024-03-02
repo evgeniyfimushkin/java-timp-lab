@@ -1,11 +1,15 @@
 package edu.evgen;
 
+import edu.evgen.habitat.Developer;
+import edu.evgen.habitat.IBehaviour;
+import edu.evgen.habitat.Manager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +27,13 @@ public class SceneController {
     Label mainTitle;
 
     @FXML
+    Pane habitat;
+
+    final Manager manager = new Manager(3l);
+
+    final Developer developer = new Developer(2l, 1.0);
+
+    @FXML
     EventHandler<ActionEvent> buttonClickHandler = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent e) {
@@ -34,7 +45,7 @@ public class SceneController {
 
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
-        mainButton.setVisible(true);
+//        mainButton.setVisible(true);
         new Thread(this::moving).start();
 
     }
@@ -49,23 +60,29 @@ public class SceneController {
 
     void moving() {
         log.info("start moving");
-        IntStream.range(1, 10)
+        IntStream.range(1, 10000)
                 .boxed()
                 .peek(x -> sleep())//чисто чтоб поспать peek - void consumer То есть ничего не возвращает
                 .peek(x -> log.info("Tick: {}", x))
-                .forEach((x) -> Platform.runLater(() -> moveTo(x)));
+                .forEach(x -> Platform.runLater( this::birthattempt));
 
         mainButton.setVisible(false);
         log.info("stop moving");
-
     }
 
-    void moveTo(Integer i) {
-        mainButton.setText(i.toString());
-        double x = mainButton.getTranslateX();
-        double y = mainButton.getTranslateY();
-        mainButton.setTranslateX(x + moveStep());
-        mainButton.setTranslateY(y + moveStep());
+    void birthattempt() {
+//        mainButton.setText(i.toString());
+//        double x = mainButton.getTranslateX();
+//        double y = mainButton.getTranslateY();
+//        mainButton.setTranslateX(x + moveStep());
+//        mainButton.setTranslateY(y + moveStep());
+//        manager.birthAttempt()
+//                .map(IBehaviour::getImageView)
+//                .ifPresent(habitat.getChildren()::add);
+
+        developer.birthAttempt()
+                .map(IBehaviour::getImageView)
+                .ifPresent(habitat.getChildren()::add);
     }
 
     Integer moveStep(){

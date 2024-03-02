@@ -1,5 +1,6 @@
 package edu.evgen.habitat;
 
+
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -25,4 +26,6 @@ public abstract class Employee implements IBehaviour {
     public Optional<IBehaviour> birthAttempt(){
         return Optional.empty();
     }
+
+
 }

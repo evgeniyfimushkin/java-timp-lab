@@ -61,7 +61,6 @@ public class Main extends Application {
         log.info("loader loaded");
 //        rootStage.setScene(new Scene(roortScene));
 
-
         rootStage.show();
         //SceneController.class.cast(loader.getController()).doMoving();
         //Thread.sleep(5000);
