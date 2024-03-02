@@ -1,13 +1,19 @@
 package edu.evgen;
 
 import javafx.application.Application;
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.imageio.IIOException;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 //import java.awt.Image;
 
 @Slf4j
@@ -23,16 +29,58 @@ public class Main extends Application {
     public void start(Stage rootStage) throws Exception {
         rootStage.setHeight(500);
         rootStage.setWidth(500);
+        //преобразование объектов если не null
+        // map - это преобразование объекта далее и далее
+        // ifPresent - void процедура сеттер, финализация цепочки преобразований
+        // если в optional null, то он просто идёт в конец. То есть если null то ничего не выполнится но и NPE не возникнет
+        Optional.ofNullable(this.getResource("/mainScene.fxml"))
+                .map(FXMLLoader::new)
+                .map(this::loadSafe)
+                .map(Scene::new)
+                .ifPresent(rootStage::setScene);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScene.fxml"));
+        String applicationCss = this.getResource("/application.css").toExternalForm();
+
+        Optional.ofNullable(rootStage)
+                .map(Stage::getScene)
+                .map(Scene::getRoot)
+                .map(Parent::getStylesheets)
+                .ifPresent((ObservableList<String> sheets) -> sheets.add(applicationCss));
+
+//        rootStage.getScene()
+//                .getRoot()
+//                .getStylesheets()
+//                .add(this.getResource("/application.css").toExternalForm());
+//
+
+
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScene.fxml"));
 
         log.info("loader inited");
         // корневой компонент пользовательского интерфейса, остальные вложены в него
-        Parent scene = loader.load();
+//        Parent roortScene = loader.load();
+//        roortScene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
         log.info("loader loaded");
-        rootStage.setScene(new Scene(scene));
-        scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
+//        rootStage.setScene(new Scene(roortScene));
 
         rootStage.show();
+    }
+
+    Parent load(FXMLLoader fxmlLoader) {
+        try {
+            return fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @SneakyThrows
+    Parent loadSafe(FXMLLoader fxmlLoader){
+            return fxmlLoader.load();
+    }
+
+    private URL getResource(String resource) {
+        return this.getClass().getResource(resource);
     }
 }
