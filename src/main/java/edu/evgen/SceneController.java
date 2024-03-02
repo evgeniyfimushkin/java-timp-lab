@@ -57,6 +57,7 @@ public class SceneController {
 
         mainButton.setVisible(false);
         log.info("stop moving");
+
     }
 
     void moveTo(Integer i) {
