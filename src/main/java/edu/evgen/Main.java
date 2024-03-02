@@ -33,7 +33,7 @@ public class Main extends Application {
         primaryStage.setHeight(500);
         primaryStage.setWidth(500);
         primaryStage.setScene(new Scene(root));
-        String css = this.getClass().getResource("application.css").toExternalForm();
+        String css = this.getClass().getResource("/application.css").toExternalForm();
         root.getStylesheets().add(css);
 
         primaryStage.show();
