@@ -22,12 +22,14 @@ public class SceneController {
     @FXML
     public Button startButton;
     @FXML
-    public Button mainButton;
+    public Button stopButton;
     @FXML
     Label mainTitle;
 
     @FXML
     Pane habitat;
+
+    boolean run = false;
 
     final Manager manager = new Manager(3l);
 
@@ -41,7 +43,7 @@ public class SceneController {
         }
     };
 
-    EventHandler<ActionEvent> lambdaClickHandler = eventone -> log.info("OnAction {}", eventone.getSource());
+//    EventHandler<ActionEvent> lambdaClickHandler = eventone -> log.info("OnAction {}", eventone.getSource());
 
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
@@ -52,25 +54,31 @@ public class SceneController {
     @FXML
     private void initialize() {
         log.info("controller init");
-        mainButton.setText("0");
-        mainButton.setOnAction(lambdaClickHandler);//связали кнопку с обработчиком (inject)
+        stopButton.setText("Stop");
+        stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
         startButton.setOnAction(event -> doMoving());
 
     }
 
     void moving() {
         log.info("start moving");
-        IntStream.range(1, 10000)
-                .boxed()
-                .peek(x -> sleep())//чисто чтоб поспать peek - void consumer То есть ничего не возвращает
-                .peek(x -> log.info("Tick: {}", x))
-                .forEach(x -> Platform.runLater( this::birthattempt));
+        run = true;
+        do {
+            sleep();
+            Platform.runLater(this::birthAttempt);
+        } while (run);
+//        IntStream.range(1, 10000)
+//                .boxed()
+//                .peek(x -> sleep())//чисто чтоб поспать peek - void consumer То есть ничего не возвращает
+//                .peek(x -> log.info("Tick: {}", x))
+//                .forEach(x -> Platform.runLater( this::birthAttempt));
 
-        mainButton.setVisible(false);
+        stopButton.setVisible(false);
         log.info("stop moving");
     }
 
-    void birthattempt() {
+    void birthAttempt() {
+        log.info("birthAttempt");
 //        mainButton.setText(i.toString());
 //        double x = mainButton.getTranslateX();
 //        double y = mainButton.getTranslateY();
@@ -87,6 +95,11 @@ public class SceneController {
 
     Integer moveStep(){
         return random.nextBoolean()?-20: 20;
+    }
+
+    void stopRun(){
+        log.info("stopRun");
+        run = false;
     }
 
     @SneakyThrows
