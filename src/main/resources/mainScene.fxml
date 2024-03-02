@@ -11,6 +11,8 @@
       <VBox>
          <Button fx:id="stopButton" mnemonicParsing="false" text="Button" BorderPane.alignment="CENTER"  />
          <Button fx:id="startButton" defaultButton="true" mnemonicParsing="false" text="Start" BorderPane.alignment="CENTER" />
+         <Label fx:id="devCount"></Label>
+         <Label fx:id="mgrCount"></Label>
       </VBox>
   </left>
 </BorderPane>

@@ -9,11 +9,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -23,6 +26,10 @@ public class SceneController {
     public Button startButton;
     @FXML
     public Button stopButton;
+
+    @FXML
+    Label mgrCount, devCount;
+
     @FXML
     Label mainTitle;
 
@@ -84,13 +91,22 @@ public class SceneController {
 //        double y = mainButton.getTranslateY();
 //        mainButton.setTranslateX(x + moveStep());
 //        mainButton.setTranslateY(y + moveStep());
-//        manager.birthAttempt()
-//                .map(IBehaviour::getImageView)
-//                .ifPresent(habitat.getChildren()::add);
+        manager.birthAttempt()
+                .map(IBehaviour::getImageView)
+                .ifPresent(habitat.getChildren()::add);
 
         developer.birthAttempt()
                 .map(IBehaviour::getImageView)
                 .ifPresent(habitat.getChildren()::add);
+
+        devCount.setText("Eployees: " + habitat.getChildren().stream().count());
+        mgrCount.setText("Managers: " + habitat.getChildren()
+                .stream()
+                .map(ImageView.class::cast)
+                .map(ImageView::getImage)
+                .map(Image::getUrl)
+                .filter(url -> url.contains("manager"))
+                .count());
     }
 
     Integer moveStep(){
