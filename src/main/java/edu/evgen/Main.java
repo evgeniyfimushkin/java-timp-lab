@@ -1,7 +1,6 @@
 package edu.evgen;
 
 import javafx.application.Application;
-import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +9,6 @@ import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.IIOException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -33,8 +31,9 @@ public class Main extends Application {
         // map - это преобразование объекта далее и далее
         // ifPresent - void процедура сеттер, финализация цепочки преобразований
         // если в optional null, то он просто идёт в конец. То есть если null то ничего не выполнится но и NPE не возникнет
-        Optional.ofNullable(this.getResource("/mainScene.fxml"))
-                .map(FXMLLoader::new)
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScene.fxml"));
+        Optional.ofNullable(loader)
                 .map(this::loadSafe)
                 .map(Scene::new)
                 .ifPresent(rootStage::setScene);
@@ -54,7 +53,6 @@ public class Main extends Application {
 //
 
 
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScene.fxml"));
 
         log.info("loader inited");
         // корневой компонент пользовательского интерфейса, остальные вложены в него
@@ -63,7 +61,14 @@ public class Main extends Application {
         log.info("loader loaded");
 //        rootStage.setScene(new Scene(roortScene));
 
+
         rootStage.show();
+        SceneController.class.cast(loader.getController()).doMoving();
+        //Thread.sleep(5000);
+
+        //((SceneController) loader.getController())
+
+
     }
 
     Parent load(FXMLLoader fxmlLoader) {
