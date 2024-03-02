@@ -63,7 +63,7 @@ public class Main extends Application {
 
 
         rootStage.show();
-        SceneController.class.cast(loader.getController()).doMoving();
+        //SceneController.class.cast(loader.getController()).doMoving();
         //Thread.sleep(5000);
 
         //((SceneController) loader.getController())

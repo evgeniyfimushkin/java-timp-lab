@@ -16,6 +16,8 @@ import java.util.stream.IntStream;
 public class SceneController {
     final Random random = new Random();
     @FXML
+    public Button startButton;
+    @FXML
     public Button mainButton;
     @FXML
     Label mainTitle;
@@ -32,23 +34,28 @@ public class SceneController {
 
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
+        mainButton.setVisible(true);
         new Thread(this::moving).start();
+
     }
     @FXML
     private void initialize() {
         log.info("controller init");
-        mainButton.setText("Click me");
-        mainButton.setOnAction(eventone -> log.info("OnAction {}", eventone.getSource()));//связали кнопку с обработчиком (inject)
+        mainButton.setText("0");
+        mainButton.setOnAction(lambdaClickHandler);//связали кнопку с обработчиком (inject)
+        startButton.setOnAction(event -> doMoving());
 
     }
 
     void moving() {
         log.info("start moving");
-        IntStream.range(1, 100)
+        IntStream.range(1, 10)
                 .boxed()
                 .peek(x -> sleep())//чисто чтоб поспать peek - void consumer То есть ничего не возвращает
                 .peek(x -> log.info("Tick: {}", x))
                 .forEach((x) -> Platform.runLater(() -> moveTo(x)));
+
+        mainButton.setVisible(false);
         log.info("stop moving");
     }
 

@@ -3,19 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<BorderPane
-        maxHeight="-Infinity"
-        maxWidth="-Infinity"
-        minHeight="-Infinity"
-        minWidth="-Infinity"
-        prefHeight="400.0"
-        prefWidth="600.0"
-        fx:controller="edu.evgen.SceneController"
-        xmlns="http://javafx.com/javafx/17.0.2-ea"
-        xmlns:fx="http://javafx.com/fxml/1"
->
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
    <center>
-      <Button fx:id="mainButton" mnemonicParsing="false" text="Button" BorderPane.alignment="CENTER" />
+      <Button fx:id="mainButton" mnemonicParsing="false" text="Button" BorderPane.alignment="CENTER" visible="false" />
    </center>
+   <left>
+      <Button fx:id="startButton" defaultButton="true" mnemonicParsing="false" text="Start" BorderPane.alignment="CENTER" />
+   </left>
 </BorderPane>
