@@ -5,6 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,7 @@ public class Main extends Application {
     public void start(Stage rootStage) throws Exception {
 
         rootStage.setWidth(800);
-        rootStage.setHeight(600);
+        rootStage.setHeight(800);
         //преобразование объектов если не null
         // map - это преобразование объекта далее и далее
         // ifPresent - void процедура сеттер, финализация цепочки преобразований
@@ -54,7 +56,6 @@ public class Main extends Application {
 //
 
 
-
         log.info("loader inited");
         // корневой компонент пользовательского интерфейса, остальные вложены в него
 //        Parent roortScene = loader.load();
@@ -62,13 +63,20 @@ public class Main extends Application {
         log.info("loader loaded");
 //        rootStage.setScene(new Scene(roortScene));
 
+
+        SceneController controller = loader.getController();
+        rootStage.addEventHandler(KeyEvent.KEY_PRESSED, (keyEvent) -> {
+            if (keyEvent.getCode() == KeyCode.B){
+                controller.startButton.fire();
+            }
+            else if (keyEvent.getCode() == KeyCode.E){
+                controller.stopButton.fire();
+            }
+            else if (keyEvent.getCode() == KeyCode.T){
+                //реализовать время симулиции
+            }
+        });
         rootStage.show();
-        //SceneController.class.cast(loader.getController()).doMoving();
-        //Thread.sleep(5000);
-
-        //((SceneController) loader.getController())
-
-
     }
 
     Parent load(FXMLLoader fxmlLoader) {

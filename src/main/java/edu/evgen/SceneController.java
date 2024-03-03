@@ -11,6 +11,9 @@ import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.event.KeyEvent;
+import java.time.LocalDateTime;
+
 @Slf4j
 public class SceneController {
     final Habitat habitat = new HabitatImpl(3L,3L,0.9,0.3,400L);
@@ -20,7 +23,7 @@ public class SceneController {
     public Button stopButton;
 
     @FXML
-    Label mgrCount, devCount;
+    Label mgrCount, devCount, simulationTime;
 
 
     @FXML
@@ -29,6 +32,7 @@ public class SceneController {
 
     boolean run = false;
     Thread livingThread;
+    Long startSimulationTime = 0L;
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
         livingThread = new Thread(this::living);
@@ -46,6 +50,7 @@ public class SceneController {
     void living() {
         log.info("start living");
         run = true;
+        startSimulationTime = System.currentTimeMillis();
         try {
             do {
                 sleep();
@@ -82,9 +87,15 @@ public class SceneController {
     void refreshStatistic(){
         devCount.setText("Developers: " + habitat.getDeveloperCount());
         mgrCount.setText("Managers: " + habitat.getManagerCount());
+        simulationTime.setText("Simulation time: " + getSimulationTime());
     }
     @SneakyThrows
     void sleep() {
             Thread.sleep(processDelay);
+    }
+    Long getSimulationTime(){
+        return startSimulationTime == 0 ?
+                0L :
+                (System.currentTimeMillis()-startSimulationTime)/1000;
     }
 }

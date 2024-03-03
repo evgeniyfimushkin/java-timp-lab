@@ -26,6 +26,7 @@
          <Button fx:id="startButton" defaultButton="true" mnemonicParsing="false" text="Start" BorderPane.alignment="CENTER" />
          <Label fx:id="devCount"></Label>
          <Label fx:id="mgrCount"></Label>
+         <Label fx:id="simulationTime"></Label>
       </VBox>
   </right>
 </BorderPane>
