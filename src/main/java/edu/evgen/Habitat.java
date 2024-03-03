@@ -33,12 +33,13 @@ public class Habitat {
 
     @FXML
     Pane habitat;
+    final Long processDelay = 100L;
 
     boolean run = false;
 
-    final Manager manager = new Manager(3l,400l);
+    final Manager manager = new Manager(3L,400L);
 
-    final Developer developer = new Developer(2l, 1.0, 300l);
+    final Developer developer = new Developer(2L, 1.0, 300L);
 
     @FXML
     EventHandler<ActionEvent> buttonClickHandler = new EventHandler<ActionEvent>() {
@@ -77,7 +78,6 @@ public class Habitat {
 //                .peek(x -> sleep())//чисто чтоб поспать peek - void consumer То есть ничего не возвращает
 //                .peek(x -> log.info("Tick: {}", x))
 //                .forEach(x -> Platform.runLater( this::birthAttempt));
-
         stopButton.setVisible(false);
         log.info("stop moving");
     }
@@ -116,10 +116,7 @@ public class Habitat {
     }
 
     @SneakyThrows
-    static void sleep() {
-        Thread.sleep(300);
+    void sleep() {
+        Thread.sleep(processDelay);
     }
-
-
-
 }
