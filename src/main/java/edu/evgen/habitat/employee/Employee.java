@@ -1,4 +1,4 @@
-package edu.evgen.habitat;
+package edu.evgen.habitat.employee;
 
 
 import javafx.scene.image.ImageView;

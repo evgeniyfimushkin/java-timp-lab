@@ -1,8 +1,8 @@
 package edu.evgen;
 
-import edu.evgen.habitat.Developer;
-import edu.evgen.habitat.IBehaviour;
-import edu.evgen.habitat.Manager;
+import edu.evgen.habitat.employee.Developer;
+import edu.evgen.habitat.employee.IBehaviour;
+import edu.evgen.habitat.employee.Manager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Random;
 
 @Slf4j
-public class Habitat {
+public class SceneController {
     final Random random = new Random();
     @FXML
     public Button startButton;
