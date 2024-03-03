@@ -4,6 +4,7 @@ import edu.evgen.habitat.Developer;
 import edu.evgen.habitat.IBehaviour;
 import edu.evgen.habitat.Manager;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,9 +39,9 @@ public class SceneController {
 
     boolean run = false;
 
-    final Manager manager = new Manager(3l);
+    final Manager manager = new Manager(3l,400l);
 
-    final Developer developer = new Developer(2l, 1.0);
+    final Developer developer = new Developer(2l, 1.0, 300l);
 
     @FXML
     EventHandler<ActionEvent> buttonClickHandler = new EventHandler<ActionEvent>() {
@@ -87,14 +88,13 @@ public class SceneController {
     void birthAttempt() {
         log.info("birthAttempt");
 //        mainButton.setText(i.toString());
-//        double x = mainButton.getTranslateX();
+//        double x = Button.getTranslateX();
 //        double y = mainButton.getTranslateY();
 //        mainButton.setTranslateX(x + moveStep());
 //        mainButton.setTranslateY(y + moveStep());
         manager.birthAttempt()
                 .map(IBehaviour::getImageView)
                 .ifPresent(habitat.getChildren()::add);
-
         developer.birthAttempt()
                 .map(IBehaviour::getImageView)
                 .ifPresent(habitat.getChildren()::add);
@@ -122,4 +122,7 @@ public class SceneController {
     static void sleep() {
         Thread.sleep(300);
     }
+
+
+
 }

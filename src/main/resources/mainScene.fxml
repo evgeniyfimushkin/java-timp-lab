@@ -3,16 +3,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
-   <Pane fx:id="habitat" layoutX="107.0" layoutY="119.0" prefHeight="494.0" prefWidth="740.0" style="-fx-background-color: #1c4d5c; -fx-background-radius: 0; -fx-background-image: url('images/office.jpg'); -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); " />
-
-
+<BorderPane
+        maxHeight="-Infinity"
+        maxWidth="-Infinity"
+        minHeight="-Infinity"
+        minWidth="-Infinity"
+        prefHeight="600.0"
+        prefWidth="800.0"
+        xmlns="http://javafx.com/javafx/17.0.2-ea"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="edu.evgen.SceneController">
    <left>
+   <Pane fx:id="habitat"
+         prefHeight="600"
+         prefWidth="600"
+         style="-fx-border-color: black" />
+   </left>
+
+   <right>
       <VBox>
          <Button fx:id="stopButton" mnemonicParsing="false" text="Button" BorderPane.alignment="CENTER"  />
          <Button fx:id="startButton" defaultButton="true" mnemonicParsing="false" text="Start" BorderPane.alignment="CENTER" />
          <Label fx:id="devCount"></Label>
          <Label fx:id="mgrCount"></Label>
       </VBox>
-  </left>
+  </right>
 </BorderPane>

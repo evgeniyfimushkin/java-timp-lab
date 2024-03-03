@@ -7,8 +7,8 @@ import java.util.Optional;
 
 @Slf4j
 public class Manager extends Employee {
-    public Manager(Long birthDelay) {
-        super(birthDelay, "/manager.png");
+    public Manager(Long birthDelay, Long paneSize) {
+        super(birthDelay, "/manager.png", paneSize);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class Manager extends Employee {
 
         lastBirthAttempt = now;
 
-        return Optional.of(new Manager(birthDelay));
+        return Optional.of(new Manager(birthDelay, paneSize));
 
     }
 }

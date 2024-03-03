@@ -25,8 +25,9 @@ public class Main extends Application {
     //загрузка сцены
     @Override
     public void start(Stage rootStage) throws Exception {
-        rootStage.setHeight(500);
-        rootStage.setWidth(500);
+
+        rootStage.setWidth(800);
+        rootStage.setHeight(600);
         //преобразование объектов если не null
         // map - это преобразование объекта далее и далее
         // ifPresent - void процедура сеттер, финализация цепочки преобразований
