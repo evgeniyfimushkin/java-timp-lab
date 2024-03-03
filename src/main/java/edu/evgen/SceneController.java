@@ -1,5 +1,7 @@
 package edu.evgen;
 
+import edu.evgen.habitat.Habitat;
+import edu.evgen.habitat.HabitatImpl;
 import edu.evgen.habitat.employee.Developer;
 import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
@@ -19,7 +21,7 @@ import java.util.Random;
 
 @Slf4j
 public class SceneController {
-    final Random random = new Random();
+    final Habitat habitat = new HabitatImpl(3L,3L,0.9,0.3,400L);
     @FXML
     public Button startButton;
     @FXML
@@ -28,34 +30,15 @@ public class SceneController {
     @FXML
     Label mgrCount, devCount;
 
-    @FXML
-    Label mainTitle;
 
     @FXML
-    Pane habitat;
+    Pane habitatPane;
     final Long processDelay = 100L;
 
     boolean run = false;
 
-    final Manager manager = new Manager(3L,400L);
-
-    final Developer developer = new Developer(2L, 1.0, 300L);
-
-    @FXML
-    EventHandler<ActionEvent> buttonClickHandler = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent e) {
-            log.info("OnAction {}", e);
-        }
-    };
-
-//    EventHandler<ActionEvent> lambdaClickHandler = eventone -> log.info("OnAction {}", eventone.getSource());
-
-
     public void doMoving(){// запуск в отдельном thread(асинхронное)
-//        mainButton.setVisible(true);
         new Thread(this::moving).start();
-
     }
     @FXML
     private void initialize() {
@@ -63,7 +46,6 @@ public class SceneController {
         stopButton.setText("Stop");
         stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
         startButton.setOnAction(event -> doMoving());
-
     }
 
     void moving() {
@@ -73,41 +55,16 @@ public class SceneController {
             sleep();
             Platform.runLater(this::birthAttempt);
         } while (run);
-//        IntStream.range(1, 10000)
-//                .boxed()
-//                .peek(x -> sleep())//чисто чтоб поспать peek - void consumer То есть ничего не возвращает
-//                .peek(x -> log.info("Tick: {}", x))
-//                .forEach(x -> Platform.runLater( this::birthAttempt));
-        stopButton.setVisible(false);
         log.info("stop moving");
     }
 
     void birthAttempt() {
         log.info("birthAttempt");
-//        mainButton.setText(i.toString());
-//        double x = Button.getTranslateX();
-//        double y = mainButton.getTranslateY();
-//        mainButton.setTranslateX(x + moveStep());
-//        mainButton.setTranslateY(y + moveStep());
-        manager.birthAttempt()
+        habitat.birthAttempt()
                 .map(IBehaviour::getImageView)
-                .ifPresent(habitat.getChildren()::add);
-        developer.birthAttempt()
-                .map(IBehaviour::getImageView)
-                .ifPresent(habitat.getChildren()::add);
-
-        devCount.setText("Eployees: " + habitat.getChildren().stream().count());
-        mgrCount.setText("Managers: " + habitat.getChildren()
-                .stream()
-                .map(ImageView.class::cast)
-                .map(ImageView::getImage)
-                .map(Image::getUrl)
-                .filter(url -> url.contains("manager"))
-                .count());
-    }
-
-    Integer moveStep(){
-        return random.nextBoolean()?-20: 20;
+                .ifPresent(habitatPane.getChildren()::add);
+        devCount.setText("Developers: " + habitat.getDeveloperCount());
+        mgrCount.setText("Managers: " + habitat.getManagerCount());
     }
 
     void stopRun(){

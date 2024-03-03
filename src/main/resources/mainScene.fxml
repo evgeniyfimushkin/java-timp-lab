@@ -14,7 +14,7 @@
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="edu.evgen.SceneController">
    <left>
-   <Pane fx:id="habitat"
+   <Pane fx:id="habitatPane"
          prefHeight="600"
          prefWidth="600"
          style="-fx-border-color: black" />

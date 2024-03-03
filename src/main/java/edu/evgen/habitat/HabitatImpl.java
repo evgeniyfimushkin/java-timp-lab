@@ -1,6 +1,7 @@
 package edu.evgen.habitat;
 
 import edu.evgen.habitat.employee.Developer;
+import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
 import lombok.Data;
@@ -18,10 +19,10 @@ public class HabitatImpl implements Habitat {
     final Long managerDelay;
     final Double developerProbability;
     final Double managerRatio;
-    final List<Developer> developers = new ArrayList<>();
-    final List<Manager> managers = new ArrayList<>();
+    final List<IBehaviour> developers = new ArrayList<>();
+    final List<IBehaviour> managers = new ArrayList<>();
     final Random random = new Random();
-    final Long paneSize = 500L;
+    final Long paneSize;
     @Override
     public Optional<IBehaviour> birthAttempt() {
         log.info("birthAttempt <-");
@@ -32,8 +33,9 @@ public class HabitatImpl implements Habitat {
                         (random.nextDouble() <= developerProbability)
         ) {
             log.info("Developer birth!");
-            developers.add(new Developer(developerDelay, developerProbability, paneSize));
-            return Optional.of(developers.getLast());
+            IBehaviour employee = new Developer(developerDelay, developerProbability, paneSize);
+            developers.add(employee);
+            return Optional.of(employee);
 
         }
 
@@ -42,8 +44,9 @@ public class HabitatImpl implements Habitat {
                         ((double)managers.size()/Math.max(developers.size(),1) < managerRatio)
         ) {
             log.info("Manager birth!");
-            managers.add(new Manager(managerDelay, paneSize));
-            return Optional.of(developers.getLast());
+            IBehaviour employee = new Manager(managerDelay, paneSize);
+            managers.add(employee);
+            return Optional.of(employee);
 
         }
             return Optional.empty();
