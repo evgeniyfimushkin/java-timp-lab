@@ -13,4 +13,5 @@ public interface Habitat {
     Double getManagerRatio();
     Integer getDeveloperCount();
     Integer getManagerCount();
+    void clear();
 }

@@ -2,22 +2,14 @@ package edu.evgen;
 
 import edu.evgen.habitat.Habitat;
 import edu.evgen.habitat.HabitatImpl;
-import edu.evgen.habitat.employee.Developer;
 import edu.evgen.habitat.employee.IBehaviour;
-import edu.evgen.habitat.employee.Manager;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Random;
 
 @Slf4j
 public class SceneController {
@@ -36,44 +28,63 @@ public class SceneController {
     final Long processDelay = 100L;
 
     boolean run = false;
+    Thread livingThread;
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
-        new Thread(this::moving).start();
+        livingThread = new Thread(this::living);
+        livingThread.start();
     }
     @FXML
     private void initialize() {
         log.info("controller init");
+        refreshStatistic();
         stopButton.setText("Stop");
         stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
         startButton.setOnAction(event -> doMoving());
     }
 
-    void moving() {
-        log.info("start moving");
+    void living() {
+        log.info("start living");
         run = true;
-        do {
-            sleep();
-            Platform.runLater(this::birthAttempt);
-        } while (run);
-        log.info("stop moving");
+        try {
+            do {
+                sleep();
+                Platform.runLater(this::birthAttempt);
+            } while (run);
+        } catch (Throwable ignore){}
+        log.info("stop living");
     }
 
     void birthAttempt() {
         log.info("birthAttempt");
         habitat.birthAttempt()
                 .map(IBehaviour::getImageView)
-                .ifPresent(habitatPane.getChildren()::add);
-        devCount.setText("Developers: " + habitat.getDeveloperCount());
-        mgrCount.setText("Managers: " + habitat.getManagerCount());
+                .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
+        refreshStatistic();
     }
-
+//consumer ждёт аргумент и ничего не возвращает
+    // runnable - void без аргументов
     void stopRun(){
         log.info("stopRun");
         run = false;
+        livingThread.interrupt();
+        sleep();
+        sleep();
+        sleep();
+        log.info("clear");
+        habitat.clear();
+        Platform.runLater(habitatPane.getChildren()::clear);//метод референс -> runnable
+        sleep();
+        log.info("refresh");
+        Platform.runLater(this::refreshStatistic);
+        log.info("stopRun ->");
     }
-
+    void refreshStatistic(){
+        devCount.setText("Developers: " + habitat.getDeveloperCount());
+        mgrCount.setText("Managers: " + habitat.getManagerCount());
+    }
     @SneakyThrows
     void sleep() {
-        Thread.sleep(processDelay);
+            Thread.sleep(processDelay);
     }
 }

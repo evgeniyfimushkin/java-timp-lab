@@ -61,4 +61,9 @@ public class HabitatImpl implements Habitat {
     public Integer getManagerCount() {
         return managers.size();
     }
+    @Override
+    public void clear(){
+        developers.clear();
+        managers.clear();
+    }
 }
