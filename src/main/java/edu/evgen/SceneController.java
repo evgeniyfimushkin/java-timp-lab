@@ -32,11 +32,13 @@ public class SceneController {
 
     boolean run = false;
     Thread livingThread;
-    Long startSimulationTime = 0L;
+    Long startSimulationTime = 0L, stopSimulationTime = 0L;
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
-        livingThread = new Thread(this::living);
-        livingThread.start();
+        if (!run) {
+            livingThread = new Thread(this::living);
+            livingThread.start();
+        }
     }
     @FXML
     private void initialize() {
@@ -70,6 +72,8 @@ public class SceneController {
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
     void stopRun(){
+        if (run)
+            stopSimulationTime = System.currentTimeMillis();
         log.info("stopRun");
         run = false;
         livingThread.interrupt();
@@ -94,9 +98,11 @@ public class SceneController {
             Thread.sleep(processDelay);
     }
     Long getSimulationTime(){
+        if (run)
         return startSimulationTime == 0 ?
                 0L :
                 (System.currentTimeMillis()-startSimulationTime)/1000;
+        return (stopSimulationTime - startSimulationTime)/1000;
     }
     void setSimulationTimeVisible(){
         if (simulationTime.isVisible())
