@@ -6,7 +6,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
 
-   <Pane fx:id="habitatPane" prefHeight="600" prefWidth="600" style="-fx-background-color: #009B95; -fx-border-color: #006561;" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="300"/>
+   <Pane fx:id="habitatPane" prefHeight="600" prefWidth="600" style="-fx-background-color: #009B95; -fx-border-color: #006561;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="300" AnchorPane.topAnchor="0" />
 
 
 
@@ -24,7 +24,7 @@
                <Font size="20.0" />
             </font></Label>
       </VBox>
-      <Button fx:id="startButton" layoutX="670.0" layoutY="25.0" text="Start" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" />
-      <Button fx:id="stopButton" layoutX="670.0" layoutY="113.0" text="Button" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="100" />
+      <Button fx:id="startButton" layoutX="670.0" layoutY="25.0" style="-fx-background-radius: 100;" text="Start" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" />
+      <Button fx:id="stopButton" layoutX="670.0" layoutY="113.0" style="-fx-background-radius: 100;" text="Button" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="100" />
   
 </AnchorPane>
