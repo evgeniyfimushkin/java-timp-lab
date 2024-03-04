@@ -1,3 +1,10 @@
 .button {
     -fx-font-size: 30px;
 }
+.toggle-button {
+
+}
+.toggle-button:selected {
+-fx-background-color: #96E9DC;
+
+}

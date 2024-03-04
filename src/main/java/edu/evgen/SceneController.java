@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,8 @@ public class SceneController {
     public Button startButton;
     @FXML
     public Button stopButton;
-
+    @FXML
+    public ToggleButton switchButton;
     @FXML
     Label mgrCount, devCount, simulationTime;
 
@@ -50,6 +52,7 @@ public class SceneController {
         stopButton.setText("Stop");
         stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
         startButton.setOnAction(event -> doMoving());
+        switchButton.setOnAction(event -> setSimulationTimeVisible());
     }
 
     void living() {
@@ -110,9 +113,13 @@ public class SceneController {
         return (stopSimulationTime - startSimulationTime)/1000;
     }
     void setSimulationTimeVisible(){
-        if (simulationTime.isVisible())
+        if (simulationTime.isVisible()) {
+            switchButton.setText("Show Time");
             simulationTime.setVisible(false);
-        else
+        }
+        else{
+            switchButton.setText("Hide Time");
             simulationTime.setVisible(true);
+        }
     }
 }
