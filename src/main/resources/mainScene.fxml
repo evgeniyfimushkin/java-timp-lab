@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
    <left>
@@ -10,11 +11,20 @@
 
    <right>
       <VBox>
+         <Button fx:id="startButton" alignment="CENTER_RIGHT" contentDisplay="RIGHT" defaultButton="true" mnemonicParsing="false" text="Start" />
          <Button fx:id="stopButton" mnemonicParsing="false" text="Button" BorderPane.alignment="CENTER" />
-         <Button fx:id="startButton" defaultButton="true" mnemonicParsing="false" text="Start" BorderPane.alignment="CENTER" />
-         <Label fx:id="devCount" />
-         <Label fx:id="mgrCount" />
-         <Label fx:id="simulationTime" />
+         <Label fx:id="devCount">
+            <font>
+               <Font size="20.0" />
+            </font></Label>
+         <Label fx:id="mgrCount">
+            <font>
+               <Font size="20.0" />
+            </font></Label>
+         <Label fx:id="simulationTime">
+            <font>
+               <Font size="20.0" />
+            </font></Label>
       </VBox>
   </right>
 </BorderPane>
