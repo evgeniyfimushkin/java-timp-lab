@@ -35,6 +35,8 @@ public class SceneController {
     Long startSimulationTime = 0L, stopSimulationTime = 0L;
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
+        stopButton.setDisable(false);
+        startButton.setDisable(true);
         if (!run) {
             livingThread = new Thread(this::living);
             livingThread.start();
@@ -42,6 +44,7 @@ public class SceneController {
     }
     @FXML
     private void initialize() {
+        stopButton.setDisable(true);
         log.info("controller init");
         refreshStatistic();
         stopButton.setText("Stop");
@@ -72,6 +75,8 @@ public class SceneController {
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
     void stopRun(){
+        startButton.setDisable(false);
+        stopButton.setDisable(true);
         if (run)
             stopSimulationTime = System.currentTimeMillis();
         log.info("stopRun");
