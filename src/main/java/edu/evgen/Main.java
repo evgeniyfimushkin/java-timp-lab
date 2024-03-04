@@ -28,7 +28,7 @@ public class Main extends Application {
     @Override
     public void start(Stage rootStage) throws Exception {
 
-        rootStage.setWidth(800);
+        rootStage.setWidth(850);
         rootStage.setHeight(800);
         //преобразование объектов если не null
         // map - это преобразование объекта далее и далее
@@ -73,7 +73,7 @@ public class Main extends Application {
                 controller.stopButton.fire();
             }
             else if (keyEvent.getCode() == KeyCode.T){
-                //реализовать время симулиции
+                controller.setSimulationTimeVisible();
             }
         });
         rootStage.show();

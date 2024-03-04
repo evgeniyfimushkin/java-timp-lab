@@ -67,7 +67,7 @@ public class SceneController {
                 .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
         refreshStatistic();
     }
-//consumer ждёт аргумент и ничего не возвращает
+    //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
     void stopRun(){
         log.info("stopRun");
@@ -97,5 +97,11 @@ public class SceneController {
         return startSimulationTime == 0 ?
                 0L :
                 (System.currentTimeMillis()-startSimulationTime)/1000;
+    }
+    void setSimulationTimeVisible(){
+        if (simulationTime.isVisible())
+            simulationTime.setVisible(false);
+        else
+            simulationTime.setVisible(true);
     }
 }
