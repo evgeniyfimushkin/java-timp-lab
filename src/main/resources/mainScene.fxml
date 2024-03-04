@@ -3,30 +3,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane
-        maxHeight="-Infinity"
-        maxWidth="-Infinity"
-        minHeight="-Infinity"
-        minWidth="-Infinity"
-        prefHeight="600.0"
-        prefWidth="800.0"
-        xmlns="http://javafx.com/javafx/17.0.2-ea"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="edu.evgen.SceneController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
    <left>
-   <Pane fx:id="habitatPane"
-         prefHeight="600"
-         prefWidth="600"
-         style="-fx-border-color: black" />
+   <Pane fx:id="habitatPane" prefHeight="600" prefWidth="600" style="-fx-background-color: #009B95; -fx-border-color: #006561;" />
    </left>
 
    <right>
       <VBox>
-         <Button fx:id="stopButton" mnemonicParsing="false" text="Button" BorderPane.alignment="CENTER"  />
+         <Button fx:id="stopButton" mnemonicParsing="false" text="Button" BorderPane.alignment="CENTER" />
          <Button fx:id="startButton" defaultButton="true" mnemonicParsing="false" text="Start" BorderPane.alignment="CENTER" />
-         <Label fx:id="devCount"></Label>
-         <Label fx:id="mgrCount"></Label>
-         <Label fx:id="simulationTime"></Label>
+         <Label fx:id="devCount" />
+         <Label fx:id="mgrCount" />
+         <Label fx:id="simulationTime" />
       </VBox>
   </right>
 </BorderPane>
