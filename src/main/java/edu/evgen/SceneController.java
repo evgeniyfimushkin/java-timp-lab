@@ -8,15 +8,19 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.ls.LSOutput;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class SceneController {
@@ -25,6 +29,27 @@ public class SceneController {
     public Button startButton, stopButton, developersApplyButton, managersApplyButton;
     @FXML
     public MenuButton developersProbabilityMenu, managersRatioMenu;
+    @FXML
+    public MenuItem developersRatioMenu1,
+            developersRatioMenu2,
+            developersRatioMenu3,
+            developersRatioMenu4,
+            developersRatioMenu5,
+            developersRatioMenu6,
+            developersRatioMenu7,
+            developersRatioMenu8,
+            developersRatioMenu9,
+            developersRatioMenu10,
+            managersRatioMenu1,
+            managersRatioMenu2,
+            managersRatioMenu3,
+            managersRatioMenu4,
+            managersRatioMenu5,
+            managersRatioMenu6,
+            managersRatioMenu7,
+            managersRatioMenu8,
+            managersRatioMenu9,
+            managersRatioMenu10;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField;
     @FXML
@@ -64,7 +89,41 @@ public class SceneController {
         switchButton.setOnAction(event -> setSimulationTimeVisible());
         developersApplyButton.setOnAction(event -> developersApplyButtonAction());
         managersApplyButton.setOnAction(event -> managersApplyButtonAction());
-        developersProbabilityMenu.setOnAction(event -> developersApplyButtonAction());
+
+
+
+        developersRatioMenu1.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu1));
+        developersRatioMenu2.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu1));
+        developersRatioMenu3.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu2));
+        developersRatioMenu4.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu3));
+        developersRatioMenu5.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu4));
+        developersRatioMenu6.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu5));
+        developersRatioMenu7.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu6));
+        developersRatioMenu8.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu7));
+        developersRatioMenu9.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu8));
+        developersRatioMenu10.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu10));
+        managersRatioMenu1.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu1));
+        managersRatioMenu2.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu2));
+        managersRatioMenu3.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu3));
+        managersRatioMenu4.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu4));
+        managersRatioMenu5.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu5));
+        managersRatioMenu6.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu6));
+        managersRatioMenu7.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu7));
+        managersRatioMenu8.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu8));
+        managersRatioMenu9.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu9));
+        managersRatioMenu10.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu10));
+    }
+    void setdevelopersProbabilityMenuAction(MenuItem item){
+        log.info("setDevelopersProbabilityMenuAction");
+        habitat.setDeveloperProbability(Double.parseDouble(item.getText()));
+        developersProbabilityMenu.setText(item.getText());
+        refreshStatistic();
+    }
+    void setManagersRatioMenuAction(MenuItem item){
+        log.info("setManagerRatioMenuAction");
+        habitat.setManagerRatio(Double.parseDouble(item.getText()));
+        managersRatioMenu.setText(item.getText());
+        refreshStatistic();
     }
     void developersApplyButtonAction(){
         log.info("setDevelopersApplyButtonAction");
@@ -74,6 +133,7 @@ public class SceneController {
             }catch (NumberFormatException empty){log.info("NumberFormatException ignored");}
             refreshStatistic();
         }
+        developersDelayTextField.clear();
     }
     void managersApplyButtonAction(){
         log.info("setManagersApplyButtonAction");
@@ -84,6 +144,7 @@ public class SceneController {
             refreshStatistic();
 
         }
+        managersDelayTextField.clear();
     }
     void living() {
         log.info("start living");

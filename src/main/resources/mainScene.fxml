@@ -69,16 +69,16 @@
                </font></Label>
             <MenuButton fx:id="developersProbabilityMenu" mnemonicParsing="false" text="Developer Probabilities">
               <items>
-                <MenuItem mnemonicParsing="false" text="0.1" />
-                <MenuItem mnemonicParsing="false" text="0.2" />
-                  <MenuItem mnemonicParsing="false" text="0.3" />
-                  <MenuItem mnemonicParsing="false" text="0.4" />
-                  <MenuItem mnemonicParsing="false" text="0.5" />
-                  <MenuItem mnemonicParsing="false" text="0.6" />
-                  <MenuItem mnemonicParsing="false" text="0.7" />
-                  <MenuItem mnemonicParsing="false" text="0.8" />
-                  <MenuItem mnemonicParsing="false" text="0.9" />
-                  <MenuItem mnemonicParsing="false" text="1" />
+                <MenuItem fx:id="developersRatioMenu1" mnemonicParsing="false" text="0.1" />
+                <MenuItem fx:id="developersRatioMenu2" mnemonicParsing="false" text="0.2" />
+                  <MenuItem fx:id="developersRatioMenu3" mnemonicParsing="false" text="0.3" />
+                  <MenuItem fx:id="developersRatioMenu4" mnemonicParsing="false" text="0.4" />
+                  <MenuItem fx:id="developersRatioMenu5" mnemonicParsing="false" text="0.5" />
+                  <MenuItem fx:id="developersRatioMenu6" mnemonicParsing="false" text="0.6" />
+                  <MenuItem fx:id="developersRatioMenu7" mnemonicParsing="false" text="0.7" />
+                  <MenuItem fx:id="developersRatioMenu8" mnemonicParsing="false" text="0.8" />
+                  <MenuItem fx:id="developersRatioMenu9" mnemonicParsing="false" text="0.9" />
+                  <MenuItem fx:id="developersRatioMenu10" mnemonicParsing="false" text="1" />
               </items>
             </MenuButton>
             <Button fx:id="developersApplyButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="31.0" prefWidth="252.0" text="Apply" textAlignment="CENTER">
@@ -140,16 +140,16 @@
                </Label>
                <MenuButton fx:id="managersRatioMenu" mnemonicParsing="false" text="Managers Rations">
                  <items>
-                   <MenuItem mnemonicParsing="false" text="0.1" />
-                   <MenuItem mnemonicParsing="false" text="0.2" />
-                     <MenuItem mnemonicParsing="false" text="0.3" />
-                     <MenuItem mnemonicParsing="false" text="0.4" />
-                     <MenuItem mnemonicParsing="false" text="0.5" />
-                     <MenuItem mnemonicParsing="false" text="0.6" />
-                     <MenuItem mnemonicParsing="false" text="0.7" />
-                     <MenuItem mnemonicParsing="false" text="0.8" />
-                     <MenuItem mnemonicParsing="false" text="0.9" />
-                     <MenuItem mnemonicParsing="false" text="1" />
+                   <MenuItem fx:id="managersRatioMenu1" mnemonicParsing="false" text="0.1" />
+                   <MenuItem fx:id="managersRatioMenu2" mnemonicParsing="false" text="0.2" />
+                     <MenuItem fx:id="managersRatioMenu3" mnemonicParsing="false" text="0.3" />
+                     <MenuItem fx:id="managersRatioMenu4" mnemonicParsing="false" text="0.4" />
+                     <MenuItem fx:id="managersRatioMenu5" mnemonicParsing="false" text="0.5" />
+                     <MenuItem fx:id="managersRatioMenu6" mnemonicParsing="false" text="0.6" />
+                     <MenuItem fx:id="managersRatioMenu7" mnemonicParsing="false" text="0.7" />
+                     <MenuItem fx:id="managersRatioMenu8" mnemonicParsing="false" text="0.8" />
+                     <MenuItem fx:id="managersRatioMenu9" mnemonicParsing="false" text="0.9" />
+                     <MenuItem fx:id="managersRatioMenu10" mnemonicParsing="false" text="1" />
                  </items>
                </MenuButton>
                <Button fx:id="managersApplyButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" prefHeight="31.0" prefWidth="255.0" text="Apply">
