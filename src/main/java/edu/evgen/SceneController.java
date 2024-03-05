@@ -67,11 +67,11 @@ public class SceneController {
     }
     void developersApplyButtonAction(){
         log.info("setDevelopersApplyButtonAction");
-
+        habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
     }
     void managersApplyButtonAction(){
         log.info("setManagersApplyButtonAction");
-
+        habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
     }
     void living() {
         log.info("start living");

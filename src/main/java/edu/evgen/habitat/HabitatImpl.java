@@ -61,6 +61,26 @@ public class HabitatImpl implements Habitat {
             return Optional.empty();
     }
 
+    public void setDeveloperDelay(Long developerDelay) {
+        this.developerDelay = developerDelay;
+    }
+
+    public void setManagerDelay(Long managerDelay) {
+        this.managerDelay = managerDelay;
+    }
+
+    public void setDeveloperProbability(Double developerProbability) {
+        this.developerProbability = developerProbability;
+    }
+
+    public void setManagerRatio(Double managerRatio) {
+        this.managerRatio = managerRatio;
+    }
+
+    public void setPaneSize(Long paneSize) {
+        this.paneSize = paneSize;
+    }
+
     @Override
     public Integer getDeveloperCount() {
         return developers.size();
