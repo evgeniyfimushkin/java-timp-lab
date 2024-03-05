@@ -69,14 +69,18 @@ public class SceneController {
     void developersApplyButtonAction(){
         log.info("setDevelopersApplyButtonAction");
         if(!developersDelayTextField.getText().isEmpty()){
-            habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
+            try {
+                habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
+            }catch (NumberFormatException empty){log.info("NumberFormatException ignored");}
             refreshStatistic();
         }
     }
     void managersApplyButtonAction(){
         log.info("setManagersApplyButtonAction");
         if(!managersDelayTextField.getText().isEmpty()){
-            habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
+            try{
+                habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
+            } catch (NumberFormatException empty){log.info("NumberFormatException ignored");}
             refreshStatistic();
 
         }
