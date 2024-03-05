@@ -4,31 +4,70 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
 
    <Pane fx:id="habitatPane" prefHeight="600" prefWidth="600" style="-fx-background-color: #009B95; -fx-border-color: #006561;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="300" AnchorPane.topAnchor="0" />
-
-
-
-      <VBox alignment="TOP_RIGHT" layoutX="600.0" layoutY="174.0" prefHeight="426.0" prefWidth="200.0" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="300">
-         <Label fx:id="devCount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="203.0">
+   <AnchorPane layoutX="607.0" prefHeight="600.0" prefWidth="400.0" AnchorPane.rightAnchor="-7.0" AnchorPane.topAnchor="0.0">
+      <children>
+      
+      
+      
+            <VBox alignment="TOP_RIGHT" layoutX="243.0" layoutY="270.0" prefHeight="426.0" prefWidth="200.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="270.0">
+               <Label fx:id="devCount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="203.0" text="Managers">
+                  <font>
+                     <Font size="20.0" />
+                  </font>
+            </Label>
+               <Label fx:id="mgrCount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="200.0" text="Developers">
+                  <font>
+                     <Font size="20.0" />
+                  </font>
+            </Label>
+               <Label fx:id="simulationTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="197.0" text="SimulationTime">
+                  <font>
+                     <Font size="20.0" />
+                  </font>
+            </Label>
+            </VBox>
+            <Button fx:id="startButton" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Start" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
             <font>
                <Font size="20.0" />
-            </font></Label>
-         <Label fx:id="mgrCount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="200.0">
+            </font>
+         </Button>
+            <Button fx:id="stopButton" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Button" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="91.0">
             <font>
                <Font size="20.0" />
-            </font></Label>
-         <Label fx:id="simulationTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="197.0">
+            </font>
+         </Button>
+            <ToggleButton fx:id="switchButton" mnemonicParsing="false" style="-fx-background-radius: 100;" text="Hide Time" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="190">
             <font>
-               <Font size="20.0" />
-            </font></Label>
-      </VBox>
-      <Button fx:id="startButton" layoutX="670.0" layoutY="25.0" style="-fx-background-radius: 100;" text="Start" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" />
-      <Button fx:id="stopButton" layoutX="670.0" layoutY="100.0" style="-fx-background-radius: 100;" text="Button" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="100" />
-      <ToggleButton fx:id="switchButton" layoutX="670.0" layoutY="175.0" mnemonicParsing="false" style="-fx-background-radius: 100;" text="Hide Time" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="190">
-      <font>
-         <Font size="16.0" />
-      </font></ToggleButton>
+               <Font size="16.0" />
+            </font>
+         </ToggleButton>
+         <CheckBox id="simulationInfoCheckBox" layoutX="240.0" layoutY="238.0" mnemonicParsing="false" text="Simulation Info">
+            <font>
+               <Font size="17.0" />
+            </font>
+         </CheckBox>
+         <TextField id="developersDelayTextField" layoutX="115.0" layoutY="56.0" prefHeight="30.0" prefWidth="150.0">
+            <font>
+               <Font size="15.0" />
+            </font></TextField>
+         <TextField id="managersDelayTextField" layoutX="115.0" layoutY="132.0" prefHeight="30.0" prefWidth="150.0">
+            <font>
+               <Font size="15.0" />
+            </font></TextField>
+         <Label id="developersDelayLaber" layoutX="117.0" layoutY="19.0" text="Developers Delay">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+         <Label id="managersDelayLabel" layoutX="122.0" layoutY="100.0" text="Managers Perion">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+      </children>
+   </AnchorPane>
   
 </AnchorPane>
