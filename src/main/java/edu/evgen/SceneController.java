@@ -7,11 +7,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
 
@@ -19,13 +22,19 @@ import java.time.LocalDateTime;
 public class SceneController {
     final Habitat habitat = new HabitatImpl(3L,3L,0.9,0.3,400L);
     @FXML
-    public Button startButton;
+    public Button startButton, stopButton, developersApplyButton, managersApplyButton;
     @FXML
-    public Button stopButton;
+    public MenuButton developerProbabilityMenu, managersRatioMenu;
+    @FXML
+    public TextField developersDelayTextField, managersDelayTextField;
     @FXML
     public ToggleButton switchButton;
     @FXML
-    Label mgrCount, devCount, simulationTime;
+    Label developerOptionLabel,managerOptionLAbel,
+            simulationTime,
+            developersCountLabel,managersCountLabel,
+            managersDelayLabel, developersDelayLabel,
+            developersProbabilityLabel, managersRatioLabel;
 
 
     @FXML
@@ -97,8 +106,15 @@ public class SceneController {
         log.info("stopRun ->");
     }
     void refreshStatistic(){
-        devCount.setText("Developers: " + habitat.getDeveloperCount());
-        mgrCount.setText("Managers: " + habitat.getManagerCount());
+        developersCountLabel.setText(habitat.getDeveloperCount().toString());
+        managersCountLabel.setText(habitat.getManagerCount().toString());
+
+        managersDelayLabel.setText("Managers Delay = " + habitat.getManagerDelay());
+        developersDelayLabel.setText("Developers Delay = " + habitat.getDeveloperDelay());
+
+        developersProbabilityLabel.setText("Probability = " + habitat.getDeveloperProbability());
+        managersRatioLabel.setText("Ratio = " + habitat.getManagerRatio());
+
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }
     @SneakyThrows
