@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="469.0" style="-fx-background-image: helpme.jpg;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="-76.0" layoutY="-57.0" prefHeight="551.0" prefWidth="619.0" text="Nobody is gonna help you, you little piece of shit!" textFill="RED" wrapText="true">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="470.0" fitWidth="470.0" opacity="0.76" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@helpme.jpg" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Label>
+   </children>
+</AnchorPane>

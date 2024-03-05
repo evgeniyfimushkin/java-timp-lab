@@ -118,6 +118,10 @@ public class SceneController {
         managersRatioMenu9.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu9));
         managersRatioMenu10.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu10));
 
+        helpMeItem.setOnAction(event -> helpMeItemAction());
+    }
+    void helpMeItemAction(){
+
 
     }
     void setdevelopersProbabilityMenuAction(MenuItem item){

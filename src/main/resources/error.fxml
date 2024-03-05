@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="26.0" prefHeight="45.0" prefWidth="591.0" style="-fx-background-color: #009B95; -fx-background-radius: 10;" text="ERROR" textAlignment="CENTER">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="errorMessage" alignment="TOP_LEFT" layoutX="14.0" layoutY="85.0" prefHeight="226.0" prefWidth="577.0" style="-fx-background-color: #009B81; -fx-background-radius: 10; -fx-padding: 10;" text="Error message">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="closeErrorWindowButton" layoutX="534.0" layoutY="361.0" mnemonicParsing="false" style="-fx-background-color: #009B95;" text="Close">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
