@@ -28,8 +28,8 @@ public class Main extends Application {
     @Override
     public void start(Stage rootStage) throws Exception {
 
-        rootStage.setWidth(1000);
-        rootStage.setHeight(800);
+        rootStage.setWidth(1200);
+        rootStage.setHeight(860);
         //преобразование объектов если не null
         // map - это преобразование объекта далее и далее
         // ifPresent - void процедура сеттер, финализация цепочки преобразований

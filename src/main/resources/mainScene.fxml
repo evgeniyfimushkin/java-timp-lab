@@ -1,71 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
+   <MenuBar prefHeight="25.0" prefWidth="1200.0">
+     <menus>
+       <Menu mnemonicParsing="false" text="File">
+         <items>
+           <MenuItem mnemonicParsing="false" text="Close" />
+         </items>
+       </Menu>
+       <Menu mnemonicParsing="false" text="Edit">
+         <items>
+           <MenuItem mnemonicParsing="false" text="Delete" />
+         </items>
+       </Menu>
+       <Menu mnemonicParsing="false" text="Help">
+         <items>
+           <MenuItem mnemonicParsing="false" text="About" />
+         </items>
+       </Menu>
+     </menus>
+   </MenuBar>
 
-   <Pane fx:id="habitatPane" prefHeight="600" prefWidth="600" style="-fx-background-color: #009B95; -fx-border-color: #006561;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="300" AnchorPane.topAnchor="0" />
-   <AnchorPane layoutX="607.0" prefHeight="600.0" prefWidth="400.0" AnchorPane.rightAnchor="-7.0" AnchorPane.topAnchor="0.0">
+   <Pane fx:id="habitatPane" layoutY="25.0" prefHeight="780.0" prefWidth="600" style="-fx-background-color: #009B95; -fx-border-color: #006561;" />
+   <AnchorPane layoutX="600.0" layoutY="34.0" prefHeight="780.0" prefWidth="608.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="34.0">
       <children>
       
       
       
-            <VBox alignment="TOP_RIGHT" layoutX="243.0" layoutY="270.0" prefHeight="426.0" prefWidth="200.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="270.0">
-               <Label fx:id="devCount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="203.0" text="Managers">
+            <VBox layoutX="31.0" layoutY="14.0" prefHeight="400.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-background-radius: 10; -fx-spacing: 10; -fx-padding: 10;">
+               <Label fx:id="mgrCount" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="252.0" text="Developers Options">
                   <font>
-                     <Font size="20.0" />
+                     <Font name="System Bold" size="20.0" />
                   </font>
             </Label>
-               <Label fx:id="mgrCount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="200.0" text="Developers">
-                  <font>
-                     <Font size="20.0" />
-                  </font>
+            <ImageView fitHeight="65.0" fitWidth="60.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@developer.png" />
+               </image>
+            </ImageView>
+            <Label id="developersDelayLaber" text="Developers Delay:">
+               <font>
+                  <Font size="15.0" />
+               </font>
             </Label>
-               <Label fx:id="simulationTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="30.0" prefWidth="197.0" text="SimulationTime">
-                  <font>
-                     <Font size="20.0" />
-                  </font>
-            </Label>
+            <TextField id="developersDelayTextField" prefHeight="30.0" prefWidth="150.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label id="developersProbabilityLabel" prefHeight="25.0" prefWidth="240.0" text="Developers Probability: ">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
+            <MenuButton id="developersProbabilityMenu" mnemonicParsing="false" text="Developer Probabilities">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </MenuButton>
             </VBox>
-            <Button fx:id="startButton" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Start" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
+            <Button fx:id="startButton" layoutX="500.0" layoutY="708.0" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Start">
             <font>
                <Font size="20.0" />
             </font>
          </Button>
-            <Button fx:id="stopButton" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Button" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="91.0">
+            <Button fx:id="stopButton" layoutX="396.0" layoutY="708.0" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Stop">
             <font>
                <Font size="20.0" />
             </font>
          </Button>
-            <ToggleButton fx:id="switchButton" mnemonicParsing="false" style="-fx-background-radius: 100;" text="Hide Time" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="190">
+            <ToggleButton fx:id="switchButton" layoutX="500.0" layoutY="649.0" mnemonicParsing="false" style="-fx-background-radius: 100;" text="Hide Time">
             <font>
                <Font size="16.0" />
             </font>
          </ToggleButton>
-         <CheckBox id="simulationInfoCheckBox" layoutX="240.0" layoutY="238.0" mnemonicParsing="false" text="Simulation Info">
+         <VBox layoutX="313.0" layoutY="14.0" prefHeight="400.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-spacing: 10; -fx-background-radius: 10; -fx-padding: 10;">
+            <children>
+                  <Label fx:id="devCount" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="253.0" text="Managers Option">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+               </Label>
+               <ImageView fitHeight="61.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@manager.png" />
+                  </image>
+               </ImageView>
+               <Label id="managersDelayLabel" text="Managers Delay:">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Label>
+               <TextField id="managersDelayTextField" prefHeight="31.0" prefWidth="177.0">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </TextField>
+               <Label id="managersRatioLabel" prefHeight="24.0" prefWidth="240.0" text="Managers Ration: ">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Label>
+               <MenuButton id="managersProbabilityMenu" mnemonicParsing="false" text="Managers Rations">
+                 <items>
+                   <MenuItem mnemonicParsing="false" text="Action 1" />
+                   <MenuItem mnemonicParsing="false" text="Action 2" />
+                 </items>
+               </MenuButton>
+            </children>
+         </VBox>
+         <CheckBox id="simulationInfoCheckBox" layoutX="313.0" layoutY="446.0" mnemonicParsing="false" text="Simulation Info">
             <font>
                <Font size="17.0" />
             </font>
          </CheckBox>
-         <TextField id="developersDelayTextField" layoutX="115.0" layoutY="56.0" prefHeight="30.0" prefWidth="150.0">
-            <font>
-               <Font size="15.0" />
-            </font></TextField>
-         <TextField id="managersDelayTextField" layoutX="115.0" layoutY="132.0" prefHeight="30.0" prefWidth="150.0">
-            <font>
-               <Font size="15.0" />
-            </font></TextField>
-         <Label id="developersDelayLaber" layoutX="117.0" layoutY="19.0" text="Developers Delay">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label id="managersDelayLabel" layoutX="122.0" layoutY="100.0" text="Managers Perion">
-            <font>
-               <Font size="15.0" />
-            </font>
+            <Label fx:id="simulationTime" alignment="TOP_LEFT" contentDisplay="TOP" layoutX="31.0" layoutY="444.0" prefHeight="30.0" prefWidth="197.0" text="SimulationTime">
+               <font>
+                  <Font size="20.0" />
+               </font>
          </Label>
       </children>
    </AnchorPane>
