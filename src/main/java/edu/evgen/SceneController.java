@@ -42,7 +42,7 @@ public class SceneController {
     final Long processDelay = 100L;
 
     boolean run = false;
-    Thread livingThread;
+    Thread livingThread, informationThread;
     Long startSimulationTime = 0L, stopSimulationTime = 0L;
 
     public void doMoving(){// запуск в отдельном thread(асинхронное)
@@ -64,14 +64,22 @@ public class SceneController {
         switchButton.setOnAction(event -> setSimulationTimeVisible());
         developersApplyButton.setOnAction(event -> developersApplyButtonAction());
         managersApplyButton.setOnAction(event -> managersApplyButtonAction());
+        developersProbabilityMenu.setOnAction(event -> developersApplyButtonAction());
     }
     void developersApplyButtonAction(){
         log.info("setDevelopersApplyButtonAction");
-        habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
+        if(!developersDelayTextField.getText().isEmpty()){
+            habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
+            refreshStatistic();
+        }
     }
     void managersApplyButtonAction(){
         log.info("setManagersApplyButtonAction");
-        habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
+        if(!managersDelayTextField.getText().isEmpty()){
+            habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
+            refreshStatistic();
+
+        }
     }
     void living() {
         log.info("start living");
@@ -115,6 +123,9 @@ public class SceneController {
         log.info("stopRun ->");
     }
     void refreshStatistic(){
+
+        log.info("RefreshStatistics");
+
         developersCountLabel.setText(habitat.getDeveloperCount().toString());
         managersCountLabel.setText(habitat.getManagerCount().toString());
 
