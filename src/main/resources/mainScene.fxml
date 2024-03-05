@@ -130,7 +130,7 @@
                      <Font size="15.0" />
                   </font>
                </Label>
-               <MenuButton fx:id="managersProbabilityMenu" mnemonicParsing="false" text="Managers Rations">
+               <MenuButton fx:id="managersRatioMenu" mnemonicParsing="false" text="Managers Rations">
                  <items>
                    <MenuItem mnemonicParsing="false" text="Action 1" />
                    <MenuItem mnemonicParsing="false" text="Action 2" />

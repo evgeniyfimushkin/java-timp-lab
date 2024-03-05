@@ -24,7 +24,7 @@ public class SceneController {
     @FXML
     public Button startButton, stopButton, developersApplyButton, managersApplyButton;
     @FXML
-    public MenuButton developerProbabilityMenu, managersRatioMenu;
+    public MenuButton developersProbabilityMenu, managersRatioMenu;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField;
     @FXML
@@ -62,8 +62,17 @@ public class SceneController {
         stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
         startButton.setOnAction(event -> doMoving());
         switchButton.setOnAction(event -> setSimulationTimeVisible());
+        developersApplyButton.setOnAction(event -> developersApplyButtonAction());
+        managersApplyButton.setOnAction(event -> managersApplyButtonAction());
     }
+    void developersApplyButtonAction(){
+        log.info("setDevelopersApplyButtonAction");
 
+    }
+    void managersApplyButtonAction(){
+        log.info("setManagersApplyButtonAction");
+
+    }
     void living() {
         log.info("start living");
         run = true;

@@ -15,14 +15,23 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class HabitatImpl implements Habitat {
-    final Long developerDelay;
-    final Long managerDelay;
-    final Double developerProbability;
-    final Double managerRatio;
+    Long developerDelay;
+    Long managerDelay;
+    Double developerProbability;
+    Double managerRatio;
     final List<IBehaviour> developers = new ArrayList<>();
     final List<IBehaviour> managers = new ArrayList<>();
     final Random random = new Random();
-    final Long paneSize;
+    Long paneSize;
+
+    public HabitatImpl(Long developerDelay, Long managerDelay, Double developerProbability, Double managerRatio, Long paneSize) {
+        this.developerDelay = developerDelay;
+        this.managerDelay = managerDelay;
+        this.developerProbability = developerProbability;
+        this.managerRatio = managerRatio;
+        this.paneSize = paneSize;
+    }
+
     @Override
     public Optional<IBehaviour> birthAttempt() {
         log.info("birthAttempt <-");
