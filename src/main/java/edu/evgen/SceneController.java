@@ -124,6 +124,7 @@ public class SceneController  {
         managersRatioMenu10.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu10));
 
         helpMeItem.setOnAction(event -> helpMeItemAction());
+
     }
     void helpMeItemAction(){
         final Stage errorStage = new Stage();
@@ -156,17 +157,36 @@ public class SceneController  {
         if(!developersDelayTextField.getText().isEmpty()){
             try {
                 habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
-            }catch (NumberFormatException empty){log.info("NumberFormatException ignored");}
+            }catch (NumberFormatException empty){
+                log.info("NumberFormatException ignored");
+                errorSceneStart(empty);
+            }
             refreshStatistic();
         }
         developersDelayTextField.clear();
+    }
+    void errorSceneStart(Throwable exception){
+        log.info(exception.getClass().toString());
+        final Stage errorStage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
+        Optional.ofNullable(loader)
+                .map(this::loadSafe)
+                .map(Scene::new)
+                .ifPresent(errorStage::setScene);
+        errorStage.show();
+        ErrorController controller = loader.getController();
+        controller.initialize(exception);
+        controller.closeErrorWindowButton.setOnAction(event -> errorStage.close());
     }
     void managersApplyButtonAction(){
         log.info("setManagersApplyButtonAction");
         if(!managersDelayTextField.getText().isEmpty()){
             try{
                 habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
-            } catch (NumberFormatException empty){log.info("NumberFormatException ignored");}
+            } catch (NumberFormatException empty){
+                log.info("NumberFormatException");
+                errorSceneStart(empty);
+            }
             refreshStatistic();
 
         }
