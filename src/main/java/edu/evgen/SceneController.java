@@ -5,6 +5,9 @@ import edu.evgen.habitat.HabitatImpl;
 import edu.evgen.habitat.employee.IBehaviour;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -12,6 +15,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.ls.LSOutput;
@@ -21,9 +25,10 @@ import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
-public class SceneController {
+public class SceneController  {
     final Habitat habitat = new HabitatImpl(3L,3L,0.9,0.3,400L);
     @FXML
     public Button startButton, stopButton, developersApplyButton, managersApplyButton;
@@ -121,8 +126,18 @@ public class SceneController {
         helpMeItem.setOnAction(event -> helpMeItemAction());
     }
     void helpMeItemAction(){
-
-
+        final Stage errorStage = new Stage();
+        log.info("helpMe");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/helpme.fxml"));
+        Optional.ofNullable(loader)
+                .map(this::loadSafe)
+                .map(Scene::new)
+                .ifPresent(errorStage::setScene);
+        errorStage.show();
+    }
+    @SneakyThrows
+    Parent loadSafe(FXMLLoader fxmlLoader){
+        return fxmlLoader.load();
     }
     void setdevelopersProbabilityMenuAction(MenuItem item){
         log.info("setDevelopersProbabilityMenuAction");
