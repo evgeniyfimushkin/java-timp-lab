@@ -49,7 +49,10 @@ public class SceneController {
             managersRatioMenu7,
             managersRatioMenu8,
             managersRatioMenu9,
-            managersRatioMenu10;
+            managersRatioMenu10,
+            menuStartItem,
+            menuStopItem,
+            helpMeItem;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField;
     @FXML
@@ -85,7 +88,9 @@ public class SceneController {
         refreshStatistic();
         stopButton.setText("Stop");
         stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
+        menuStopItem.setOnAction(event -> stopRun());
         startButton.setOnAction(event -> doMoving());
+        menuStartItem.setOnAction(event -> doMoving());
         switchButton.setOnAction(event -> setSimulationTimeVisible());
         developersApplyButton.setOnAction(event -> developersApplyButtonAction());
         managersApplyButton.setOnAction(event -> managersApplyButtonAction());
@@ -112,6 +117,8 @@ public class SceneController {
         managersRatioMenu8.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu8));
         managersRatioMenu9.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu9));
         managersRatioMenu10.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu10));
+
+
     }
     void setdevelopersProbabilityMenuAction(MenuItem item){
         log.info("setDevelopersProbabilityMenuAction");
