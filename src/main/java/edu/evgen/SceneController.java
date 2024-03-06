@@ -36,6 +36,8 @@ public class SceneController {
     @FXML
     public RadioButton radioButtonHideTime, radioButtonShowTime;
     @FXML
+    public CheckBox simulationInfoCheckBox;
+    @FXML
     public MenuItem developersRatioMenu1,
             developersRatioMenu2,
             developersRatioMenu3,
@@ -242,6 +244,10 @@ public class SceneController {
         log.info("refresh");
         Platform.runLater(this::refreshStatistic);
         log.info("stopRun ->");
+
+        FXMLLoader loaderStopInfo = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
+//        Optional.ofNullable()
+
     }
 
     void refreshStatistic() {

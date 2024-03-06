@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.stopSimulationInfoController">
+   <children>
+       <VBox layoutX="317.0" layoutY="26.0" prefHeight="195.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-spacing: 10; -fx-background-radius: 10; -fx-padding: 10;">
+           <children>
+               <Label fx:id="managersOptionLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="253.0" text="Managers ">
+                   <font>
+                       <Font name="System Bold" size="20.0" />
+                   </font>
+               </Label>
+               <HBox prefHeight="64.0" prefWidth="240.0">
+                   <children>
+                       <ImageView fitHeight="61.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                               <Image url="@manager.png" />
+                           </image>
+                       </ImageView>
+                       <Label fx:id="managersCountLabel" alignment="TOP_RIGHT" contentDisplay="RIGHT" prefHeight="66.0" prefWidth="160.0" text="0">
+                           <font>
+                               <Font size="45.0" />
+                           </font>
+                       </Label>
+                   </children>
+               </HBox>
+               <Label fx:id="managersDelayLabel" text="Managers Delay:">
+                   <font>
+                       <Font size="15.0" />
+                   </font>
+               </Label>
+               <Label fx:id="managersRatioLabel" prefHeight="24.0" prefWidth="240.0" text="Managers Ration: ">
+                   <font>
+                       <Font size="15.0" />
+                   </font>
+               </Label>
+           </children>
+       </VBox>
+       <VBox layoutX="29.0" layoutY="26.0" prefHeight="195.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-spacing: 10; -fx-background-radius: 10; -fx-padding: 10;">
+           <children>
+               <Label fx:id="developersOptionLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="253.0" text="Developers">
+                   <font>
+                       <Font name="System Bold" size="20.0" />
+                   </font>
+               </Label>
+               <HBox prefHeight="64.0" prefWidth="240.0">
+                   <children>
+                       <ImageView fitHeight="61.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                               <Image url="@developer.png" />
+                           </image>
+                       </ImageView>
+                       <Label fx:id="developersCountLabel" alignment="TOP_RIGHT" contentDisplay="RIGHT" prefHeight="66.0" prefWidth="160.0" text="0">
+                           <font>
+                               <Font size="45.0" />
+                           </font>
+                       </Label>
+                   </children>
+               </HBox>
+               <Label fx:id="developersDelayLabel" text="Developers Delay:">
+                   <font>
+                       <Font size="15.0" />
+                   </font>
+               </Label>
+               <Label fx:id="developersProbabilityLabel" prefHeight="24.0" prefWidth="240.0" text="Developers Probability: ">
+                   <font>
+                       <Font size="15.0" />
+                   </font>
+               </Label>
+           </children>
+       </VBox>
+      <Label fx:id="simulationTime" layoutX="29.0" layoutY="245.0" prefHeight="30.0" prefWidth="502.0" text="Simulation time: ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="closeButton" layoutX="445.0" layoutY="356.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="132.0" text="Shut this shit down" />
+   </children>
+</AnchorPane>
