@@ -227,6 +227,22 @@ public class SceneController {
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
     void stopRun() {
+        if (simulationInfoCheckBox.isSelected()){
+            log.info("new window Stop simulation Info");
+
+            final Stage stopStage = new Stage();
+            FXMLLoader stopWindowLoader = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
+            Optional.ofNullable(stopWindowLoader)
+                    .map(this::loadSafe)
+                    .map(Scene::new)
+                    .ifPresent(stopStage::setScene);
+            stopStage.show();
+            stopSimulationInfoController controller = stopWindowLoader.getController();
+            controller.setAllTheLabels(habitat);
+            controller.simulationTime.setText("Simulation time: " + getSimulationTime());
+            controller.setCloseButton(stopStage);
+        }
+
         startButton.setDisable(false);
         stopButton.setDisable(true);
         if (run)
@@ -234,19 +250,17 @@ public class SceneController {
         log.info("stopRun");
         run = false;
         livingThread.interrupt();
-        sleep();
-        sleep();
-        sleep();
+
         log.info("clear");
         habitat.clear();
         Platform.runLater(habitatPane.getChildren()::clear);//метод референс -> runnable
         sleep();
+        sleep();
+        sleep();
+        sleep();
         log.info("refresh");
         Platform.runLater(this::refreshStatistic);
         log.info("stopRun ->");
-
-        FXMLLoader loaderStopInfo = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
-//        Optional.ofNullable()
 
     }
 
