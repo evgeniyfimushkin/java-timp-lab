@@ -28,7 +28,7 @@ import java.util.Optional;
 
 @Slf4j
 public class SceneController {
-    final Habitat habitat = new HabitatImpl(3L, 3L, 0.9, 0.3, 400L);
+    final Habitat habitat = new HabitatImpl(1L, 1L, 1.0, 1.0, 400L);
     @FXML
     public Button startButton, stopButton, developersApplyButton, managersApplyButton;
     @FXML
@@ -209,6 +209,7 @@ public class SceneController {
         try {
             do {
                 sleep();
+                log.info("living:birthAttempt");
                 Platform.runLater(this::birthAttempt);
             } while (run);
         } catch (Throwable ignore) {
@@ -217,18 +218,21 @@ public class SceneController {
     }
 
     void birthAttempt() {
-        log.info("birthAttempt");
-        habitat.birthAttempt()
-                .map(IBehaviour::getImageView)
-                .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
-        refreshStatistic();
+        if (run) {
+            log.info("birthAttempt");
+            habitat.birthAttempt()
+                    .map(IBehaviour::getImageView)
+                    .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
+            refreshStatistic();
+        }
     }
 
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
     void stopRun() {
-        Thread threadStopWindow = new Thread(() -> {
+
         if (simulationInfoCheckBox.isSelected()){
+            Thread threadStopWindow = new Thread(() -> {
             log.info("new window Stop simulation Info");
 
             final Stage stopStage = new Stage();
@@ -242,10 +246,11 @@ public class SceneController {
             controller.setAllTheLabels(habitat);
             controller.simulationTime.setText("Simulation time: " + getSimulationTime());
             controller.setCloseButton(stopStage);
+
+            });
+            threadStopWindow.run();
         }
-        });
-        threadStopWindow.run();
-        threadStopWindow.interrupt();
+//        threadStopWindow.interrupt();
 
         startButton.setDisable(false);
         stopButton.setDisable(true);
