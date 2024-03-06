@@ -8,12 +8,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
@@ -28,12 +27,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class SceneController  {
-    final Habitat habitat = new HabitatImpl(3L,3L,0.9,0.3,400L);
+public class SceneController {
+    final Habitat habitat = new HabitatImpl(3L, 3L, 0.9, 0.3, 400L);
     @FXML
     public Button startButton, stopButton, developersApplyButton, managersApplyButton;
     @FXML
     public MenuButton developersProbabilityMenu, managersRatioMenu;
+    @FXML
+    public RadioButton radioButtonHideTime, radioButtonShowTime;
     @FXML
     public MenuItem developersRatioMenu1,
             developersRatioMenu2,
@@ -61,11 +62,9 @@ public class SceneController  {
     @FXML
     public TextField developersDelayTextField, managersDelayTextField;
     @FXML
-    public ToggleButton switchButton;
-    @FXML
-    Label developerOptionLabel,managerOptionLAbel,
+    Label developerOptionLabel, managerOptionLAbel,
             simulationTime,
-            developersCountLabel,managersCountLabel,
+            developersCountLabel, managersCountLabel,
             managersDelayLabel, developersDelayLabel,
             developersProbabilityLabel, managersRatioLabel;
 
@@ -78,7 +77,7 @@ public class SceneController  {
     Thread livingThread, informationThread;
     Long startSimulationTime = 0L, stopSimulationTime = 0L;
 
-    public void doMoving(){// запуск в отдельном thread(асинхронное)
+    public void doMoving() {// запуск в отдельном thread(асинхронное)
         stopButton.setDisable(false);
         startButton.setDisable(true);
         if (!run) {
@@ -86,6 +85,7 @@ public class SceneController  {
             livingThread.start();
         }
     }
+
     @FXML
     private void initialize() {
         stopButton.setDisable(true);
@@ -96,10 +96,8 @@ public class SceneController  {
         menuStopItem.setOnAction(event -> stopRun());
         startButton.setOnAction(event -> doMoving());
         menuStartItem.setOnAction(event -> doMoving());
-        switchButton.setOnAction(event -> setSimulationTimeVisible());
         developersApplyButton.setOnAction(event -> developersApplyButtonAction());
         managersApplyButton.setOnAction(event -> managersApplyButtonAction());
-
 
 
         developersRatioMenu1.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu1));
@@ -124,9 +122,12 @@ public class SceneController  {
         managersRatioMenu10.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu10));
 
         helpMeItem.setOnAction(event -> helpMeItemAction());
-
+        radioButtonShowTime.fire();
+        radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
+        radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
     }
-    void helpMeItemAction(){
+
+    void helpMeItemAction() {
         final Stage errorStage = new Stage();
         log.info("helpMe");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/helpme.fxml"));
@@ -136,28 +137,32 @@ public class SceneController  {
                 .ifPresent(errorStage::setScene);
         errorStage.show();
     }
+
     @SneakyThrows
-    Parent loadSafe(FXMLLoader fxmlLoader){
+    Parent loadSafe(FXMLLoader fxmlLoader) {
         return fxmlLoader.load();
     }
-    void setdevelopersProbabilityMenuAction(MenuItem item){
+
+    void setdevelopersProbabilityMenuAction(MenuItem item) {
         log.info("setDevelopersProbabilityMenuAction");
         habitat.setDeveloperProbability(Double.parseDouble(item.getText()));
         developersProbabilityMenu.setText(item.getText());
         refreshStatistic();
     }
-    void setManagersRatioMenuAction(MenuItem item){
+
+    void setManagersRatioMenuAction(MenuItem item) {
         log.info("setManagerRatioMenuAction");
         habitat.setManagerRatio(Double.parseDouble(item.getText()));
         managersRatioMenu.setText(item.getText());
         refreshStatistic();
     }
-    void developersApplyButtonAction(){
+
+    void developersApplyButtonAction() {
         log.info("setDevelopersApplyButtonAction");
-        if(!developersDelayTextField.getText().isEmpty()){
+        if (!developersDelayTextField.getText().isEmpty()) {
             try {
                 habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
-            }catch (NumberFormatException empty){
+            } catch (NumberFormatException empty) {
                 log.info("NumberFormatException ignored");
                 errorSceneStart(empty);
             }
@@ -165,7 +170,8 @@ public class SceneController  {
         }
         developersDelayTextField.clear();
     }
-    void errorSceneStart(Throwable exception){
+
+    void errorSceneStart(Throwable exception) {
         log.info(exception.getClass().toString());
         final Stage errorStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
@@ -178,12 +184,13 @@ public class SceneController  {
         controller.initialize(exception);
         controller.closeErrorWindowButton.setOnAction(event -> errorStage.close());
     }
-    void managersApplyButtonAction(){
+
+    void managersApplyButtonAction() {
         log.info("setManagersApplyButtonAction");
-        if(!managersDelayTextField.getText().isEmpty()){
-            try{
+        if (!managersDelayTextField.getText().isEmpty()) {
+            try {
                 habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
-            } catch (NumberFormatException empty){
+            } catch (NumberFormatException empty) {
                 log.info("NumberFormatException");
                 errorSceneStart(empty);
             }
@@ -192,6 +199,7 @@ public class SceneController  {
         }
         managersDelayTextField.clear();
     }
+
     void living() {
         log.info("start living");
         run = true;
@@ -201,7 +209,8 @@ public class SceneController  {
                 sleep();
                 Platform.runLater(this::birthAttempt);
             } while (run);
-        } catch (Throwable ignore){}
+        } catch (Throwable ignore) {
+        }
         log.info("stop living");
     }
 
@@ -212,9 +221,10 @@ public class SceneController  {
                 .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
         refreshStatistic();
     }
+
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
-    void stopRun(){
+    void stopRun() {
         startButton.setDisable(false);
         stopButton.setDisable(true);
         if (run)
@@ -233,7 +243,8 @@ public class SceneController  {
         Platform.runLater(this::refreshStatistic);
         log.info("stopRun ->");
     }
-    void refreshStatistic(){
+
+    void refreshStatistic() {
 
         log.info("RefreshStatistics");
 
@@ -248,25 +259,25 @@ public class SceneController  {
 
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }
+
     @SneakyThrows
     void sleep() {
-            Thread.sleep(processDelay);
+        Thread.sleep(processDelay);
     }
-    Long getSimulationTime(){
+
+    Long getSimulationTime() {
         if (run)
-        return startSimulationTime == 0 ?
-                0L :
-                (System.currentTimeMillis()-startSimulationTime)/1000;
-        return (stopSimulationTime - startSimulationTime)/1000;
+            return startSimulationTime == 0 ?
+                    0L :
+                    (System.currentTimeMillis() - startSimulationTime) / 1000;
+        return (stopSimulationTime - startSimulationTime) / 1000;
     }
-    void setSimulationTimeVisible(){
+
+    void setSimulationTimeVisible() {
         if (simulationTime.isVisible()) {
-            switchButton.setText("Show Time");
-            simulationTime.setVisible(false);
-        }
-        else{
-            switchButton.setText("Hide Time");
-            simulationTime.setVisible(true);
+            radioButtonHideTime.fire();
+        } else {
+            radioButtonShowTime.fire();
         }
     }
 }

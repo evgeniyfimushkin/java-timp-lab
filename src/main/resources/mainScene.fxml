@@ -97,11 +97,6 @@
                <Font size="20.0" />
             </font>
          </Button>
-            <ToggleButton fx:id="switchButton" layoutX="500.0" layoutY="649.0" mnemonicParsing="false" style="-fx-background-radius: 100;" text="Hide Time">
-            <font>
-               <Font size="16.0" />
-            </font>
-         </ToggleButton>
          <VBox layoutX="313.0" layoutY="14.0" prefHeight="400.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-spacing: 10; -fx-background-radius: 10; -fx-padding: 10;">
             <children>
                   <Label fx:id="managersOptionLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="253.0" text="Managers Option">
@@ -169,6 +164,19 @@
                   <Font size="20.0" />
                </font>
          </Label>
+         <RadioButton fx:id="radioButtonHideTime" layoutX="145.0" layoutY="494.0" mnemonicParsing="false" text="Hide Time">
+            <font>
+               <Font size="13.0" />
+            </font>
+            <toggleGroup>
+               <ToggleGroup fx:id="simulationTimeGroup" />
+            </toggleGroup>
+         </RadioButton>
+         <RadioButton fx:id="radioButtonShowTime" layoutX="31.0" layoutY="494.0" mnemonicParsing="false" text="Show Time" toggleGroup="$simulationTimeGroup">
+            <font>
+               <Font size="13.0" />
+            </font>
+         </RadioButton>
       </children>
    </AnchorPane>
   
