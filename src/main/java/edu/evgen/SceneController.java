@@ -227,6 +227,7 @@ public class SceneController {
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
     void stopRun() {
+        Thread threadStopWindow = new Thread(() -> {
         if (simulationInfoCheckBox.isSelected()){
             log.info("new window Stop simulation Info");
 
@@ -242,6 +243,9 @@ public class SceneController {
             controller.simulationTime.setText("Simulation time: " + getSimulationTime());
             controller.setCloseButton(stopStage);
         }
+        });
+        threadStopWindow.run();
+        threadStopWindow.interrupt();
 
         startButton.setDisable(false);
         stopButton.setDisable(true);
