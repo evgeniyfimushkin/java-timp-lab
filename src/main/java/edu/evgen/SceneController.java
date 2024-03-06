@@ -75,7 +75,7 @@ public class SceneController {
     Pane habitatPane;
     final Long processDelay = 100L;
 
-    boolean run = false;
+    public boolean run = false;
     Thread livingThread, informationThread;
     Long startSimulationTime = 0L, stopSimulationTime = 0L;
 
@@ -229,10 +229,9 @@ public class SceneController {
 
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
-    void stopRun() {
 
+    void stopRun() {
         if (simulationInfoCheckBox.isSelected()){
-            Thread threadStopWindow = new Thread(() -> {
             log.info("new window Stop simulation Info");
 
             final Stage stopStage = new Stage();
@@ -245,32 +244,33 @@ public class SceneController {
             stopSimulationInfoController controller = stopWindowLoader.getController();
             controller.setAllTheLabels(habitat);
             controller.simulationTime.setText("Simulation time: " + getSimulationTime());
-            controller.setCloseButton(stopStage);
-
+            controller.connect(this);
+            controller.closeButton.setOnAction(event -> {
+                stopStage.close();
+                run=true;
             });
-            threadStopWindow.run();
+
         }
-//        threadStopWindow.interrupt();
+        else {
+            startButton.setDisable(false);
+            stopButton.setDisable(true);
+            if (run)
+                stopSimulationTime = System.currentTimeMillis();
+            log.info("stopRun");
+            run = false;
+            livingThread.interrupt();
 
-        startButton.setDisable(false);
-        stopButton.setDisable(true);
-        if (run)
-            stopSimulationTime = System.currentTimeMillis();
-        log.info("stopRun");
-        run = false;
-        livingThread.interrupt();
-
-        log.info("clear");
-        habitat.clear();
-        Platform.runLater(habitatPane.getChildren()::clear);//метод референс -> runnable
-        sleep();
-        sleep();
-        sleep();
-        sleep();
-        log.info("refresh");
-        Platform.runLater(this::refreshStatistic);
-        log.info("stopRun ->");
-
+            log.info("clear");
+            habitat.clear();
+            Platform.runLater(habitatPane.getChildren()::clear);//метод референс -> runnable
+            sleep();
+            sleep();
+            sleep();
+            sleep();
+            log.info("refresh");
+            Platform.runLater(this::refreshStatistic);
+            log.info("stopRun ->");
+        }
     }
 
     void refreshStatistic() {

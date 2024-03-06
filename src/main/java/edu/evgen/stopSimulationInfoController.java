@@ -21,7 +21,6 @@ public class stopSimulationInfoController {
     Button closeButton;
     @FXML
     private void initialize(){
-        closeButton.setOnAction(event -> stage.close());
 
     }
     public void setAllTheLabels(Habitat habitat){
@@ -31,9 +30,9 @@ public class stopSimulationInfoController {
         developersDelayLabel.setText("Delay: " + habitat.getDeveloperDelay().toString());
         managersRatioLabel.setText("Ratio: " + habitat.getManagerRatio().toString());
         developersProbabilityLabel.setText("Probability: " + habitat.getDeveloperProbability().toString());
-
     }
-    public void setCloseButton(Stage stage){
-        this.stage = stage;
+
+    public void connect(SceneController controller){
+        controller.run=false;
     }
 }
