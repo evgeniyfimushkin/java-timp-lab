@@ -17,13 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.w3c.dom.ls.LSOutput;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -76,6 +70,7 @@ public class SceneController {
     final Long processDelay = 100L;
 
     public boolean run = false;
+    public boolean continueThread = false;
     Thread livingThread, informationThread;
     Long startSimulationTime = 0L, stopSimulationTime = 0L;
 
@@ -127,6 +122,14 @@ public class SceneController {
         radioButtonShowTime.fire();
         radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
+
+        simulationInfoCheckBox.setOnAction(event -> {
+            if (simulationInfoCheckBox.isSelected())
+                stopButton.setText("Info");
+            else {
+                stopButton.setText("Stop");
+            }
+        });
     }
 
     void helpMeItemAction() {
@@ -205,7 +208,8 @@ public class SceneController {
     void living() {
         log.info("start living");
         run = true;
-        startSimulationTime = System.currentTimeMillis();
+        if (!continueThread)
+            startSimulationTime = System.currentTimeMillis();
         try {
             do {
                 sleep();
@@ -244,14 +248,29 @@ public class SceneController {
             stopSimulationInfoController controller = stopWindowLoader.getController();
             controller.setAllTheLabels(habitat);
             controller.simulationTime.setText("Simulation time: " + getSimulationTime());
-            controller.connect(this);
-            controller.closeButton.setOnAction(event -> {
+
+            run=false;
+            controller.stopButtonFromInfo.setOnAction(event -> {
+
+                stopSimulationTime = System.currentTimeMillis();
+                continueThread = false;
                 stopStage.close();
-                run=true;
+                kilingThread();
+            });
+
+            controller.continueButton.setOnAction(event -> {
+                stopStage.close();
+                continueThread = true;
+                doMoving();
             });
 
         }
         else {
+            kilingThread();
+        }
+    }
+    void kilingThread(){
+        {
             startButton.setDisable(false);
             stopButton.setDisable(true);
             if (run)
@@ -272,7 +291,6 @@ public class SceneController {
             log.info("stopRun ->");
         }
     }
-
     void refreshStatistic() {
 
         log.info("RefreshStatistics");

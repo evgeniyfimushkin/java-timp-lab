@@ -18,7 +18,7 @@ public class stopSimulationInfoController {
             managersDelayLabel, developersDelayLabel,
             developersProbabilityLabel, managersRatioLabel;
     @FXML
-    Button closeButton;
+    Button continueButton, stopButtonFromInfo;
     @FXML
     private void initialize(){
 
@@ -32,7 +32,7 @@ public class stopSimulationInfoController {
         developersProbabilityLabel.setText("Probability: " + habitat.getDeveloperProbability().toString());
     }
 
-    public void connect(SceneController controller){
-        controller.run=false;
-    }
+    //public void connect(SceneController controller){
+//        controller.run=false;
+//    }
 }
