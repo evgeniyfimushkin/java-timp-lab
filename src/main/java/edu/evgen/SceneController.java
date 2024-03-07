@@ -72,11 +72,13 @@ public class SceneController {
     public boolean run = false;
     public boolean continueThread = false;
     Thread livingThread, informationThread;
-    Long startSimulationTime = 0L, stopSimulationTime = 0L;
+    Long startSimulationTime = 0L,
+            stopSimulationTime = 0L,
+            startPauseTime = 0L,
+            stopPauseTime = 0L,
+            addedTime = 0L;
 
     public void doMoving() {// запуск в отдельном thread(асинхронное)
-        stopButton.setDisable(false);
-        startButton.setDisable(true);
         if (!run) {
             livingThread = new Thread(this::living);
             livingThread.start();
@@ -91,8 +93,14 @@ public class SceneController {
         stopButton.setText("Stop");
         stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
         menuStopItem.setOnAction(event -> stopRun());
-        startButton.setOnAction(event -> doMoving());
-        menuStartItem.setOnAction(event -> doMoving());
+        startButton.setOnAction(event -> {
+            addedTime = 0L;
+
+            stopButton.setDisable(false);
+            startButton.setDisable(true);
+            doMoving();
+        });
+        menuStartItem.setOnAction(event -> startButton.fire());
         developersApplyButton.setOnAction(event -> developersApplyButtonAction());
         managersApplyButton.setOnAction(event -> managersApplyButtonAction());
 
@@ -235,6 +243,7 @@ public class SceneController {
     // runnable - void без аргументов
 
     void stopRun() {
+        stopSimulationTime = System.currentTimeMillis();
         if (simulationInfoCheckBox.isSelected()){
             log.info("new window Stop simulation Info");
 
@@ -248,17 +257,17 @@ public class SceneController {
             stopSimulationInfoController controller = stopWindowLoader.getController();
             controller.setAllTheLabels(habitat);
             controller.simulationTime.setText("Simulation time: " + getSimulationTime());
-
+            startPauseTime = System.currentTimeMillis();
             run=false;
             controller.stopButtonFromInfo.setOnAction(event -> {
-
-                stopSimulationTime = System.currentTimeMillis();
+                addedTime = addedTime +System.currentTimeMillis() - startPauseTime;
                 continueThread = false;
                 stopStage.close();
                 kilingThread();
             });
 
             controller.continueButton.setOnAction(event -> {
+                addedTime = addedTime +System.currentTimeMillis() - startPauseTime;
                 stopStage.close();
                 continueThread = true;
                 doMoving();
@@ -273,8 +282,8 @@ public class SceneController {
         {
             startButton.setDisable(false);
             stopButton.setDisable(true);
-            if (run)
-                stopSimulationTime = System.currentTimeMillis();
+//            if (run)
+//                stopSimulationTime = System.currentTimeMillis();
             log.info("stopRun");
             run = false;
             livingThread.interrupt();
@@ -316,8 +325,8 @@ public class SceneController {
         if (run)
             return startSimulationTime == 0 ?
                     0L :
-                    (System.currentTimeMillis() - startSimulationTime) / 1000;
-        return (stopSimulationTime - startSimulationTime) / 1000;
+                    (System.currentTimeMillis() - (addedTime) - startSimulationTime) / 1000;
+        return (stopSimulationTime - (addedTime) - startSimulationTime) / 1000;
     }
 
     void setSimulationTimeVisible() {
