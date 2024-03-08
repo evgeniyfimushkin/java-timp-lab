@@ -1,6 +1,7 @@
 package edu.evgen;
 
 import edu.evgen.habitat.Habitat;
+import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.HabitatImpl;
 import edu.evgen.habitat.employee.IBehaviour;
 import javafx.application.Platform;
@@ -22,7 +23,15 @@ import java.util.Optional;
 
 @Slf4j
 public class SceneController {
-    final Habitat habitat = new HabitatImpl(1L, 1L, 1.0, 1.0, 400L);
+
+    final HabitatConfiguration configuration = HabitatConfiguration.builder()
+            .managerRatio(1.0)
+            .managerDelay(1L)
+            .developerDelay(1L)
+            .developerProbability(1.0)
+            .paneSize(400L)
+            .build();
+    final Habitat habitat = new HabitatImpl(configuration);
     @FXML
     public Button startButton, stopButton, developersApplyButton, managersApplyButton;
     @FXML
@@ -158,14 +167,14 @@ public class SceneController {
 
     void setdevelopersProbabilityMenuAction(MenuItem item) {
         log.info("setDevelopersProbabilityMenuAction");
-        habitat.setDeveloperProbability(Double.parseDouble(item.getText()));
+        configuration.setDeveloperProbability(Double.parseDouble(item.getText()));
         developersProbabilityMenu.setText(item.getText());
         refreshStatistic();
     }
 
     void setManagersRatioMenuAction(MenuItem item) {
         log.info("setManagerRatioMenuAction");
-        habitat.setManagerRatio(Double.parseDouble(item.getText()));
+        configuration.setManagerRatio(Double.parseDouble(item.getText()));
         managersRatioMenu.setText(item.getText());
         refreshStatistic();
     }
@@ -174,7 +183,7 @@ public class SceneController {
         log.info("setDevelopersApplyButtonAction");
         if (!developersDelayTextField.getText().isEmpty()) {
             try {
-                habitat.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
+                configuration.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
             } catch (NumberFormatException empty) {
                 log.info("NumberFormatException ignored");
                 errorSceneStart(empty);
@@ -202,7 +211,7 @@ public class SceneController {
         log.info("setManagersApplyButtonAction");
         if (!managersDelayTextField.getText().isEmpty()) {
             try {
-                habitat.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
+                configuration.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
             } catch (NumberFormatException empty) {
                 log.info("NumberFormatException");
                 errorSceneStart(empty);
@@ -307,11 +316,11 @@ public class SceneController {
         developersCountLabel.setText(habitat.getDeveloperCount().toString());
         managersCountLabel.setText(habitat.getManagerCount().toString());
 
-        managersDelayLabel.setText("Managers Delay = " + habitat.getManagerDelay());
-        developersDelayLabel.setText("Developers Delay = " + habitat.getDeveloperDelay());
+        managersDelayLabel.setText("Managers Delay = " + configuration.getManagerDelay());
+        developersDelayLabel.setText("Developers Delay = " + configuration.getDeveloperDelay());
 
-        developersProbabilityLabel.setText("Probability = " + habitat.getDeveloperProbability());
-        managersRatioLabel.setText("Ratio = " + habitat.getManagerRatio());
+        developersProbabilityLabel.setText("Probability = " + configuration.getDeveloperProbability());
+        managersRatioLabel.setText("Ratio = " + configuration.getManagerRatio());
 
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }

@@ -19,20 +19,13 @@ public class stopSimulationInfoController {
             developersProbabilityLabel, managersRatioLabel;
     @FXML
     Button continueButton, stopButtonFromInfo;
-    @FXML
-    private void initialize(){
-
-    }
     public void setAllTheLabels(Habitat habitat){
         developersCountLabel.setText(habitat.getDeveloperCount().toString());
         managersCountLabel.setText(habitat.getManagerCount().toString());
-        managersDelayLabel.setText("Delay: " + habitat.getManagerDelay().toString());
-        developersDelayLabel.setText("Delay: " + habitat.getDeveloperDelay().toString());
-        managersRatioLabel.setText("Ratio: " + habitat.getManagerRatio().toString());
-        developersProbabilityLabel.setText("Probability: " + habitat.getDeveloperProbability().toString());
+        managersDelayLabel.setText("Delay: " + habitat.getConfiguration().getManagerDelay().toString());
+        developersDelayLabel.setText("Delay: " + habitat.getConfiguration().getDeveloperDelay().toString());
+        managersRatioLabel.setText("Ratio: " + habitat.getConfiguration().getManagerRatio().toString());
+        developersProbabilityLabel.setText("Probability: " + habitat.getConfiguration().getDeveloperProbability().toString());
     }
 
-    //public void connect(SceneController controller){
-//        controller.run=false;
-//    }
 }

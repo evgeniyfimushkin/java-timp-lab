@@ -14,22 +14,10 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class HabitatImpl implements Habitat {
-    Long developerDelay;
-    Long managerDelay;
-    Double developerProbability;
-    Double managerRatio;
+    final HabitatConfiguration configuration;
     final List<IBehaviour> developers = new ArrayList<>();
     final List<IBehaviour> managers = new ArrayList<>();
     final Random random = new Random();
-    Long paneSize;
-
-    public HabitatImpl(Long developerDelay, Long managerDelay, Double developerProbability, Double managerRatio, Long paneSize) {
-        this.developerDelay = developerDelay;
-        this.managerDelay = managerDelay;
-        this.developerProbability = developerProbability;
-        this.managerRatio = managerRatio;
-        this.paneSize = paneSize;
-    }
 
     @Override
     public Optional<IBehaviour> birthAttempt() {
@@ -37,47 +25,27 @@ public class HabitatImpl implements Habitat {
         LocalDateTime now = LocalDateTime.now();
 
         if (
-                (developers.isEmpty() || developers.getLast().getBirthTime().plusSeconds(developerDelay).isBefore(now)) &&
-                        (random.nextDouble() <= developerProbability)
+                (developers.isEmpty() || developers.getLast().getBirthTime().plusSeconds(configuration.getDeveloperDelay()).isBefore(now)) &&
+                        (random.nextDouble() <= configuration.getDeveloperProbability())
         ) {
             log.info("Developer birth!");
-            IBehaviour employee = new Developer(developerProbability, paneSize);
+            IBehaviour employee = new Developer(configuration.getDeveloperProbability(), configuration.getPaneSize());
             developers.add(employee);
             return Optional.of(employee);
 
         }
 
         if (
-                (managers.isEmpty() || managers.getLast().getBirthTime().plusSeconds(managerDelay).isBefore(now)) &&
-                        ((double)managers.size()/Math.max(developers.size(),1) < managerRatio)
+                (managers.isEmpty() || managers.getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(now)) &&
+                        ((double)managers.size()/Math.max(developers.size(),1) < configuration.getManagerRatio())
         ) {
             log.info("Manager birth!");
-            IBehaviour employee = new Manager(paneSize);
+            IBehaviour employee = new Manager(configuration.getPaneSize());
             managers.add(employee);
             return Optional.of(employee);
 
         }
             return Optional.empty();
-    }
-
-    public void setDeveloperDelay(Long developerDelay) {
-        this.developerDelay = developerDelay;
-    }
-
-    public void setManagerDelay(Long managerDelay) {
-        this.managerDelay = managerDelay;
-    }
-
-    public void setDeveloperProbability(Double developerProbability) {
-        this.developerProbability = developerProbability;
-    }
-
-    public void setManagerRatio(Double managerRatio) {
-        this.managerRatio = managerRatio;
-    }
-
-    public void setPaneSize(Long paneSize) {
-        this.paneSize = paneSize;
     }
 
     @Override
