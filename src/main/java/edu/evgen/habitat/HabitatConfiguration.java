@@ -6,7 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class HabitatConfiguration {
-
+    private Long developerLivingTime;
+    private Long managerLivingTime;
     private Long developerDelay;
     private Long managerDelay;
     private Double developerProbability;

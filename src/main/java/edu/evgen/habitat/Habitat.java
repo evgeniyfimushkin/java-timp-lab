@@ -2,10 +2,12 @@ package edu.evgen.habitat;
 
 import edu.evgen.habitat.employee.IBehaviour;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface Habitat {
     HabitatConfiguration getConfiguration();
+    Collection<IBehaviour> mustDie();
 
     void setConfiguration(HabitatConfiguration configuration);
     Optional<? extends IBehaviour> birthAttempt();

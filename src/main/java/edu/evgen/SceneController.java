@@ -35,6 +35,8 @@ public class SceneController {
             .developerDelay(1L)
             .developerProbability(1.0)
             .paneSize(400L)
+            .managerLivingTime(4L)
+            .developerLivingTime(2L)
             .build();
     @FXML
     public Button startButton, stopButton;
@@ -81,6 +83,10 @@ public class SceneController {
         startButton.setDisable(true);
         livingThread = new Thread(this::living);
         livingThread.start();
+    }
+
+    public void dying(){
+
     }
 
     @FXML
@@ -201,10 +207,14 @@ public class SceneController {
                 sleep();
                 log.info("living:birthAttempt");
                 Platform.runLater(this::birthAttempt);
+                habitat.mustDie().forEach(this::kill);
             } while (run);
         } catch (Throwable ignore) {
         }
         log.info("stop living");
+    }
+    void kill(IBehaviour employee){
+        Platform.runLater(() -> habitatPane.getChildren().remove(employee.getImageView()));
     }
 
     void birthAttempt() {

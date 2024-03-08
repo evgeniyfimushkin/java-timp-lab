@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
+
 @Data
 @Slf4j
 public class HabitatImpl implements Habitat {
@@ -21,7 +23,12 @@ public class HabitatImpl implements Habitat {
     HabitatConfiguration configuration;
 
     private HabitatImpl(){}
-
+    @Override
+    public Collection<IBehaviour> mustDie(){
+        return Stream.concat(developers.stream(),managers.stream())
+                .filter(IBehaviour::mustDie)
+                .toList();
+    }
     @Override
     public Optional<? extends IBehaviour> birthAttempt() {
         log.info("birthAttempt <-");
@@ -37,7 +44,7 @@ public class HabitatImpl implements Habitat {
                         (random.nextDouble() <= configuration.getDeveloperProbability())
         ) {
             log.info("Developer birth!");
-            IBehaviour employee = new Developer(configuration.getPaneSize());
+            IBehaviour employee = new Developer(configuration.getPaneSize(), configuration.getDeveloperLivingTime());
             developers.add(employee);
             return Optional.of(employee);
         }
@@ -47,7 +54,7 @@ public class HabitatImpl implements Habitat {
                         ((double)managers.size()/Math.max(developers.size(),1) < configuration.getManagerRatio())
         ) {
             log.info("Manager birth!");
-            IBehaviour employee = new Manager(configuration.getPaneSize());
+            IBehaviour employee = new Manager(configuration.getPaneSize(),configuration.getManagerLivingTime());
             managers.add(employee);
             return Optional.of(employee);
 
