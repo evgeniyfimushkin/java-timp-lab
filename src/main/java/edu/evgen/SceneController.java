@@ -5,6 +5,8 @@ import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.HabitatImpl;
 import edu.evgen.habitat.employee.IBehaviour;
 import javafx.application.Platform;
+import javafx.beans.Observable;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static edu.evgen.habitat.HabitatImpl.habitat;
+
 @Slf4j
 public class SceneController {
 
@@ -32,9 +36,8 @@ public class SceneController {
             .developerProbability(1.0)
             .paneSize(400L)
             .build();
-    final Habitat habitat = new HabitatImpl(configuration);
     @FXML
-    public Button startButton, stopButton, developersApplyButton, managersApplyButton;
+    public Button startButton, stopButton;
     @FXML
     public MenuButton developersProbabilityMenu, managersRatioMenu;
     @FXML
@@ -72,6 +75,8 @@ public class SceneController {
     }
 
     public void doSimulation(ActionEvent event){
+        developersDelayTextField.setDisable(true);
+        managersDelayTextField.setDisable(true);
         stopButton.setDisable(false);
         startButton.setDisable(true);
         livingThread = new Thread(this::living);
@@ -80,6 +85,12 @@ public class SceneController {
 
     @FXML
     private void initialize() {
+        habitat.setConfiguration(configuration);
+        developersDelayTextField.setText(configuration.getDeveloperDelay().toString());
+        developersDelayTextField.textProperty().addListener(this::developersDelayOnChange);
+        managersDelayTextField.setText(configuration.getManagerDelay().toString());
+        managersDelayTextField.textProperty().addListener(this::managersDelayOnChange);
+
         stopButton.setDisable(true);
         log.info("controller init");
         refreshStatistic();
@@ -87,8 +98,6 @@ public class SceneController {
         toggleCheckBoxHandler(null);
         startButton.setOnAction(this::startSimulation);
         menuStartItem.setOnAction(event -> startButton.fire());
-        developersApplyButton.setOnAction(event -> developersApplyButtonAction());
-        managersApplyButton.setOnAction(event -> managersApplyButtonAction());
 
 
         menuItemStream().forEach(developersProbabilityMenu.getItems()::add);
@@ -150,19 +159,27 @@ public class SceneController {
         errorStage.show();
     }
 
-    void developersApplyButtonAction() {
-        log.info("setDevelopersApplyButtonAction");
-        if (!developersDelayTextField.getText().isEmpty()) {
-            try {
-                configuration.setDeveloperDelay(Long.parseLong(developersDelayTextField.getText()));
-            } catch (NumberFormatException empty) {
-                log.info("NumberFormatException ignored");
+    void developersDelayOnChange(ObservableValue<?> observable, String oldValue, String newValue){
+        try {
+            configuration.setDeveloperDelay(Long.parseLong(newValue));
+        } catch (NumberFormatException empty) {
+            log.error("Bad developersDelay value: {}", newValue);
+
+            if (!newValue.isEmpty())
                 errorSceneStart(empty);
-            }
-            refreshStatistic();
         }
-        developersDelayTextField.clear();
     }
+
+    void managersDelayOnChange(ObservableValue<?> observable, String oldValue, String newValue){
+        try{
+            configuration.setManagerDelay(Long.parseLong(newValue));
+        }catch (NumberFormatException empty){
+            log.error("Bad managersDelay value: {}", newValue);
+            if (!newValue.isEmpty())
+                errorSceneStart(empty);
+        }
+    }
+
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
         log.info(exception.getClass().toString());
@@ -175,20 +192,6 @@ public class SceneController {
         controller.closeErrorWindowButton.setOnAction(event -> errorStage.close());
     }
 
-    void managersApplyButtonAction() {
-        log.info("setManagersApplyButtonAction");
-        if (!managersDelayTextField.getText().isEmpty()) {
-            try {
-                configuration.setManagerDelay(Long.parseLong(managersDelayTextField.getText()));
-            } catch (NumberFormatException empty) {
-                log.info("NumberFormatException");
-                errorSceneStart(empty);
-            }
-            refreshStatistic();
-
-        }
-        managersDelayTextField.clear();
-    }
 
     void living() {
         log.info("start living");
@@ -218,6 +221,8 @@ public class SceneController {
     // runnable - void без аргументов
 
     void stopHandler(ActionEvent event) {
+        developersDelayTextField.setDisable(false);
+        managersDelayTextField.setDisable(false);
         startButton.setDisable(false);
         stopButton.setDisable(true);
         log.info("stopRun");
@@ -268,11 +273,13 @@ public class SceneController {
         developersCountLabel.setText(habitat.getDeveloperCount().toString());
         managersCountLabel.setText(habitat.getManagerCount().toString());
 
-        managersDelayLabel.setText("Managers Delay = " + configuration.getManagerDelay());
-        developersDelayLabel.setText("Developers Delay = " + configuration.getDeveloperDelay());
+//        managersDelayLabel.setText("Managers Delay = " + configuration.getManagerDelay());
+//        developersDelayLabel.setText("Developers Delay = " + configuration.getDeveloperDelay());
+        managersDelayTextField.setText(configuration.getManagerDelay().toString());
+        developersDelayTextField.setText(configuration.getDeveloperDelay().toString());
 
-        developersProbabilityLabel.setText("Probability = " + configuration.getDeveloperProbability());
-        managersRatioLabel.setText("Ratio = " + configuration.getManagerRatio());
+          developersProbabilityMenu.setText(configuration.getDeveloperProbability().toString());
+          managersRatioMenu.setText(configuration.getManagerRatio().toString());
 
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }

@@ -1,26 +1,26 @@
 package edu.evgen.habitat;
 
 import edu.evgen.habitat.employee.Developer;
-import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
-
 @Data
-@RequiredArgsConstructor
 @Slf4j
 public class HabitatImpl implements Habitat {
-    final HabitatConfiguration configuration;
+
+    public static Habitat habitat = new HabitatImpl();
+
     final List<IBehaviour> developers = new ArrayList<>();
     final List<IBehaviour> managers = new ArrayList<>();
     final Random random = new Random();
+
+    HabitatConfiguration configuration;
+
+    private HabitatImpl(){}
 
     @Override
     public Optional<? extends IBehaviour> birthAttempt() {
