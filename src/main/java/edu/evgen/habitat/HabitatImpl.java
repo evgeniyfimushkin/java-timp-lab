@@ -1,14 +1,17 @@
 package edu.evgen.habitat;
 
 import edu.evgen.habitat.employee.Developer;
+import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 
 @Data
 @RequiredArgsConstructor
@@ -20,8 +23,13 @@ public class HabitatImpl implements Habitat {
     final Random random = new Random();
 
     @Override
-    public Optional<IBehaviour> birthAttempt() {
+    public Optional<? extends IBehaviour> birthAttempt() {
         log.info("birthAttempt <-");
+//        Optional<Developer> result = birthAttempt(isBirthDeveloper(), Developer.class, developers);
+//
+//        return result.isPresent() ? result : birthAttempt(isBirthManager(), Manager.class, managers);
+//
+//
         LocalDateTime now = LocalDateTime.now();
 
         if (
@@ -29,10 +37,9 @@ public class HabitatImpl implements Habitat {
                         (random.nextDouble() <= configuration.getDeveloperProbability())
         ) {
             log.info("Developer birth!");
-            IBehaviour employee = new Developer(configuration.getDeveloperProbability(), configuration.getPaneSize());
+            IBehaviour employee = new Developer(configuration.getPaneSize());
             developers.add(employee);
             return Optional.of(employee);
-
         }
 
         if (
@@ -47,6 +54,39 @@ public class HabitatImpl implements Habitat {
         }
             return Optional.empty();
     }
+
+
+//    @SneakyThrows
+//    private <T extends IBehaviour> Optional<T> birthAttempt(boolean isBirth, Function<Long, T> employeeConstructor, Collection<IBehaviour> employeeCollection){
+//        if (!isBirth)
+//            return Optional.empty();
+//
+//        T employee = employeeConstructor.apply(configuration.getPaneSize());
+//        log.info("{} birth!", employee.getClass().getSimpleName());
+//        employeeCollection.add(employee);
+//        return Optional.of(employee);
+//    }
+//
+//    @SneakyThrows
+//    private <T extends IBehaviour> Optional<T> birthAttempt(boolean isBirth, Class<T> employeeClass, Collection<IBehaviour> employeeCollection){
+//        if (!isBirth)
+//            return Optional.empty();
+//
+//        log.info("{} birth!", employeeClass);
+//        T employee = employeeClass.getDeclaredConstructor(Long.class).newInstance(configuration.getPaneSize());
+//        employeeCollection.add(employee);
+//        return Optional.of(employee);
+//    }
+//    private Boolean isBirthDeveloper(){
+//        return (managers.isEmpty() ||
+//                managers.getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(LocalDateTime.now())) &&
+//                (double)managers.size()/Math.max(developers.size(), 1) < configuration.getManagerRatio();
+//    }
+//    private Boolean isBirthManager(){
+//        return (managers.isEmpty() ||
+//                managers.getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(LocalDateTime.now())) &&
+//                ((double)managers.size()/Math.max(developers.size(),1) < configuration.getManagerRatio());
+//    }
 
     @Override
     public Integer getDeveloperCount() {

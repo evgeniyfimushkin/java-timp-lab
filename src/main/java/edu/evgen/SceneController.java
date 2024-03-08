@@ -26,7 +26,7 @@ public class SceneController {
 
     final HabitatConfiguration configuration = HabitatConfiguration.builder()
             .managerRatio(1.0)
-            .managerDelay(1L)
+            .managerDelay(2L)
             .developerDelay(1L)
             .developerProbability(1.0)
             .paneSize(400L)

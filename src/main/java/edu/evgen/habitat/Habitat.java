@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface Habitat {
     HabitatConfiguration getConfiguration();
-    Optional<IBehaviour> birthAttempt();
+    Optional<? extends IBehaviour> birthAttempt();
     Integer getDeveloperCount();
     Integer getManagerCount();
     void clear();
