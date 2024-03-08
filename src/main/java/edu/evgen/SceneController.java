@@ -226,7 +226,6 @@ public class SceneController {
             refreshStatistic();
         }
     }
-
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
 
