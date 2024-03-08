@@ -5,6 +5,7 @@ import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.HabitatImpl;
 import edu.evgen.habitat.employee.IBehaviour;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,12 +15,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Slf4j
 public class SceneController {
@@ -40,39 +45,19 @@ public class SceneController {
     public RadioButton radioButtonHideTime, radioButtonShowTime;
     @FXML
     public CheckBox simulationInfoCheckBox;
+
     @FXML
-    public MenuItem developersRatioMenu1,
-            developersRatioMenu2,
-            developersRatioMenu3,
-            developersRatioMenu4,
-            developersRatioMenu5,
-            developersRatioMenu6,
-            developersRatioMenu7,
-            developersRatioMenu8,
-            developersRatioMenu9,
-            developersRatioMenu10,
-            managersRatioMenu1,
-            managersRatioMenu2,
-            managersRatioMenu3,
-            managersRatioMenu4,
-            managersRatioMenu5,
-            managersRatioMenu6,
-            managersRatioMenu7,
-            managersRatioMenu8,
-            managersRatioMenu9,
-            managersRatioMenu10,
+    public MenuItem
             menuStartItem,
             menuStopItem,
             helpMeItem;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField;
     @FXML
-    Label developerOptionLabel, managerOptionLAbel,
-            simulationTime,
+    Label             simulationTime,
             developersCountLabel, managersCountLabel,
             managersDelayLabel, developersDelayLabel,
             developersProbabilityLabel, managersRatioLabel;
-
 
     @FXML
     Pane habitatPane;
@@ -80,7 +65,7 @@ public class SceneController {
 
     public boolean run = false;
     public boolean continueThread = false;
-    Thread livingThread, informationThread;
+    Thread livingThread;
     Long startSimulationTime = 0L,
             stopSimulationTime = 0L,
             startPauseTime = 0L,
@@ -114,26 +99,13 @@ public class SceneController {
         managersApplyButton.setOnAction(event -> managersApplyButtonAction());
 
 
-        developersRatioMenu1.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu1));
-        developersRatioMenu2.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu1));
-        developersRatioMenu3.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu2));
-        developersRatioMenu4.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu3));
-        developersRatioMenu5.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu4));
-        developersRatioMenu6.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu5));
-        developersRatioMenu7.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu6));
-        developersRatioMenu8.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu7));
-        developersRatioMenu9.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu8));
-        developersRatioMenu10.setOnAction(event -> setdevelopersProbabilityMenuAction(developersRatioMenu10));
-        managersRatioMenu1.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu1));
-        managersRatioMenu2.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu2));
-        managersRatioMenu3.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu3));
-        managersRatioMenu4.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu4));
-        managersRatioMenu5.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu5));
-        managersRatioMenu6.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu6));
-        managersRatioMenu7.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu7));
-        managersRatioMenu8.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu8));
-        managersRatioMenu9.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu9));
-        managersRatioMenu10.setOnAction(event -> setManagersRatioMenuAction(managersRatioMenu10));
+        menuItemStream().forEach(developersProbabilityMenu.getItems()::add);
+
+        menuItemStream().forEach(managersRatioMenu.getItems()::add);
+
+        managersRatioMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupManagersRatio));
+
+        developersProbabilityMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupDevelopersProbability));
 
         helpMeItem.setOnAction(event -> helpMeItemAction());
         radioButtonShowTime.fire();
@@ -147,6 +119,28 @@ public class SceneController {
                 stopButton.setText("Stop");
             }
         });
+    }
+
+    private void setupManagersRatio(ActionEvent event) {
+        MenuItem sourceMenuItem = (MenuItem) event.getSource();
+        configuration.setManagerRatio(Double.parseDouble(sourceMenuItem.getText()));
+        managersRatioMenu.setText(sourceMenuItem.getText());
+        refreshStatistic();
+    }
+
+    private void setupDevelopersProbability(ActionEvent event){
+        MenuItem sourceMenuItem = (MenuItem) event.getSource();
+        configuration.setDeveloperProbability(Double.parseDouble(sourceMenuItem.getText()));
+        developersProbabilityMenu.setText(sourceMenuItem.getText());
+        refreshStatistic();
+    }
+
+    Stream<MenuItem> menuItemStream(){
+        return IntStream.rangeClosed(1, 10)
+                .boxed()
+                .map(i -> i / 10.0)
+                .map(Object::toString)
+                .map(MenuItem::new);
     }
 
     void helpMeItemAction() {
@@ -164,21 +158,6 @@ public class SceneController {
     Parent loadSafe(FXMLLoader fxmlLoader) {
         return fxmlLoader.load();
     }
-
-    void setdevelopersProbabilityMenuAction(MenuItem item) {
-        log.info("setDevelopersProbabilityMenuAction");
-        configuration.setDeveloperProbability(Double.parseDouble(item.getText()));
-        developersProbabilityMenu.setText(item.getText());
-        refreshStatistic();
-    }
-
-    void setManagersRatioMenuAction(MenuItem item) {
-        log.info("setManagerRatioMenuAction");
-        configuration.setManagerRatio(Double.parseDouble(item.getText()));
-        managersRatioMenu.setText(item.getText());
-        refreshStatistic();
-    }
-
     void developersApplyButtonAction() {
         log.info("setDevelopersApplyButtonAction");
         if (!developersDelayTextField.getText().isEmpty()) {
