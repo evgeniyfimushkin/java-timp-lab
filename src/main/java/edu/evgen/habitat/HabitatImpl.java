@@ -1,7 +1,6 @@
 package edu.evgen.habitat;
 
 import edu.evgen.habitat.employee.Developer;
-import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
 import lombok.Data;
@@ -42,7 +41,7 @@ public class HabitatImpl implements Habitat {
                         (random.nextDouble() <= developerProbability)
         ) {
             log.info("Developer birth!");
-            IBehaviour employee = new Developer(developerDelay, developerProbability, paneSize);
+            IBehaviour employee = new Developer(developerProbability, paneSize);
             developers.add(employee);
             return Optional.of(employee);
 
@@ -53,7 +52,7 @@ public class HabitatImpl implements Habitat {
                         ((double)managers.size()/Math.max(developers.size(),1) < managerRatio)
         ) {
             log.info("Manager birth!");
-            IBehaviour employee = new Manager(managerDelay, paneSize);
+            IBehaviour employee = new Manager(paneSize);
             managers.add(employee);
             return Optional.of(employee);
 
