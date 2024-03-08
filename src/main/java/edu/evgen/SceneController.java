@@ -137,10 +137,15 @@ public class SceneController {
 
     Stream<MenuItem> menuItemStream(){
         return IntStream.rangeClosed(1, 10)
+                //сделать объект из примитива
                 .boxed()
+        //        Double divide10(Integer i) {
+        //            return i / 10.0;
+        //        }
                 .map(i -> i / 10.0)
                 .map(Object::toString)
                 .map(MenuItem::new);
+        //стрим не финализирован
     }
 
     void helpMeItemAction() {
