@@ -8,21 +8,17 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -64,19 +60,22 @@ public class SceneController {
     final Long processDelay = 100L;
 
     public boolean run = false;
-    public boolean continueThread = false;
     Thread livingThread;
-    Long startSimulationTime = 0L,
-            stopSimulationTime = 0L,
+    Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
-            stopPauseTime = 0L,
-            addedTime = 0L;
+            pausedTime = 0L;
 
-    public void doMoving() {// запуск в отдельном thread(асинхронное)
-        if (!run) {
-            livingThread = new Thread(this::living);
-            livingThread.start();
-        }
+    public void startSimulation(ActionEvent event) {
+            pausedTime = 0L;
+            startSimulationTime = System.currentTimeMillis();
+            doSimulation(event);
+    }
+
+    public void doSimulation(ActionEvent event){
+        stopButton.setDisable(false);
+        startButton.setDisable(true);
+        livingThread = new Thread(this::living);
+        livingThread.start();
     }
 
     @FXML
@@ -84,41 +83,36 @@ public class SceneController {
         stopButton.setDisable(true);
         log.info("controller init");
         refreshStatistic();
-        stopButton.setText("Stop");
-        stopButton.setOnAction(event -> stopRun());//связали кнопку с обработчиком (inject)
-        menuStopItem.setOnAction(event -> stopRun());
-        startButton.setOnAction(event -> {
-            addedTime = 0L;
-
-            stopButton.setDisable(false);
-            startButton.setDisable(true);
-            doMoving();
-        });
+        simulationInfoCheckBox.setOnAction(this::toggleCheckBoxHandler);
+        toggleCheckBoxHandler(null);
+        startButton.setOnAction(this::startSimulation);
         menuStartItem.setOnAction(event -> startButton.fire());
         developersApplyButton.setOnAction(event -> developersApplyButtonAction());
         managersApplyButton.setOnAction(event -> managersApplyButtonAction());
 
 
         menuItemStream().forEach(developersProbabilityMenu.getItems()::add);
-
         menuItemStream().forEach(managersRatioMenu.getItems()::add);
-
+        developersProbabilityMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupDevelopersProbability));
         managersRatioMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupManagersRatio));
 
-        developersProbabilityMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupDevelopersProbability));
 
-        helpMeItem.setOnAction(event -> helpMeItemAction());
+        helpMeItem.setOnAction(this::helpMeItemAction);
         radioButtonShowTime.fire();
         radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
+    }
 
-        simulationInfoCheckBox.setOnAction(event -> {
-            if (simulationInfoCheckBox.isSelected())
-                stopButton.setText("Info");
-            else {
-                stopButton.setText("Stop");
-            }
-        });
+    void toggleCheckBoxHandler(ActionEvent event) {
+        if (simulationInfoCheckBox.isSelected()) {
+            stopButton.setText("Pause");
+            stopButton.setOnAction(this::showSimulationInfoForm);
+            menuStopItem.setOnAction(this::showSimulationInfoForm);
+        } else {
+            stopButton.setText("Stop");
+            stopButton.setOnAction(this::stopHandler);
+            menuStopItem.setOnAction(this::stopHandler);
+        }
     }
 
     private void setupManagersRatio(ActionEvent event) {
@@ -147,22 +141,15 @@ public class SceneController {
                 .map(MenuItem::new);
         //стрим не финализирован
     }
-
-    void helpMeItemAction() {
+@SneakyThrows
+    void helpMeItemAction(ActionEvent event) {
         final Stage errorStage = new Stage();
         log.info("helpMe");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/helpme.fxml"));
-        Optional.ofNullable(loader)
-                .map(this::loadSafe)
-                .map(Scene::new)
-                .ifPresent(errorStage::setScene);
+        errorStage.setScene(new Scene(loader.load()));
         errorStage.show();
     }
 
-    @SneakyThrows
-    Parent loadSafe(FXMLLoader fxmlLoader) {
-        return fxmlLoader.load();
-    }
     void developersApplyButtonAction() {
         log.info("setDevelopersApplyButtonAction");
         if (!developersDelayTextField.getText().isEmpty()) {
@@ -176,15 +163,12 @@ public class SceneController {
         }
         developersDelayTextField.clear();
     }
-
+    @SneakyThrows
     void errorSceneStart(Throwable exception) {
         log.info(exception.getClass().toString());
         final Stage errorStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
-        Optional.ofNullable(loader)
-                .map(this::loadSafe)
-                .map(Scene::new)
-                .ifPresent(errorStage::setScene);
+        errorStage.setScene(new Scene(loader.load()));
         errorStage.show();
         ErrorController controller = loader.getController();
         controller.initialize(exception);
@@ -209,8 +193,6 @@ public class SceneController {
     void living() {
         log.info("start living");
         run = true;
-        if (!continueThread)
-            startSimulationTime = System.currentTimeMillis();
         try {
             do {
                 sleep();
@@ -235,63 +217,49 @@ public class SceneController {
     //consumer ждёт аргумент и ничего не возвращает
     // runnable - void без аргументов
 
-    void stopRun() {
-        stopSimulationTime = System.currentTimeMillis();
-        if (simulationInfoCheckBox.isSelected()){
-            log.info("new window Stop simulation Info");
-
-            final Stage stopStage = new Stage();
-            FXMLLoader stopWindowLoader = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
-            Optional.ofNullable(stopWindowLoader)
-                    .map(this::loadSafe)
-                    .map(Scene::new)
-                    .ifPresent(stopStage::setScene);
-            stopStage.show();
-            stopSimulationInfoController controller = stopWindowLoader.getController();
-            controller.setAllTheLabels(habitat);
-            controller.simulationTime.setText("Simulation time: " + getSimulationTime());
-            startPauseTime = System.currentTimeMillis();
-            run=false;
-            controller.stopButtonFromInfo.setOnAction(event -> {
-                addedTime = addedTime +System.currentTimeMillis() - startPauseTime;
-                continueThread = false;
-                stopStage.close();
-                kilingThread();
-            });
-
-            controller.continueButton.setOnAction(event -> {
-                addedTime = addedTime +System.currentTimeMillis() - startPauseTime;
-                stopStage.close();
-                continueThread = true;
-                doMoving();
-            });
-
-        }
-        else {
-            kilingThread();
-        }
+    void stopHandler(ActionEvent event) {
+        startButton.setDisable(false);
+        stopButton.setDisable(true);
+        log.info("stopRun");
+        run = false;
+        livingThread.interrupt();
+        log.info("clear");
+        habitat.clear();
+        Platform.runLater(habitatPane.getChildren()::clear);
+        sleep();
+        sleep();
+        sleep();
+        sleep();
+        log.info("refresh");
+        Platform.runLater(this::refreshStatistic);
+        log.info("stopRun ->");
     }
-    void kilingThread(){
-        {
-            startButton.setDisable(false);
-            stopButton.setDisable(true);
-//            if (run)
-//                stopSimulationTime = System.currentTimeMillis();
-            log.info("stopRun");
-            run = false;
-            livingThread.interrupt();
 
-            log.info("clear");
-            habitat.clear();
-            Platform.runLater(habitatPane.getChildren()::clear);//метод референс -> runnable
-            sleep();
-            sleep();
-            sleep();
-            sleep();
-            log.info("refresh");
-            Platform.runLater(this::refreshStatistic);
-            log.info("stopRun ->");
-        }
+    @SneakyThrows
+    void showSimulationInfoForm(ActionEvent rootEvent) {
+        log.info("new window Stop simulation Info");
+
+        final Stage formStage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
+        formStage.setScene(new Scene(loader.load()));
+        stopSimulationInfoController controller = loader.getController();
+        controller.setAllTheLabels(habitat);
+        controller.simulationTime.setText("Simulation time: " + getSimulationTime());
+        startPauseTime = System.currentTimeMillis();
+        run = false;
+        controller.stopButtonFromInfo.setOnAction(event -> {
+            pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
+            formStage.close();
+            stopHandler(rootEvent);
+        });
+
+        controller.continueButton.setOnAction(event -> {
+            pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
+            formStage.close();
+            doSimulation(rootEvent);
+        });
+        formStage.show();
+
     }
     void refreshStatistic() {
 
@@ -315,11 +283,7 @@ public class SceneController {
     }
 
     Long getSimulationTime() {
-        if (run)
-            return startSimulationTime == 0 ?
-                    0L :
-                    (System.currentTimeMillis() - (addedTime) - startSimulationTime) / 1000;
-        return (stopSimulationTime - (addedTime) - startSimulationTime) / 1000;
+        return  ( System.currentTimeMillis() - pausedTime - startSimulationTime) / 1000;
     }
 
     void setSimulationTimeVisible() {
