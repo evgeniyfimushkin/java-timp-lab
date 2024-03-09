@@ -115,7 +115,7 @@
                      <Font size="15.0" />
                   </font>
                </Label>
-               <MenuButton fx:id="managersRatioMenu" mnemonicParsing="false" text="Managers Rations" />
+               <MenuButton fx:id="managersRatioMenu" mnemonicParsing="false" text="Managers Ration" />
             </children>
          </VBox>
          <CheckBox fx:id="simulationInfoCheckBox" layoutX="313.0" layoutY="446.0" mnemonicParsing="false" text="Simulation Info">

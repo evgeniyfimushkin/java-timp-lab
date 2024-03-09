@@ -15,6 +15,7 @@ public class Main extends Application {
         //Запуск апликейшн атакуейшн
         Application.launch();
     }
+    
     @Override
     public void start(Stage rootStage) throws Exception {
 
