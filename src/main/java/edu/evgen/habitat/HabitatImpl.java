@@ -21,7 +21,6 @@ public class HabitatImpl implements Habitat {
     final Random random = new Random();
 
     HabitatConfiguration configuration;
-
     private HabitatImpl(){}
     @Override
     public Collection<IBehaviour> mustDie(){
@@ -32,11 +31,7 @@ public class HabitatImpl implements Habitat {
     @Override
     public Optional<? extends IBehaviour> birthAttempt() {
         log.info("birthAttempt <-");
-//        Optional<Developer> result = birthAttempt(isBirthDeveloper(), Developer.class, developers);
-//
-//        return result.isPresent() ? result : birthAttempt(isBirthManager(), Manager.class, managers);
-//
-//
+
         LocalDateTime now = LocalDateTime.now();
 
         if (
@@ -104,6 +99,10 @@ public class HabitatImpl implements Habitat {
     public Integer getManagerCount() {
         return managers.size();
     }
+    @Override
+    public Collection<IBehaviour> getDevelopers(){return developers;}
+    @Override
+    public Collection<IBehaviour> getManagers(){return managers;}
     @Override
     public void clear(){
         developers.clear();

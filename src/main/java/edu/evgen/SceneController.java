@@ -3,6 +3,7 @@ package edu.evgen;
 import edu.evgen.habitat.Habitat;
 import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.HabitatImpl;
+import edu.evgen.habitat.employee.Developer;
 import edu.evgen.habitat.employee.IBehaviour;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -30,6 +31,7 @@ import static edu.evgen.habitat.HabitatImpl.habitat;
 public class SceneController {
 
     final HabitatConfiguration configuration = HabitatConfiguration.builder()
+            .processDelay(100L)
             .managerRatio(1.0)
             .managerDelay(2L)
             .developerDelay(1L)
@@ -63,14 +65,13 @@ public class SceneController {
 
     @FXML
     Pane habitatPane;
-    final Long processDelay = 100L;
 
     public boolean run = false;
     Thread livingThread;
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
-
+    //Основные методы работы симуляции
     public void startSimulation(ActionEvent event) {
             pausedTime = 0L;
             startSimulationTime = System.currentTimeMillis();
@@ -78,20 +79,69 @@ public class SceneController {
     }
 
     public void doSimulation(ActionEvent event){
-        developersDelayTextField.setDisable(true);
-        managersDelayTextField.setDisable(true);
-        developerLivingTime.setDisable(true);
-        managerLivingTime.setDisable(true);
-        stopButton.setDisable(false);
-        startButton.setDisable(true);
+        fieldsSetDisable(true);
         livingThread = new Thread(this::living);
         livingThread.start();
     }
+    void living() {
+        log.info("start living");
+        run = true;
+        try {
+            do {
+                sleep();
+                log.info("living:birthAttempt");
+                Platform.runLater(this::birthAttempt);
+                habitat.mustDie().forEach(this::kill);
 
-    public void dying(){
-
+            } while (run);
+        } catch (Throwable ignore) {
+        }
+        log.info("stop living");
+    }
+    void kill(IBehaviour employee){
+        Platform.runLater(() -> habitatPane.getChildren().remove(employee.getImageView()));
+        habitat.getDevelopers().remove(employee);
+        habitat.getManagers().remove(employee);
     }
 
+    void birthAttempt() {
+        if (run) {
+            log.info("birthAttempt");
+            habitat.birthAttempt()
+                    .map(IBehaviour::getImageView)
+                    .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
+            refreshStatistic();
+        }
+    }
+    void stopHandler(ActionEvent event) {
+        developersDelayTextField.setDisable(false);
+        managersDelayTextField.setDisable(false);
+        developerLivingTime.setDisable(false);
+        managerLivingTime.setDisable(false);
+        startButton.setDisable(false);
+        stopButton.setDisable(true);
+        log.info("stopRun");
+        run = false;
+        livingThread.interrupt();
+        log.info("clear");
+        habitat.clear();
+        Platform.runLater(habitatPane.getChildren()::clear);
+        sleep();
+        sleep();
+        sleep();
+        sleep();
+        log.info("refresh");
+        Platform.runLater(this::refreshStatistic);
+        log.info("stopRun ->");
+    }
+    void fieldsSetDisable(boolean value){
+        developersDelayTextField.setDisable(value);
+        managersDelayTextField.setDisable(value);
+        developerLivingTime.setDisable(value);
+        managerLivingTime.setDisable(value);
+        stopButton.setDisable(!value);
+        startButton.setDisable(value);
+    }
     @FXML
     private void initialize() {
         habitat.setConfiguration(configuration);
@@ -123,6 +173,7 @@ public class SceneController {
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
     }
 
+    //Методы реализующие объекты интерфейса
     void toggleCheckBoxHandler(ActionEvent event) {
         if (simulationInfoCheckBox.isSelected()) {
             stopButton.setText("Pause");
@@ -209,7 +260,7 @@ public class SceneController {
                 errorSceneStart(empty);
         }
     }
-
+    //Методы новых сцен
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
         log.info(exception.getClass().toString());
@@ -221,61 +272,6 @@ public class SceneController {
         controller.initialize(exception);
         controller.closeErrorWindowButton.setOnAction(event -> errorStage.close());
     }
-
-
-    void living() {
-        log.info("start living");
-        run = true;
-        try {
-            do {
-                sleep();
-                log.info("living:birthAttempt");
-                Platform.runLater(this::birthAttempt);
-                habitat.mustDie().forEach(this::kill);
-
-            } while (run);
-        } catch (Throwable ignore) {
-        }
-        log.info("stop living");
-    }
-    void kill(IBehaviour employee){
-        Platform.runLater(() -> habitatPane.getChildren().remove(employee.getImageView()));
-    }
-
-    void birthAttempt() {
-        if (run) {
-            log.info("birthAttempt");
-            habitat.birthAttempt()
-                    .map(IBehaviour::getImageView)
-                    .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
-            refreshStatistic();
-        }
-    }
-    //consumer ждёт аргумент и ничего не возвращает
-    // runnable - void без аргументов
-
-    void stopHandler(ActionEvent event) {
-        developersDelayTextField.setDisable(false);
-        managersDelayTextField.setDisable(false);
-        developerLivingTime.setDisable(false);
-        managerLivingTime.setDisable(false);
-        startButton.setDisable(false);
-        stopButton.setDisable(true);
-        log.info("stopRun");
-        run = false;
-        livingThread.interrupt();
-        log.info("clear");
-        habitat.clear();
-        Platform.runLater(habitatPane.getChildren()::clear);
-        sleep();
-        sleep();
-        sleep();
-        sleep();
-        log.info("refresh");
-        Platform.runLater(this::refreshStatistic);
-        log.info("stopRun ->");
-    }
-
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
         log.info("new window Stop simulation Info");
@@ -302,6 +298,11 @@ public class SceneController {
         formStage.show();
 
     }
+//    Методы обновления
+    @SneakyThrows
+    void sleep() {
+        Thread.sleep(habitat.getConfiguration().getProcessDelay());
+    }
     void refreshStatistic() {
 
         log.info("RefreshStatistics");
@@ -315,21 +316,14 @@ public class SceneController {
         managerLivingTime.setText(configuration.getManagerLivingTime().toString());
         developerLivingTime.setText(configuration.getDeveloperLivingTime().toString());
 
-          developersProbabilityMenu.setText(configuration.getDeveloperProbability().toString());
-          managersRatioMenu.setText(configuration.getManagerRatio().toString());
+        developersProbabilityMenu.setText(configuration.getDeveloperProbability().toString());
+        managersRatioMenu.setText(configuration.getManagerRatio().toString());
 
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }
-
-    @SneakyThrows
-    void sleep() {
-        Thread.sleep(processDelay);
-    }
-
     Long getSimulationTime() {
         return  ( System.currentTimeMillis() - pausedTime - startSimulationTime) / 1000;
     }
-
     void setSimulationTimeVisible() {
         if (simulationTime.isVisible()) {
             radioButtonHideTime.fire();
