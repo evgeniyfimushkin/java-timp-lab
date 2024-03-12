@@ -307,7 +307,7 @@ public class SceneController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/objectsInfo.fxml"));
         formStage.setScene(new Scene(loader.load()));
         ObjectsInfoController controller = loader.getController();
-
+        controller.setObservableList(habitat.getDevelopers(),habitat.getManagers());
 
         startPauseTime = System.currentTimeMillis();
         run = false;
