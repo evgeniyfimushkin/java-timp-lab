@@ -17,8 +17,12 @@ public class HabitatImpl implements Habitat {
 
     public static Habitat habitat = new HabitatImpl();
 
-    final List<Employee> developers = new ArrayList<>();
-    final List<Employee> managers = new ArrayList<>();
+    final List<Employee> developers = new LinkedList<>();
+    final List<Employee> managers = new LinkedList<>();
+
+    final TreeSet<Long> allID = new TreeSet();
+    final HashMap<Long,LocalDateTime> allBirthTimes = new HashMap();
+
     final Random random = new Random();
 
     HabitatConfiguration configuration;
@@ -42,6 +46,8 @@ public class HabitatImpl implements Habitat {
             log.info("Developer birth!");
             Employee employee = new Developer(configuration.getPaneSize(), configuration.getDeveloperLivingTime());
             developers.add(employee);
+            allID.add(employee.getId());
+            allBirthTimes.put(employee.getId(),employee.getBirthTime());
             return Optional.of(employee);
         }
 
@@ -52,6 +58,8 @@ public class HabitatImpl implements Habitat {
             log.info("Manager birth!");
             Employee employee = new Manager(configuration.getPaneSize(),configuration.getManagerLivingTime());
             managers.add(employee);
+            allID.add(employee.getId());
+            allBirthTimes.put(employee.getId(),employee.getBirthTime());
             return Optional.of(employee);
 
         }
@@ -90,7 +98,10 @@ public class HabitatImpl implements Habitat {
 //                managers.getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(LocalDateTime.now())) &&
 //                ((double)managers.size()/Math.max(developers.size(),1) < configuration.getManagerRatio());
 //    }
-
+    @Override
+    public TreeSet<Long> getAllID(){ return allID; }
+    @Override
+    public HashMap<Long, LocalDateTime> getALLBirthTimes(){ return allBirthTimes; }
     @Override
     public Integer getDeveloperCount() {
         return developers.size();

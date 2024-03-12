@@ -3,7 +3,11 @@ package edu.evgen.habitat.employee;
 import javafx.scene.image.ImageView;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 @Data
 public abstract class Employee implements IBehaviour {
@@ -16,6 +20,10 @@ public abstract class Employee implements IBehaviour {
 
     public Employee(String pic, Long paneSize, Long livingTime) {
         this.id = random.nextLong();
+
+//        allID.add(this.id);
+//        allBirthTimes.put(id,this.birthTime);
+
         this.livingTime = livingTime;
         this.paneSize = paneSize;
         this.imageView = new ImageView(pic);

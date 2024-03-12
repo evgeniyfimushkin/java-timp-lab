@@ -7,12 +7,11 @@
     <children>
         <Button fx:id="continueButton" layoutX="711.0" layoutY="856.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="75.0" text="Continue" />
         <Button fx:id="stopButtonFromInfo" layoutX="627.0" layoutY="856.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="75.0" text="Stop" />
-      <TableView fx:id="objectsTable" layoutX="29.0" layoutY="24.0"  prefHeight="813.0" prefWidth="724.0">
+      <TableView fx:id="objectsTable" layoutX="29.0" layoutY="24.0" prefHeight="813.0" prefWidth="724.0">
         <columns>
-          <TableColumn fx:id="colImage" prefWidth="173.0" text="Content" />
-            <TableColumn fx:id="colBirthTime" prefWidth="179.0" text="birthTime" />
-          <TableColumn fx:id="colClass" prefWidth="178.0" text="Object" />
-            <TableColumn fx:id="colId" prefWidth="193.0" text="Id" />
+          <TableColumn fx:id="colImage" prefWidth="237.0" text="Content" />
+            <TableColumn fx:id="colBirthTime" prefWidth="231.0" text="birthTime" />
+            <TableColumn fx:id="colId" prefWidth="255.0" text="Id" />
         </columns>
       </TableView>
     </children>

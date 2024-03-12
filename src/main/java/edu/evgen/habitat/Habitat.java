@@ -3,8 +3,11 @@ package edu.evgen.habitat;
 import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.TreeSet;
 
 public interface Habitat {
     HabitatConfiguration getConfiguration();
@@ -15,6 +18,8 @@ public interface Habitat {
     Integer getManagerCount();
     Collection<Employee> getDevelopers();
     Collection<Employee> getManagers();
+    TreeSet<Long> getAllID();
+    HashMap<Long, LocalDateTime> getALLBirthTimes();
 
     void clear();
 }

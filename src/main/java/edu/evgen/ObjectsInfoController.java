@@ -25,8 +25,6 @@ public class ObjectsInfoController {
 
     TableColumn<Employee, Long> colBirthTime;
     @FXML
-    TableColumn<Employee, Class> colClass;
-    @FXML
     TableColumn<Employee, Long> colId;
     @FXML
     Button continueButton, stopButtonFromInfo;
