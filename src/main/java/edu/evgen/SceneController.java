@@ -53,7 +53,8 @@ public class SceneController {
             menuStopItem,
             helpMeItem;
     @FXML
-    public TextField developersDelayTextField, managersDelayTextField;
+    public TextField developersDelayTextField, managersDelayTextField,
+                managerLivingTime, developerLivingTime;
     @FXML
     Label             simulationTime,
             developersCountLabel, managersCountLabel,
@@ -79,6 +80,8 @@ public class SceneController {
     public void doSimulation(ActionEvent event){
         developersDelayTextField.setDisable(true);
         managersDelayTextField.setDisable(true);
+        developerLivingTime.setDisable(true);
+        managerLivingTime.setDisable(true);
         stopButton.setDisable(false);
         startButton.setDisable(true);
         livingThread = new Thread(this::living);
@@ -92,10 +95,12 @@ public class SceneController {
     @FXML
     private void initialize() {
         habitat.setConfiguration(configuration);
-        developersDelayTextField.setText(configuration.getDeveloperDelay().toString());
         developersDelayTextField.textProperty().addListener(this::developersDelayOnChange);
-        managersDelayTextField.setText(configuration.getManagerDelay().toString());
         managersDelayTextField.textProperty().addListener(this::managersDelayOnChange);
+        developerLivingTime.textProperty().addListener((this::developerLivingTimeOnChange));
+        managerLivingTime.textProperty().addListener(this::managerLivingTimeOnChange);
+        refreshStatistic();
+
 
         stopButton.setDisable(true);
         log.info("controller init");
@@ -185,6 +190,25 @@ public class SceneController {
                 errorSceneStart(empty);
         }
     }
+    void managerLivingTimeOnChange(ObservableValue<?> observable, String oldValue, String newValue){
+        try{
+            configuration.setManagerLivingTime(Long.parseLong(newValue));
+        }catch (NumberFormatException empty){
+            log.error("Bad managerLivingTime value: {}", newValue);
+            if(!newValue.isEmpty())
+                errorSceneStart(empty);
+        }
+    }
+
+    void developerLivingTimeOnChange(ObservableValue<?> observable, String oldValue, String newValue){
+        try{
+            configuration.setDeveloperLivingTime(Long.parseLong(newValue));
+        } catch (NumberFormatException empty){
+            log.error("Bad developerLivingTime value: {}", newValue);
+            if(!newValue.isEmpty())
+                errorSceneStart(empty);
+        }
+    }
 
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
@@ -208,6 +232,7 @@ public class SceneController {
                 log.info("living:birthAttempt");
                 Platform.runLater(this::birthAttempt);
                 habitat.mustDie().forEach(this::kill);
+
             } while (run);
         } catch (Throwable ignore) {
         }
@@ -232,6 +257,8 @@ public class SceneController {
     void stopHandler(ActionEvent event) {
         developersDelayTextField.setDisable(false);
         managersDelayTextField.setDisable(false);
+        developerLivingTime.setDisable(false);
+        managerLivingTime.setDisable(false);
         startButton.setDisable(false);
         stopButton.setDisable(true);
         log.info("stopRun");
@@ -282,10 +309,11 @@ public class SceneController {
         developersCountLabel.setText(habitat.getDeveloperCount().toString());
         managersCountLabel.setText(habitat.getManagerCount().toString());
 
-//        managersDelayLabel.setText("Managers Delay = " + configuration.getManagerDelay());
-//        developersDelayLabel.setText("Developers Delay = " + configuration.getDeveloperDelay());
         managersDelayTextField.setText(configuration.getManagerDelay().toString());
         developersDelayTextField.setText(configuration.getDeveloperDelay().toString());
+
+        managerLivingTime.setText(configuration.getManagerLivingTime().toString());
+        developerLivingTime.setText(configuration.getDeveloperLivingTime().toString());
 
           developersProbabilityMenu.setText(configuration.getDeveloperProbability().toString());
           managersRatioMenu.setText(configuration.getManagerRatio().toString());

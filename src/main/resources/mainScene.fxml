@@ -68,6 +68,7 @@
                   <Font size="15.0" />
                </font></Label>
             <MenuButton fx:id="developersProbabilityMenu" mnemonicParsing="false" text="Developer Probabilities" />
+            <TextField fx:id="developerLivingTime" prefHeight="30.0" prefWidth="240.0" />
             </VBox>
             <Button fx:id="startButton" layoutX="500.0" layoutY="708.0" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Start">
             <font>
@@ -116,6 +117,7 @@
                   </font>
                </Label>
                <MenuButton fx:id="managersRatioMenu" mnemonicParsing="false" text="Managers Ration" />
+               <TextField fx:id="managerLivingTime" prefHeight="30.0" prefWidth="240.0" />
             </children>
          </VBox>
          <CheckBox fx:id="simulationInfoCheckBox" layoutX="313.0" layoutY="446.0" mnemonicParsing="false" text="Simulation Info">
