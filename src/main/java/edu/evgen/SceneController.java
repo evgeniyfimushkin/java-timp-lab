@@ -41,7 +41,7 @@ public class SceneController {
             .developerLivingTime(2L)
             .build();
     @FXML
-    public Button startButton, stopButton;
+    public Button startButton, stopButton, objectsInfoButton;
     @FXML
     public MenuButton developersProbabilityMenu, managersRatioMenu;
     @FXML
@@ -114,12 +114,7 @@ public class SceneController {
         }
     }
     void stopHandler(ActionEvent event) {
-        developersDelayTextField.setDisable(false);
-        managersDelayTextField.setDisable(false);
-        developerLivingTime.setDisable(false);
-        managerLivingTime.setDisable(false);
-        startButton.setDisable(false);
-        stopButton.setDisable(true);
+        fieldsSetDisable(false);
         log.info("stopRun");
         run = false;
         livingThread.interrupt();
@@ -141,6 +136,7 @@ public class SceneController {
         managerLivingTime.setDisable(value);
         stopButton.setDisable(!value);
         startButton.setDisable(value);
+        objectsInfoButton.setDisable(!value);
     }
     @FXML
     private void initialize() {
@@ -151,7 +147,7 @@ public class SceneController {
         managerLivingTime.textProperty().addListener(this::managerLivingTimeOnChange);
         refreshStatistic();
 
-
+        objectsInfoButton.setDisable(true);
         stopButton.setDisable(true);
         log.info("controller init");
         refreshStatistic();
@@ -159,6 +155,7 @@ public class SceneController {
         toggleCheckBoxHandler(null);
         startButton.setOnAction(this::startSimulation);
         menuStartItem.setOnAction(event -> startButton.fire());
+        objectsInfoButton.setOnAction(this::showObjectsInfoForm);
 
 
         menuItemStream().forEach(developersProbabilityMenu.getItems()::add);
@@ -295,8 +292,33 @@ public class SceneController {
             formStage.close();
             doSimulation(rootEvent);
         });
+
+
+
         formStage.show();
 
+    }
+    @SneakyThrows
+    void showObjectsInfoForm(ActionEvent rootEvent){
+        final Stage formStage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/objectsinfo.fxml"));
+        formStage.setScene(new Scene(loader.load()));
+        ObjectsInfoController controller = loader.getController();
+
+        startPauseTime = System.currentTimeMillis();
+        run = false;
+        controller.stopButtonFromInfo.setOnAction(event -> {
+            pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
+            formStage.close();
+            stopHandler(rootEvent);
+        });
+
+        controller.continueButton.setOnAction(event -> {
+            pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
+            formStage.close();
+            doSimulation(rootEvent);
+        });
+        formStage.show();
     }
 //    Методы обновления
     @SneakyThrows

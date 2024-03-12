@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="900.0" prefWidth="800.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.ObjectsInfoController">
+    <children>
+        <Button fx:id="continueButton" layoutX="711.0" layoutY="856.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="75.0" text="Continue" />
+        <Button fx:id="stopButtonFromInfo" layoutX="627.0" layoutY="856.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="75.0" text="Stop" />
+    </children>
+</AnchorPane>
