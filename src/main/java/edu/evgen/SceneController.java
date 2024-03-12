@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -294,6 +295,11 @@ public class SceneController {
             formStage.close();
             doSimulation(rootEvent);
         });
+        formStage.setOnCloseRequest(event->{
+            pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
+            formStage.close();
+            stopHandler(rootEvent);
+        });
         formStage.show();
 
     }
@@ -321,6 +327,11 @@ public class SceneController {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             formStage.close();
             doSimulation(rootEvent);
+        });
+        formStage.setOnCloseRequest(event->{
+            pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
+            formStage.close();
+            stopHandler(rootEvent);
         });
         formStage.show();
     }

@@ -1,6 +1,7 @@
 package edu.evgen.habitat;
 
 import edu.evgen.habitat.employee.Developer;
+import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
 import lombok.Data;
@@ -16,20 +17,20 @@ public class HabitatImpl implements Habitat {
 
     public static Habitat habitat = new HabitatImpl();
 
-    final List<IBehaviour> developers = new ArrayList<>();
-    final List<IBehaviour> managers = new ArrayList<>();
+    final List<Employee> developers = new ArrayList<>();
+    final List<Employee> managers = new ArrayList<>();
     final Random random = new Random();
 
     HabitatConfiguration configuration;
     private HabitatImpl(){}
     @Override
-    public Collection<IBehaviour> mustDie(){
+    public Collection<Employee> mustDie(){
         return Stream.concat(developers.stream(),managers.stream())
                 .filter(IBehaviour::mustDie)
                 .toList();
     }
     @Override
-    public Optional<? extends IBehaviour> birthAttempt() {
+    public Optional<? extends Employee> birthAttempt() {
         log.info("birthAttempt <-");
 
         LocalDateTime now = LocalDateTime.now();
@@ -39,7 +40,7 @@ public class HabitatImpl implements Habitat {
                         (random.nextDouble() <= configuration.getDeveloperProbability())
         ) {
             log.info("Developer birth!");
-            IBehaviour employee = new Developer(configuration.getPaneSize(), configuration.getDeveloperLivingTime());
+            Employee employee = new Developer(configuration.getPaneSize(), configuration.getDeveloperLivingTime());
             developers.add(employee);
             return Optional.of(employee);
         }
@@ -49,7 +50,7 @@ public class HabitatImpl implements Habitat {
                         ((double)managers.size()/Math.max(developers.size(),1) < configuration.getManagerRatio())
         ) {
             log.info("Manager birth!");
-            IBehaviour employee = new Manager(configuration.getPaneSize(),configuration.getManagerLivingTime());
+            Employee employee = new Manager(configuration.getPaneSize(),configuration.getManagerLivingTime());
             managers.add(employee);
             return Optional.of(employee);
 
@@ -100,9 +101,9 @@ public class HabitatImpl implements Habitat {
         return managers.size();
     }
     @Override
-    public Collection<IBehaviour> getDevelopers(){return developers;}
+    public Collection<Employee> getDevelopers(){return developers;}
     @Override
-    public Collection<IBehaviour> getManagers(){return managers;}
+    public Collection<Employee> getManagers(){return managers;}
     @Override
     public void clear(){
         developers.clear();
