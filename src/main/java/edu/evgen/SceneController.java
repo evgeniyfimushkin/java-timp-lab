@@ -1,13 +1,12 @@
 package edu.evgen;
 
-import edu.evgen.habitat.Habitat;
 import edu.evgen.habitat.HabitatConfiguration;
-import edu.evgen.habitat.HabitatImpl;
 import edu.evgen.habitat.employee.Developer;
+import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 import javafx.application.Platform;
-import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
@@ -273,6 +274,7 @@ public class SceneController {
     void showSimulationInfoForm(ActionEvent rootEvent) {
         log.info("new window Stop simulation Info");
 
+
         final Stage formStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
         formStage.setScene(new Scene(loader.load()));
@@ -292,18 +294,20 @@ public class SceneController {
             formStage.close();
             doSimulation(rootEvent);
         });
-
-
-
         formStage.show();
 
     }
     @SneakyThrows
     void showObjectsInfoForm(ActionEvent rootEvent){
+
+        stopButton.setDisable(true);
+        objectsInfoButton.setDisable(true);
+
         final Stage formStage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/objectsinfo.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/objectsInfo.fxml"));
         formStage.setScene(new Scene(loader.load()));
         ObjectsInfoController controller = loader.getController();
+
 
         startPauseTime = System.currentTimeMillis();
         run = false;
