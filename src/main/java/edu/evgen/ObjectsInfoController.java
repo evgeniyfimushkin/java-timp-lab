@@ -10,6 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import lombok.SneakyThrows;
 
 import java.util.Collection;
@@ -31,20 +32,19 @@ public class ObjectsInfoController {
     ObservableList<Employee> objectsList;
     @FXML
     public void initialize(){
-        colImage.setCellValueFactory(new PropertyValueFactory<>("imageView"));
+        colImage.setCellValueFactory(new PropertyValueFactory<>("imageViewForTable"));
         colBirthTime.setCellValueFactory(new PropertyValueFactory<>("birthTime"));
-//        colClass.setCellValueFactory(new PropertyValueFactory<>("EmployeeClass"));
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
     }
     public void setObservableList(Collection<Employee> developers, Collection<Employee> managers){
         try {
             objectsList = FXCollections.observableArrayList();
             objectsList.addAll(developers);
-            objectsList.addAll(managers.stream().toList());
+            objectsList.addAll(managers);
             objectsTable.setItems(objectsList);
             objectsTable.getSortOrder().add(colBirthTime);
             objectsTable.sort();
-
         } catch (NullPointerException ignore){}
     }
 }

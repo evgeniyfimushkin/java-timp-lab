@@ -15,6 +15,8 @@ public abstract class Employee implements IBehaviour {
     private final Long id;
     private final Long livingTime;
     private final ImageView imageView;
+    private final ImageView imageViewForTable;
+    private final String pic;
     private final Long paneSize;
     private final LocalDateTime birthTime = LocalDateTime.now();
 
@@ -27,7 +29,9 @@ public abstract class Employee implements IBehaviour {
         this.livingTime = livingTime;
         this.paneSize = paneSize;
         this.imageView = new ImageView(pic);
+        this.imageViewForTable = new ImageView(pic);
         imageView.setX((int) (paneSize * random.nextDouble()));
         imageView.setY((int) (paneSize * random.nextDouble()));
+        this.pic=pic;
     }
 }
