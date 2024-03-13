@@ -18,8 +18,6 @@ public interface Habitat {
     Integer getManagerCount();
     Collection<Employee> getDevelopers();
     Collection<Employee> getManagers();
-    TreeSet<Long> getAllID();
-    HashMap<Long, LocalDateTime> getALLBirthTimes();
 
     void clear();
 }

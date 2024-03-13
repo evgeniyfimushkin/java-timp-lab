@@ -20,8 +20,6 @@ public class HabitatImpl implements Habitat {
     final List<Employee> developers = new LinkedList<>();
     final List<Employee> managers = new LinkedList<>();
 
-    final TreeSet<Long> allID = new TreeSet();
-    final HashMap<Long,LocalDateTime> allBirthTimes = new HashMap();
 
     final Random random = new Random();
 
@@ -46,8 +44,6 @@ public class HabitatImpl implements Habitat {
             log.info("Developer birth!");
             Employee employee = new Developer(configuration.getPaneSize(), configuration.getDeveloperLivingTime());
             developers.add(employee);
-            allID.add(employee.getId());
-            allBirthTimes.put(employee.getId(),employee.getBirthTime());
             return Optional.of(employee);
         }
 
@@ -58,50 +54,11 @@ public class HabitatImpl implements Habitat {
             log.info("Manager birth!");
             Employee employee = new Manager(configuration.getPaneSize(),configuration.getManagerLivingTime());
             managers.add(employee);
-            allID.add(employee.getId());
-            allBirthTimes.put(employee.getId(),employee.getBirthTime());
             return Optional.of(employee);
 
         }
             return Optional.empty();
     }
-
-
-//    @SneakyThrows
-//    private <T extends IBehaviour> Optional<T> birthAttempt(boolean isBirth, Function<Long, T> employeeConstructor, Collection<IBehaviour> employeeCollection){
-//        if (!isBirth)
-//            return Optional.empty();
-//
-//        T employee = employeeConstructor.apply(configuration.getPaneSize());
-//        log.info("{} birth!", employee.getClass().getSimpleName());
-//        employeeCollection.add(employee);
-//        return Optional.of(employee);
-//    }
-//
-//    @SneakyThrows
-//    private <T extends IBehaviour> Optional<T> birthAttempt(boolean isBirth, Class<T> employeeClass, Collection<IBehaviour> employeeCollection){
-//        if (!isBirth)
-//            return Optional.empty();
-//
-//        log.info("{} birth!", employeeClass);
-//        T employee = employeeClass.getDeclaredConstructor(Long.class).newInstance(configuration.getPaneSize());
-//        employeeCollection.add(employee);
-//        return Optional.of(employee);
-//    }
-//    private Boolean isBirthDeveloper(){
-//        return (managers.isEmpty() ||
-//                managers.getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(LocalDateTime.now())) &&
-//                (double)managers.size()/Math.max(developers.size(), 1) < configuration.getManagerRatio();
-//    }
-//    private Boolean isBirthManager(){
-//        return (managers.isEmpty() ||
-//                managers.getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(LocalDateTime.now())) &&
-//                ((double)managers.size()/Math.max(developers.size(),1) < configuration.getManagerRatio());
-//    }
-    @Override
-    public TreeSet<Long> getAllID(){ return allID; }
-    @Override
-    public HashMap<Long, LocalDateTime> getALLBirthTimes(){ return allBirthTimes; }
     @Override
     public Integer getDeveloperCount() {
         return developers.size();

@@ -104,8 +104,8 @@ public class SceneController {
         Platform.runLater(() -> habitatPane.getChildren().remove(employee.getImageView()));
         habitat.getDevelopers().remove(employee);
         habitat.getManagers().remove(employee);
-        habitat.getALLBirthTimes().remove(employee.getBirthTime());
-        habitat.getAllID().remove(employee.getId());
+        Employee.getAllID().remove(employee.getId());
+        Employee.getAllBirthTimes().remove(employee.getBirthTime());
     }
 
     void birthAttempt() {

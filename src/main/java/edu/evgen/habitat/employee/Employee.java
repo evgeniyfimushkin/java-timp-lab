@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 public abstract class Employee implements IBehaviour {
     private final Random random = new Random();
-    private final Long id;
+    private Long id;
     private final Long livingTime;
     private final ImageView imageView;
     private final ImageView imageViewForTable;
@@ -20,12 +20,11 @@ public abstract class Employee implements IBehaviour {
     private final Long paneSize;
     private final LocalDateTime birthTime = LocalDateTime.now();
 
+    private final static TreeSet<Long> allID = new TreeSet();
+    private final static HashMap<Long,LocalDateTime> allBirthTimes = new HashMap();
+
     public Employee(String pic, Long paneSize, Long livingTime) {
-        this.id = random.nextLong();
-
-//        allID.add(this.id);
-//        allBirthTimes.put(id,this.birthTime);
-
+        setUniqId();
         this.livingTime = livingTime;
         this.paneSize = paneSize;
         this.imageView = new ImageView(pic);
@@ -33,5 +32,22 @@ public abstract class Employee implements IBehaviour {
         imageView.setX((int) (paneSize * random.nextDouble()));
         imageView.setY((int) (paneSize * random.nextDouble()));
         this.pic=pic;
+        allBirthTimes.put(this.id,this.birthTime);
+    }
+    void setUniqId(){
+        Long temp = random.nextLong();
+        if (!allID.contains(temp)){
+            this.id=temp;
+            allID.add(this.id);
+        }
+       else setUniqId();
+    }
+
+    public static HashMap<Long, LocalDateTime> getAllBirthTimes() {
+        return allBirthTimes;
+    }
+
+    public static TreeSet<Long> getAllID() {
+        return allID;
     }
 }
