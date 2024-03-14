@@ -1,5 +1,6 @@
 package edu.evgen;
 
+import edu.evgen.habitat.employee.Developer.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

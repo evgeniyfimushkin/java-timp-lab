@@ -6,6 +6,6 @@ public class Manager extends Employee {
     }
     @Override
     public void move() {
-
+        
     }
 }

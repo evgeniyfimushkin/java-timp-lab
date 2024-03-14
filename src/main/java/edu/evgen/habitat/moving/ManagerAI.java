@@ -1,16 +1,17 @@
 package edu.evgen.habitat.moving;
 import edu.evgen.habitat.employee.*;
-
-
 import static edu.evgen.habitat.HabitatImpl.habitat;
 
-public class DeveloperAI extends BaseAI{
-    public DeveloperAI(){super();}
+public class ManagerAI extends BaseAI{
+    public ManagerAI() {
+        super();
+    }
+
     @Override
     protected void update() {
-        synchronized (habitat.getDevelopers()){
-            for (Employee iterator : habitat.getDevelopers()){
-                if (iterator instanceof Developer) {
+        synchronized (habitat.getManagers()){
+            for (Employee iterator: habitat.getManagers()){
+                if(iterator instanceof Manager){
                     iterator.move();
                 }
             }

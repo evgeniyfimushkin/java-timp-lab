@@ -176,6 +176,7 @@ public class SceneController {
         radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
 
+
         DeveloperAI developerAi = new DeveloperAI();
     }
 
