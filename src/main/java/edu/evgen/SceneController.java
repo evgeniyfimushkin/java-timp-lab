@@ -4,6 +4,8 @@ import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.employee.Developer;
 import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
+import edu.evgen.habitat.employee.Manager;
+import edu.evgen.habitat.moving.DeveloperAI;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -111,6 +113,7 @@ public class SceneController {
     void birthAttempt() {
         if (run) {
             log.info("birthAttempt");
+            log.info(Thread.currentThread().toString());
             habitat.birthAttempt()
                     .map(IBehaviour::getImageView)
                     .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
@@ -172,6 +175,8 @@ public class SceneController {
         radioButtonShowTime.fire();
         radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
+
+        DeveloperAI developerAi = new DeveloperAI();
     }
 
     //Методы реализующие объекты интерфейса

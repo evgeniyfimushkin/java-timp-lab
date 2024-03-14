@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Data
 public abstract class Employee implements IBehaviour {
+    private double x,y;
     private final Random random = new Random();
     private Long id;
     private final Long livingTime;
@@ -29,11 +30,34 @@ public abstract class Employee implements IBehaviour {
         this.paneSize = paneSize;
         this.imageView = new ImageView(pic);
         this.imageViewForTable = new ImageView(pic);
-        imageView.setX((int) (paneSize * random.nextDouble()));
-        imageView.setY((int) (paneSize * random.nextDouble()));
+        this.setX((int) (paneSize * random.nextDouble()));
+        this.setY((int) (paneSize * random.nextDouble()));
         this.pic=pic;
         allBirthTimes.put(this.id,this.birthTime);
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+        synchronized (imageView){
+            imageView.setX(x);
+        }
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+        synchronized (imageView){
+            imageView.setY(y);
+        }
+    }
+
     void setUniqId(){
         Long temp = random.nextLong();
         if (!allID.contains(temp)){

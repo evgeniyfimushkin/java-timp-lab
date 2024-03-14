@@ -13,4 +13,5 @@ public interface IBehaviour {
     default Boolean mustDie(){
         return getBirthTime().plusSeconds(getLivingTime()).isBefore(LocalDateTime.now());
     };
+    void move();
 }
