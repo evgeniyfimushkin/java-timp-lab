@@ -6,6 +6,7 @@ import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
 import edu.evgen.habitat.moving.DeveloperAI;
+import edu.evgen.habitat.moving.ManagerAI;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -179,6 +180,7 @@ public class SceneController {
 
 
         DeveloperAI developerAi = new DeveloperAI();
+        ManagerAI managerAI = new ManagerAI();
     }
 
     //Методы реализующие объекты интерфейса

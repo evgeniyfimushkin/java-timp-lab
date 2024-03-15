@@ -10,9 +10,7 @@ public class DeveloperAI extends BaseAI{
     protected void update() {
         synchronized (habitat.getDevelopers()){
             for (Employee iterator : habitat.getDevelopers()){
-                if (iterator instanceof Developer) {
                     iterator.move();
-                }
             }
         }
     }

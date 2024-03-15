@@ -11,9 +11,7 @@ public class ManagerAI extends BaseAI{
     protected void update() {
         synchronized (habitat.getManagers()){
             for (Employee iterator: habitat.getManagers()){
-                if(iterator instanceof Manager){
                     iterator.move();
-                }
             }
         }
     }

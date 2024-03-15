@@ -41,9 +41,9 @@ public abstract class Employee implements IBehaviour {
     }
 
     public void setX(double x) {
-        this.x = x;
         if ((x < paneSize)&&(x>0)){
             synchronized (imageView) {
+                this.x = x;
                 imageView.setX(x);
             }
         }
@@ -54,9 +54,9 @@ public abstract class Employee implements IBehaviour {
     }
 
     public void setY(double y) {
-        this.y = y;
         if ((y < paneSize)&&(y>0)) {
             synchronized (imageView) {
+                this.y = y;
                 imageView.setY(y);
             }
         }
