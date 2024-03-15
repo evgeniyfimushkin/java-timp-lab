@@ -41,7 +41,8 @@ public class Developer extends Employee {
             setSignY();
             log.info("X = {}",this.signX);
             log.info("Y = {}",this.signY);
-        }
+        }//Тут выдаёт NPE Cannot invoke "javafx.scene.Node.getScene()" because "node" is null
+//        at javafx.graphics/javafx.scene.Scene$ScenePulseListener.synchronizeSceneNodes(Scene.java:2483)
         setX(this.getX() + signX * 0.1*speed);
         setY(this.getY() + signY * 0.1*speed);
     }

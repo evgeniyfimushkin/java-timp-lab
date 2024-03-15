@@ -28,8 +28,5 @@ public class Manager extends Employee {
         alfa += 0.01;
         setX(anchorPointX + anchorRadius * cos(alfa));
         setY(anchorPointY + anchorRadius * sin(alfa));
-//        currentAngle += angularVelocity;
-//        double newX = circleX + trajectoryRadius * cos(currentAngle);
-//        double newY = circleY + trajectoryRadius * sin(currentAngle);
     }
 }

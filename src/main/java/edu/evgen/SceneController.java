@@ -74,6 +74,8 @@ public class SceneController {
 
     public boolean run = false;
     Thread livingThread;
+    DeveloperAI developerAi = new DeveloperAI();
+    ManagerAI managerAI = new ManagerAI();
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
@@ -85,9 +87,13 @@ public class SceneController {
     }
 
     public void doSimulation(ActionEvent event){
+
+        managerAI.threadStart();
+        developerAi.threadStart();
         fieldsSetDisable(true);
         livingThread = new Thread(this::living);
         livingThread.start();
+
     }
     void living() {
         log.info("start living");
@@ -118,11 +124,13 @@ public class SceneController {
             log.info(Thread.currentThread().toString());
             habitat.birthAttempt()
                     .map(IBehaviour::getImageView)
-                    .ifPresent(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
+                    .map(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
             refreshStatistic();
         }
     }
     void stopHandler(ActionEvent event) {
+        managerAI.interruptThread();
+        developerAi.interruptThread();
         fieldsSetDisable(false);
         log.info("stopRun");
         run = false;
@@ -179,8 +187,6 @@ public class SceneController {
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
 
 
-        DeveloperAI developerAi = new DeveloperAI();
-        ManagerAI managerAI = new ManagerAI();
     }
 
     //Методы реализующие объекты интерфейса
@@ -273,6 +279,9 @@ public class SceneController {
     //Методы новых сцен
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
+
+        managerAI.interruptThread();
+        developerAi.interruptThread();
         log.info(exception.getClass().toString());
         final Stage errorStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
@@ -284,6 +293,9 @@ public class SceneController {
     }
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
+
+        managerAI.interruptThread();
+        developerAi.interruptThread();
         log.info("new window Stop simulation Info");
 
 
@@ -316,6 +328,9 @@ public class SceneController {
     }
     @SneakyThrows
     void showObjectsInfoForm(ActionEvent rootEvent){
+
+        managerAI.interruptThread();
+        developerAi.interruptThread();
 
         stopButton.setDisable(true);
         objectsInfoButton.setDisable(true);
