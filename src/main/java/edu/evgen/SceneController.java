@@ -24,6 +24,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import edu.evgen.habitat.employee.Developer.*;
 
 import java.util.Collection;
 import java.util.stream.IntStream;
