@@ -1,9 +1,8 @@
 package edu.evgen;
 
+import edu.evgen.habitat.BaseMoving;
 import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.employee.*;
-import edu.evgen.habitat.moving.DeveloperAI;
-import edu.evgen.habitat.moving.ManagerAI;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -66,9 +65,7 @@ public class SceneController {
     Pane habitatPane;
 
     public boolean run = false;
-    Thread livingThread;
-    final DeveloperAI developerAi = new DeveloperAI(configuration.getMoveDelay());
-    final ManagerAI managerAI = new ManagerAI(configuration.getMoveDelay());
+    Thread livingThread, movingThread;
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
@@ -86,6 +83,8 @@ public class SceneController {
         fieldsSetDisable(true);
         livingThread = new Thread(this::living);
         livingThread.start();
+        movingThread = new Thread(new BaseMoving(configuration.getMoveDelay()));
+        movingThread.start();
 
     }
     void living() {
@@ -97,7 +96,6 @@ public class SceneController {
                 log.info("living:birthAttempt");
                 Platform.runLater(this::birthAttempt);
                 habitat.mustDie().forEach(this::kill);
-
             } while (run);
         } catch (Throwable ignore) {
         }
@@ -125,6 +123,7 @@ public class SceneController {
         log.info("stopRun");
         run = false;
         livingThread.interrupt();
+        movingThread.interrupt();
         log.info("clear");
         EmployeesRepository.clear();
         Platform.runLater(habitatPane.getChildren()::clear);
@@ -283,9 +282,6 @@ public class SceneController {
     }
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
-
-//        managerAI.interruptThread();
-//        developerAi.interruptThread();
         log.info("new window Stop simulation Info");
 
 
