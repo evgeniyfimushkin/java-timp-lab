@@ -28,12 +28,23 @@ public class HabitatImpl implements Habitat {
     }
 
     @Override
-    public Optional<? extends Employee> birthAttempt() {
+    public Optional<? extends IBehaviour> managerBirthAttempt(){
+        if (
+                (getManagers().isEmpty() || getManagers().getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(LocalDateTime.now())) &&
+                        ((double) getManagers().size() / Math.max(getDevelopers().size(), 1) < configuration.getManagerRatio())
+        ) {
+            log.info("Manager birth!");
+            return Optional.of(new Manager(configuration.getPaneSize(), configuration.getManagerLivingTime()));
 
-        LocalDateTime now = LocalDateTime.now();
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<? extends Employee> developerBirthAttempt() {
 
         if (
-                (getDevelopers().isEmpty() || getDevelopers().getLast().getBirthTime().plusSeconds(configuration.getDeveloperDelay()).isBefore(now)) &&
+                (getDevelopers().isEmpty() || getDevelopers().getLast().getBirthTime().plusSeconds(configuration.getDeveloperDelay()).isBefore(LocalDateTime.now())) &&
                         (random.nextDouble() <= configuration.getDeveloperProbability())
         ) {
             log.info("Developer birth!");
@@ -41,14 +52,6 @@ public class HabitatImpl implements Habitat {
                     new Developer(configuration.getPaneSize(), configuration.getDeveloperLivingTime()));
         }
 
-        if (
-                (getManagers().isEmpty() || getManagers().getLast().getBirthTime().plusSeconds(configuration.getManagerDelay()).isBefore(now)) &&
-                        ((double) getManagers().size() / Math.max(getDevelopers().size(), 1) < configuration.getManagerRatio())
-        ) {
-            log.info("Manager birth!");
-            return Optional.of(new Manager(configuration.getPaneSize(), configuration.getManagerLivingTime()));
-
-        }
         return Optional.empty();
     }
 }

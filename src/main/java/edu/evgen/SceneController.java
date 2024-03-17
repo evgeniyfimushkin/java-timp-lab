@@ -21,6 +21,8 @@ import javafx.util.Pair;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -67,7 +69,8 @@ public class SceneController {
     Pane habitatPane;
 
     final Simulation moveSimulation = new Simulation(EmployeesRepository::moveAll, configuration.getMoveDelay(), "moving");
-    final Simulation birthSimulation = new Simulation(this::birthAttempt, configuration.getMoveDelay(), "birthing");
+    final Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthing");
+    final Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthing");
     final Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
@@ -75,7 +78,11 @@ public class SceneController {
 
     //Основные методы работы симуляции
     private Stream<Simulation> getSimulations() {
-        return Stream.of(moveSimulation, birthSimulation, killSimulation);
+        return Stream.of(
+                moveSimulation,
+                developerBirthSimulation,
+                managerBirthSimulation,
+                killSimulation);
     }
 
     public void startSimulation(ActionEvent event) {
@@ -105,8 +112,8 @@ public class SceneController {
         habitat.mustDie().forEach(EmployeesRepository::removeEmployee);
     }
 
-    void birthAttempt() {
-        habitat.birthAttempt()
+    void birthAttempt(Supplier<Optional<? extends IBehaviour>> employeeProducer) {
+        employeeProducer.get()
                 .ifPresent(employee -> Platform.runLater(this::refreshStatistic));
     }
 
@@ -261,6 +268,7 @@ public class SceneController {
         formStage.setOnCloseRequest(this::continueSimulation);
         return new Pair<>(formStage, loader);
     }
+
     @SneakyThrows
     void helpMeItemAction(ActionEvent event) {
         createNewForm("/helpme.fxml").getKey().show();

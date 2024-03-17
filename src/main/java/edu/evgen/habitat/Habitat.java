@@ -7,5 +7,6 @@ public interface Habitat {
     HabitatConfiguration getConfiguration();
     Collection<IBehaviour> mustDie();
     void setConfiguration(HabitatConfiguration configuration);
-    Optional<? extends IBehaviour> birthAttempt();
+    Optional<? extends IBehaviour> developerBirthAttempt();
+    Optional<? extends IBehaviour> managerBirthAttempt();
 }
