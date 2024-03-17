@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Pair;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -252,93 +253,82 @@ public class SceneController {
 
     //Методы новых сцен
     @SneakyThrows
-    void helpMeItemAction(ActionEvent event) {
+    Pair<Stage, FXMLLoader> createNewForm(String fxmlFile) {
         pauseSimulation();
-        final Stage helpStage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/helpme.fxml"));
-        helpStage.setScene(new Scene(loader.load()));
-        helpStage.setOnCloseRequest(this::continueSimulation);
-        helpStage.show();
+        final Stage formStage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+        formStage.setScene(new Scene(loader.load()));
+        formStage.setOnCloseRequest(this::continueSimulation);
+        return new Pair<>(formStage, loader);
+    }
+    @SneakyThrows
+    void helpMeItemAction(ActionEvent event) {
+        createNewForm("/helpme.fxml").getKey().show();
     }
 
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
-        pauseSimulation();
-        final Stage errorStage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
-        errorStage.setScene(new Scene(loader.load()));
-        ErrorController controller = loader.getController();
+        Pair<Stage, FXMLLoader> scene = createNewForm("/error.fxml");
+        ErrorController controller = scene.getValue().getController();
         controller.initialize(exception);
-        controller.closeErrorWindowButton.setOnAction(event -> errorStage.close());
-        errorStage.setOnCloseRequest(this::continueSimulation);
-
-        errorStage.show();
+        controller.closeErrorWindowButton.setOnAction(event -> scene.getKey().close());
+        scene.getKey().show();
     }
 
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
-
-        pauseSimulation();
-        final Stage formStage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
-        formStage.setScene(new Scene(loader.load()));
-        StopSimulationInfoController controller = loader.getController();
+        Pair<Stage, FXMLLoader> scene = createNewForm("/stopSimulationInfo.fxml");
+        StopSimulationInfoController controller = scene.getValue().getController();
         controller.setAllTheLabels(habitat);
         controller.simulationTime.setText("Simulation time: " + getSimulationTime());
         startPauseTime = System.currentTimeMillis();
         controller.stopButtonFromInfo.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
-            formStage.close();
+            scene.getKey().close();
             stopHandler(rootEvent);
         });
 
         controller.continueButton.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
-            formStage.close();
+            scene.getKey().close();
             doSimulation(rootEvent);
         });
-        formStage.setOnCloseRequest(event -> {
+        scene.getKey().setOnCloseRequest(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
-            formStage.close();
+            scene.getKey().close();
             stopHandler(rootEvent);
         });
-        formStage.setOnCloseRequest(this::continueSimulation);
-        formStage.show();
+        scene.getKey().setOnCloseRequest(this::continueSimulation);
+        scene.getKey().show();
 
     }
 
     @SneakyThrows
     void showObjectsInfoForm(ActionEvent rootEvent) {
-
-        pauseSimulation();
-
         stopButton.setDisable(true);
         objectsInfoButton.setDisable(true);
-
-        final Stage formStage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/objectsInfo.fxml"));
-        formStage.setScene(new Scene(loader.load()));
-        ObjectsInfoController controller = loader.getController();
+        Pair<Stage, FXMLLoader> scene = createNewForm("/objectsInfo.fxml");
+        ObjectsInfoController controller = scene.getValue().getController();
 
         startPauseTime = System.currentTimeMillis();
         controller.stopButtonFromInfo.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
-            formStage.close();
+            scene.getKey().close();
             stopHandler(rootEvent);
         });
 
         controller.continueButton.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
-            formStage.close();
+            scene.getKey().close();
             doSimulation(rootEvent);
         });
-        formStage.setOnCloseRequest(event -> {
+        scene.getKey().setOnCloseRequest(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
-            formStage.close();
+            scene.getKey().close();
             stopHandler(rootEvent);
         });
-        formStage.setOnCloseRequest(this::continueSimulation);
-        formStage.show();
+        scene.getKey().setOnCloseRequest(this::continueSimulation);
+        scene.getKey().show();
     }
 
     //    Методы обновления

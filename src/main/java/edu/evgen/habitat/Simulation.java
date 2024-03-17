@@ -18,7 +18,7 @@ public class Simulation implements Runnable {
     }
     @Override
     public void run() {
-        log.info("start moving");
+        log.info("start Simulation");
         run = true;
         try {
             do {
@@ -31,9 +31,9 @@ public class Simulation implements Runnable {
                 action.run();
             } while (true);
         } catch (Throwable trowable) {
-            log.error("moving error: ", trowable);
+            log.error("simulation error: ", trowable);
         }
-        log.info("stop moving");
+        log.info("stop Simulation");
     }
 
     public void continueSimulation() {

@@ -29,7 +29,6 @@ public class HabitatImpl implements Habitat {
 
     @Override
     public Optional<? extends Employee> birthAttempt() {
-        log.info("birthAttempt <-");
 
         LocalDateTime now = LocalDateTime.now();
 
