@@ -68,9 +68,10 @@ public class SceneController {
     @FXML
     Pane habitatPane;
 
-    final Simulation moveSimulation = new Simulation(EmployeesRepository::moveAll, configuration.getMoveDelay(), "moving");
-    final Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthing");
-    final Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthing");
+    final Simulation moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
+    final Simulation moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
+    final Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthDev");
+    final Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthMgr");
     final Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
@@ -79,7 +80,8 @@ public class SceneController {
     //Основные методы работы симуляции
     private Stream<Simulation> getSimulations() {
         return Stream.of(
-                moveSimulation,
+                moveDevelopers,
+                moveManagers,
                 developerBirthSimulation,
                 managerBirthSimulation,
                 killSimulation);

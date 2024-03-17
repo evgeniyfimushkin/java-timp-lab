@@ -46,9 +46,17 @@ public class EmployeesRepository {
                 .filter(Manager.class::isInstance)
                 .collect(Collectors.toList());
     }
+//    @Synchronized
+//    public static void moveAll(){
+//        employees.forEach(IBehaviour::move);
+//    }
     @Synchronized
-    public static void moveAll(){
-        employees.forEach(IBehaviour::move);
+    public static void moveDevelopers(){
+        getDevelopers().forEach(IBehaviour::move);
+    }
+    @Synchronized
+    public static void moveManagers(){
+        getManagers().forEach(IBehaviour::move);
     }
     @Synchronized
     public static void clear(){

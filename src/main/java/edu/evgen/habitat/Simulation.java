@@ -45,5 +45,7 @@ public class Simulation implements Runnable {
     public void pauseSimulation(){
         run = false;
     }
-
+    public void setPriority(Integer priority){
+        this.thread.setPriority(priority);
+    }
 }
