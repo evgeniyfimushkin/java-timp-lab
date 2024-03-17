@@ -16,8 +16,9 @@ public class Manager extends Employee {
     @Override
     public void move() {
             alfa += 0.01;
-            moveX(anchorPointX + anchorRadius * cos(alfa));
-            moveY(anchorPointY + anchorRadius * sin(alfa));
+            move(
+                    anchorPointX + anchorRadius * cos(alfa),
+                    anchorPointY + anchorRadius * sin(alfa));
         }
     private Double initAnchorPoint(Double point){
         return (point + anchorRadius) > paneSize + anchorRadius ?

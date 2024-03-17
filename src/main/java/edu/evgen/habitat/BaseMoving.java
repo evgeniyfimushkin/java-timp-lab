@@ -15,16 +15,17 @@ public class BaseMoving implements Runnable {
 
     @Override
     public void run() {
-        log.info("start living");
+        log.info("start moving");
         run = true;
         try {
             do {
                 Thread.sleep(moveDelay);
-                EmployeesRepository.employees.forEach(IBehaviour::move);
+                EmployeesRepository.moveAll();
             } while (run);
-        } catch (Throwable ignore) {
+        } catch (Throwable trowable) {
+            log.error("moving error: ", trowable);
         }
-        log.info("stop living");
+        log.info("stop moving");
     }
 
 }

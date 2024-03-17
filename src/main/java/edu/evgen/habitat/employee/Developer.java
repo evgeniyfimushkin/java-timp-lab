@@ -9,17 +9,15 @@ import java.time.LocalDateTime;
 
 public class Developer extends Employee {
 
-    Double speed = (1 + (int) (Math.random() * (5 - 1 + 1)))*0.1;
-    Long changeDirectionDelay = 1 + (long) (Math.random() * (2 - 1 + 1));
+    final Double speed = random.nextInt(5) * 0.1;
+    final Long changeDirectionDelay = random.nextBoolean() ? 1L : 2L;
     Double xSpeed;
     Double ySpeed;
    private void changeDirection() {
        xSpeed = random.nextBoolean() ? speed : -speed;
        ySpeed = random.nextBoolean() ? speed : -speed;
     }
-
     private LocalDateTime checkPoint;
-
     public Developer(Long paneSize, Long livingTime) {
         super("/developer.png", paneSize, livingTime);
         changeDirection();
@@ -33,9 +31,9 @@ public class Developer extends Employee {
                 changeDirection();
                 log.info("X = {}", this.xSpeed);
                 log.info("Y = {}", this.ySpeed);
-            }//Тут выдаёт NPE Cannot invoke "javafx.scene.Node.getScene()" because "node" is null
-//        at javafx.graphics/javafx.scene.Scene$ScenePulseListener.synchronizeSceneNodes(Scene.java:2483)
-            moveX(x + xSpeed);
-            moveY(y + ySpeed);
+            }
+            move(
+                    x + xSpeed,
+                    y + ySpeed);
     }
 }

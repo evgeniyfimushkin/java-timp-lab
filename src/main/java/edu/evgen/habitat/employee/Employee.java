@@ -1,5 +1,6 @@
 package edu.evgen.habitat.employee;
 
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import lombok.Data;
 
@@ -26,7 +27,7 @@ public abstract class Employee implements IBehaviour {
         this.moveX((int) (paneSize * random.nextDouble()));
         this.moveY((int) (paneSize * random.nextDouble()));
         this.pic = pic;
-        EmployeesRepository.add(this);
+        EmployeesRepository.addEmployee(this);
     }
 
 
@@ -37,6 +38,16 @@ public abstract class Employee implements IBehaviour {
         }
     }
 
+    protected void move(double x, double y) {
+        if ((x < paneSize) && (x > 0))
+            this.x = x;
+        if ((y < paneSize) && (y > 0))
+            this.y = y;
+        Platform.runLater(() -> {
+            imageView.setX(this.x);
+            imageView.setY(this.y);
+        });
+    }
 
     protected void moveY(double y) {
         if ((y < paneSize) && (y > 0)) {

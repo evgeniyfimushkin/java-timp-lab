@@ -54,9 +54,9 @@ public class SceneController {
             helpMeItem;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField,
-                managerLivingTime, developerLivingTime;
+            managerLivingTime, developerLivingTime;
     @FXML
-    Label             simulationTime,
+    Label simulationTime,
             developersCountLabel, managersCountLabel,
             managersDelayLabel, developersDelayLabel,
             developersProbabilityLabel, managersRatioLabel;
@@ -69,24 +69,26 @@ public class SceneController {
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
+
     //Основные методы работы симуляции
     public void startSimulation(ActionEvent event) {
-            pausedTime = 0L;
-            startSimulationTime = System.currentTimeMillis();
-            doSimulation(event);
+        pausedTime = 0L;
+        startSimulationTime = System.currentTimeMillis();
+        doSimulation(event);
     }
 
-    public void doSimulation(ActionEvent event){
+    public void doSimulation(ActionEvent event) {
 
 //        managerAI.threadStart();
 //        developerAi.threadStart();
         fieldsSetDisable(true);
-        livingThread = new Thread(this::living);
+        livingThread = new Thread(this::living, "living");
         livingThread.start();
-        movingThread = new Thread(new BaseMoving(configuration.getMoveDelay()));
+        movingThread = new Thread(new BaseMoving(configuration.getMoveDelay()),"moving");
         movingThread.start();
 
     }
+
     void living() {
         log.info("start living");
         run = true;
@@ -94,28 +96,26 @@ public class SceneController {
             do {
                 sleep();
                 log.info("living:birthAttempt");
-                Platform.runLater(this::birthAttempt);
+                birthAttempt();
                 habitat.mustDie().forEach(this::kill);
             } while (run);
         } catch (Throwable ignore) {
         }
         log.info("stop living");
     }
-    void kill(IBehaviour employee){
-        Platform.runLater(() -> habitatPane.getChildren().remove(employee.getImageView()));
-        EmployeesRepository.remove(employee);
+
+    void kill(IBehaviour employee) {
+        Platform.runLater(() -> EmployeesRepository.removeEmployee(employee));
     }
 
     void birthAttempt() {
         if (run) {
             log.info("birthAttempt");
-            log.info(Thread.currentThread().toString());
             habitat.birthAttempt()
-                    .map(IBehaviour::getImageView)
-                    .map(habitatPane.getChildren()::add);//метод референс, чтобы стало consumer
-            refreshStatistic();
+                    .ifPresent(employee -> Platform.runLater(this::refreshStatistic));
         }
     }
+
     void stopHandler(ActionEvent event) {
 //        managerAI.interruptThread();
 //        developerAi.interruptThread();
@@ -126,7 +126,6 @@ public class SceneController {
         movingThread.interrupt();
         log.info("clear");
         EmployeesRepository.clear();
-        Platform.runLater(habitatPane.getChildren()::clear);
         sleep();
         sleep();
         sleep();
@@ -135,7 +134,8 @@ public class SceneController {
         Platform.runLater(this::refreshStatistic);
         log.info("stopRun ->");
     }
-    void fieldsSetDisable(boolean value){
+
+    void fieldsSetDisable(boolean value) {
         developersDelayTextField.setDisable(value);
         managersDelayTextField.setDisable(value);
         developerLivingTime.setDisable(value);
@@ -144,6 +144,7 @@ public class SceneController {
         startButton.setDisable(value);
         objectsInfoButton.setDisable(!value);
     }
+
     @FXML
     private void initialize() {
         habitat.setConfiguration(configuration);
@@ -151,12 +152,10 @@ public class SceneController {
         managersDelayTextField.textProperty().addListener(this::managersDelayOnChange);
         developerLivingTime.textProperty().addListener((this::developerLivingTimeOnChange));
         managerLivingTime.textProperty().addListener(this::managerLivingTimeOnChange);
-        refreshStatistic();
 
         objectsInfoButton.setDisable(true);
         stopButton.setDisable(true);
         log.info("controller init");
-        refreshStatistic();
         simulationInfoCheckBox.setOnAction(this::toggleCheckBoxHandler);
         toggleCheckBoxHandler(null);
         startButton.setOnAction(this::startSimulation);
@@ -175,7 +174,9 @@ public class SceneController {
         radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
 
+        EmployeesRepository.habitatPane = this.habitatPane;
 
+        refreshConfiguration();
     }
 
     //Методы реализующие объекты интерфейса
@@ -195,29 +196,30 @@ public class SceneController {
         MenuItem sourceMenuItem = (MenuItem) event.getSource();
         configuration.setManagerRatio(Double.parseDouble(sourceMenuItem.getText()));
         managersRatioMenu.setText(sourceMenuItem.getText());
-        refreshStatistic();
+        refreshConfiguration();
     }
 
-    private void setupDevelopersProbability(ActionEvent event){
+    private void setupDevelopersProbability(ActionEvent event) {
         MenuItem sourceMenuItem = (MenuItem) event.getSource();
         configuration.setDeveloperProbability(Double.parseDouble(sourceMenuItem.getText()));
         developersProbabilityMenu.setText(sourceMenuItem.getText());
-        refreshStatistic();
+        refreshConfiguration();
     }
 
-    Stream<MenuItem> menuItemStream(){
+    Stream<MenuItem> menuItemStream() {
         return IntStream.rangeClosed(1, 10)
                 //сделать объект из примитива
                 .boxed()
-        //        Double divide10(Integer i) {
-        //            return i / 10.0;
-        //        }
+                //        Double divide10(Integer i) {
+                //            return i / 10.0;
+                //        }
                 .map(i -> i / 10.0)
                 .map(Object::toString)
                 .map(MenuItem::new);
         //стрим не финализирован
     }
-@SneakyThrows
+
+    @SneakyThrows
     void helpMeItemAction(ActionEvent event) {
         final Stage errorStage = new Stage();
         log.info("helpMe");
@@ -226,7 +228,7 @@ public class SceneController {
         errorStage.show();
     }
 
-    void developersDelayOnChange(ObservableValue<?> observable, String oldValue, String newValue){
+    void developersDelayOnChange(ObservableValue<?> observable, String oldValue, String newValue) {
         try {
             configuration.setDeveloperDelay(Long.parseLong(newValue));
         } catch (NumberFormatException empty) {
@@ -237,34 +239,36 @@ public class SceneController {
         }
     }
 
-    void managersDelayOnChange(ObservableValue<?> observable, String oldValue, String newValue){
-        try{
+    void managersDelayOnChange(ObservableValue<?> observable, String oldValue, String newValue) {
+        try {
             configuration.setManagerDelay(Long.parseLong(newValue));
-        }catch (NumberFormatException empty){
+        } catch (NumberFormatException empty) {
             log.error("Bad managersDelay value: {}", newValue);
             if (!newValue.isEmpty())
                 errorSceneStart(empty);
         }
     }
-    void managerLivingTimeOnChange(ObservableValue<?> observable, String oldValue, String newValue){
-        try{
+
+    void managerLivingTimeOnChange(ObservableValue<?> observable, String oldValue, String newValue) {
+        try {
             configuration.setManagerLivingTime(Long.parseLong(newValue));
-        }catch (NumberFormatException empty){
+        } catch (NumberFormatException empty) {
             log.error("Bad managerLivingTime value: {}", newValue);
-            if(!newValue.isEmpty())
+            if (!newValue.isEmpty())
                 errorSceneStart(empty);
         }
     }
 
-    void developerLivingTimeOnChange(ObservableValue<?> observable, String oldValue, String newValue){
-        try{
+    void developerLivingTimeOnChange(ObservableValue<?> observable, String oldValue, String newValue) {
+        try {
             configuration.setDeveloperLivingTime(Long.parseLong(newValue));
-        } catch (NumberFormatException empty){
+        } catch (NumberFormatException empty) {
             log.error("Bad developerLivingTime value: {}", newValue);
-            if(!newValue.isEmpty())
+            if (!newValue.isEmpty())
                 errorSceneStart(empty);
         }
     }
+
     //Методы новых сцен
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
@@ -280,6 +284,7 @@ public class SceneController {
         controller.initialize(exception);
         controller.closeErrorWindowButton.setOnAction(event -> errorStage.close());
     }
+
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
         log.info("new window Stop simulation Info");
@@ -304,7 +309,7 @@ public class SceneController {
             formStage.close();
             doSimulation(rootEvent);
         });
-        formStage.setOnCloseRequest(event->{
+        formStage.setOnCloseRequest(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             formStage.close();
             stopHandler(rootEvent);
@@ -312,8 +317,9 @@ public class SceneController {
         formStage.show();
 
     }
+
     @SneakyThrows
-    void showObjectsInfoForm(ActionEvent rootEvent){
+    void showObjectsInfoForm(ActionEvent rootEvent) {
 
 //        managerAI.interruptThread();
 //        developerAi.interruptThread();
@@ -339,18 +345,20 @@ public class SceneController {
             formStage.close();
             doSimulation(rootEvent);
         });
-        formStage.setOnCloseRequest(event->{
+        formStage.setOnCloseRequest(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             formStage.close();
             stopHandler(rootEvent);
         });
         formStage.show();
     }
-//    Методы обновления
+
+    //    Методы обновления
     @SneakyThrows
     void sleep() {
         Thread.sleep(habitat.getConfiguration().getProcessDelay());
     }
+
     void refreshStatistic() {
 
         log.info("RefreshStatistics");
@@ -358,6 +366,10 @@ public class SceneController {
         developersCountLabel.setText(String.valueOf(EmployeesRepository.getDevelopers().size()));
         managersCountLabel.setText(String.valueOf(EmployeesRepository.getManagers().size()));
 
+        simulationTime.setText("Simulation time: " + getSimulationTime());
+    }
+
+    void refreshConfiguration(){
         managersDelayTextField.setText(configuration.getManagerDelay().toString());
         developersDelayTextField.setText(configuration.getDeveloperDelay().toString());
 
@@ -367,11 +379,12 @@ public class SceneController {
         developersProbabilityMenu.setText(configuration.getDeveloperProbability().toString());
         managersRatioMenu.setText(configuration.getManagerRatio().toString());
 
-        simulationTime.setText("Simulation time: " + getSimulationTime());
     }
+
     Long getSimulationTime() {
-        return  ( System.currentTimeMillis() - pausedTime - startSimulationTime) / 1000;
+        return (System.currentTimeMillis() - pausedTime - startSimulationTime) / 1000;
     }
+
     void setSimulationTimeVisible() {
         if (simulationTime.isVisible()) {
             radioButtonHideTime.fire();
