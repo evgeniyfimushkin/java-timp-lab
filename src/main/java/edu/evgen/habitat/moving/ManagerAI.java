@@ -3,16 +3,11 @@ import edu.evgen.habitat.employee.*;
 import static edu.evgen.habitat.HabitatImpl.habitat;
 
 public class ManagerAI extends BaseAI{
-    public ManagerAI() {
-        super();
+    public ManagerAI(Long moveDelay) {
+        super(moveDelay);
     }
-
     @Override
     protected void update() {
-        synchronized (habitat.getManagers()){
-            for (Employee iterator: habitat.getManagers()){
-                    iterator.move();
-            }
-        }
+        EmployeesRepository.getManagers().forEach(IBehaviour::move);
     }
 }

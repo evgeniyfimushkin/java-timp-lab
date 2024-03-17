@@ -8,8 +8,9 @@ public interface IBehaviour {
     LocalDateTime getBirthTime();
     Long getLivingTime();
     Long getId();
-
+    void setId(Long id);
     ImageView getImageView();
+    ImageView getImageViewForTable();
     default Boolean mustDie(){
         return getBirthTime().plusSeconds(getLivingTime()).isBefore(LocalDateTime.now());
     };

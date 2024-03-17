@@ -1,38 +1,31 @@
 package edu.evgen.habitat.moving;
-
-import edu.evgen.habitat.HabitatImpl;
-import lombok.SneakyThrows;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public abstract class BaseAI implements Runnable {
     public Thread thread;
-
+    private final Long moveDelay;
     public void threadStart() {
         log.info("Base AI Thread started");
         thread = new Thread(this);
         thread.start();
     }
-
     public void interruptThread() {
         log.info("Base AI Thread Interrupted");
         thread.interrupt();
     }
-
-    public BaseAI() {
-    }
-
     protected abstract void update();
 
     @Override
     public void run() {
         try {
             while (!thread.isInterrupted()) {
-                thread.sleep(1);
                 update();
+                Thread.sleep(moveDelay);
             }
         } catch (InterruptedException e) {
-
         }
     }
 

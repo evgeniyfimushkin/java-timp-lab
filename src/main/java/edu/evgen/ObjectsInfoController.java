@@ -1,6 +1,6 @@
 package edu.evgen;
 
-import edu.evgen.habitat.employee.Employee;
+import edu.evgen.habitat.employee.EmployeesRepository;
 import edu.evgen.habitat.employee.IBehaviour;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,41 +10,33 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import lombok.SneakyThrows;
-
-import java.util.Collection;
-import java.util.List;
 
 public class ObjectsInfoController {
 
     @FXML
-    TableView<Employee> objectsTable;
+    TableView<IBehaviour> objectsTable;
     @FXML
-    TableColumn<Employee, Image> colImage;
+    TableColumn<IBehaviour, Image> colImage;
     @FXML
 
-    TableColumn<Employee, Long> colBirthTime;
+    TableColumn<IBehaviour, Long> colBirthTime;
     @FXML
-    TableColumn<Employee, Long> colId;
+    TableColumn<IBehaviour, Long> colId;
     @FXML
     Button continueButton, stopButtonFromInfo;
-    ObservableList<Employee> objectsList;
+
     @FXML
-    public void initialize(){
+    public void initialize() {
         colImage.setCellValueFactory(new PropertyValueFactory<>("imageViewForTable"));
         colBirthTime.setCellValueFactory(new PropertyValueFactory<>("birthTime"));
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-
+        setUpTable();
     }
-    public void setObservableList(Collection<Employee> developers, Collection<Employee> managers){
-        try {
-            objectsList = FXCollections.observableArrayList();
-            objectsList.addAll(developers);
-            objectsList.addAll(managers);
-            objectsTable.setItems(objectsList);
-            objectsTable.getSortOrder().add(colBirthTime);
-            objectsTable.sort();
-        } catch (NullPointerException ignore){}
+    private void setUpTable() {
+        ObservableList<IBehaviour> objectsList = FXCollections.observableArrayList();
+        objectsList.addAll(EmployeesRepository.employees);
+        objectsTable.setItems(objectsList);
+        objectsTable.getSortOrder().add(colBirthTime);
+        objectsTable.sort();
     }
 }

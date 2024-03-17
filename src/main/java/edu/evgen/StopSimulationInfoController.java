@@ -1,14 +1,14 @@
 package edu.evgen;
 
 import edu.evgen.habitat.Habitat;
+import edu.evgen.habitat.employee.EmployeesRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import lombok.Data;
 
 
-public class stopSimulationInfoController {
+public class StopSimulationInfoController {
     Stage stage;
 
     @FXML
@@ -20,8 +20,8 @@ public class stopSimulationInfoController {
     @FXML
     Button continueButton, stopButtonFromInfo;
     public void setAllTheLabels(Habitat habitat){
-        developersCountLabel.setText(habitat.getDeveloperCount().toString());
-        managersCountLabel.setText(habitat.getManagerCount().toString());
+        developersCountLabel.setText(String.valueOf(EmployeesRepository.getDevelopers().toString()));
+        managersCountLabel.setText(String.valueOf(EmployeesRepository.getManagers().size()));
         managersDelayLabel.setText("Delay: " + habitat.getConfiguration().getManagerDelay().toString());
         developersDelayLabel.setText("Delay: " + habitat.getConfiguration().getDeveloperDelay().toString());
         managersRatioLabel.setText("Ratio: " + habitat.getConfiguration().getManagerRatio().toString());

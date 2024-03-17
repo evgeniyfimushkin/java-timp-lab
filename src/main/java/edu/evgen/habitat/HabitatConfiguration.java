@@ -14,4 +14,5 @@ public class HabitatConfiguration {
     private Double developerProbability;
     private Double managerRatio;
     private Long paneSize;
+    private Long moveDelay;
 }

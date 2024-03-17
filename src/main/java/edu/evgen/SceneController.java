@@ -1,15 +1,11 @@
 package edu.evgen;
 
 import edu.evgen.habitat.HabitatConfiguration;
-import edu.evgen.habitat.employee.Developer;
-import edu.evgen.habitat.employee.Employee;
-import edu.evgen.habitat.employee.IBehaviour;
-import edu.evgen.habitat.employee.Manager;
+import edu.evgen.habitat.employee.*;
 import edu.evgen.habitat.moving.DeveloperAI;
 import edu.evgen.habitat.moving.ManagerAI;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,15 +15,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import edu.evgen.habitat.employee.Developer.*;
 
-import java.util.Collection;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -45,6 +37,7 @@ public class SceneController {
             .paneSize(400L)
             .managerLivingTime(4L)
             .developerLivingTime(2L)
+            .moveDelay(1L)
             .build();
     @FXML
     public Button startButton, stopButton, objectsInfoButton;
@@ -74,8 +67,8 @@ public class SceneController {
 
     public boolean run = false;
     Thread livingThread;
-    DeveloperAI developerAi = new DeveloperAI();
-    ManagerAI managerAI = new ManagerAI();
+    final DeveloperAI developerAi = new DeveloperAI(configuration.getMoveDelay());
+    final ManagerAI managerAI = new ManagerAI(configuration.getMoveDelay());
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
@@ -88,8 +81,8 @@ public class SceneController {
 
     public void doSimulation(ActionEvent event){
 
-        managerAI.threadStart();
-        developerAi.threadStart();
+//        managerAI.threadStart();
+//        developerAi.threadStart();
         fieldsSetDisable(true);
         livingThread = new Thread(this::living);
         livingThread.start();
@@ -112,10 +105,7 @@ public class SceneController {
     }
     void kill(IBehaviour employee){
         Platform.runLater(() -> habitatPane.getChildren().remove(employee.getImageView()));
-        habitat.getDevelopers().remove(employee);
-        habitat.getManagers().remove(employee);
-        Employee.getAllID().remove(employee.getId());
-        Employee.getAllBirthTimes().remove(employee.getBirthTime());
+        EmployeesRepository.remove(employee);
     }
 
     void birthAttempt() {
@@ -129,14 +119,14 @@ public class SceneController {
         }
     }
     void stopHandler(ActionEvent event) {
-        managerAI.interruptThread();
-        developerAi.interruptThread();
+//        managerAI.interruptThread();
+//        developerAi.interruptThread();
         fieldsSetDisable(false);
         log.info("stopRun");
         run = false;
         livingThread.interrupt();
         log.info("clear");
-        habitat.clear();
+        EmployeesRepository.clear();
         Platform.runLater(habitatPane.getChildren()::clear);
         sleep();
         sleep();
@@ -280,8 +270,8 @@ public class SceneController {
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
 
-        managerAI.interruptThread();
-        developerAi.interruptThread();
+//        managerAI.interruptThread();
+//        developerAi.interruptThread();
         log.info(exception.getClass().toString());
         final Stage errorStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
@@ -294,15 +284,15 @@ public class SceneController {
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
 
-        managerAI.interruptThread();
-        developerAi.interruptThread();
+//        managerAI.interruptThread();
+//        developerAi.interruptThread();
         log.info("new window Stop simulation Info");
 
 
         final Stage formStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
         formStage.setScene(new Scene(loader.load()));
-        stopSimulationInfoController controller = loader.getController();
+        StopSimulationInfoController controller = loader.getController();
         controller.setAllTheLabels(habitat);
         controller.simulationTime.setText("Simulation time: " + getSimulationTime());
         startPauseTime = System.currentTimeMillis();
@@ -329,8 +319,8 @@ public class SceneController {
     @SneakyThrows
     void showObjectsInfoForm(ActionEvent rootEvent){
 
-        managerAI.interruptThread();
-        developerAi.interruptThread();
+//        managerAI.interruptThread();
+//        developerAi.interruptThread();
 
         stopButton.setDisable(true);
         objectsInfoButton.setDisable(true);
@@ -339,7 +329,6 @@ public class SceneController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/objectsInfo.fxml"));
         formStage.setScene(new Scene(loader.load()));
         ObjectsInfoController controller = loader.getController();
-        controller.setObservableList(habitat.getDevelopers(),habitat.getManagers());
 
         startPauseTime = System.currentTimeMillis();
         run = false;
@@ -370,8 +359,8 @@ public class SceneController {
 
         log.info("RefreshStatistics");
 
-        developersCountLabel.setText(habitat.getDeveloperCount().toString());
-        managersCountLabel.setText(habitat.getManagerCount().toString());
+        developersCountLabel.setText(String.valueOf(EmployeesRepository.getDevelopers().size()));
+        managersCountLabel.setText(String.valueOf(EmployeesRepository.getManagers().size()));
 
         managersDelayTextField.setText(configuration.getManagerDelay().toString());
         developersDelayTextField.setText(configuration.getDeveloperDelay().toString());
