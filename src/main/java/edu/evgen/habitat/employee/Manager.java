@@ -27,7 +27,7 @@ public class Manager extends Employee {
                 (point - anchorRadius) :
                 (point - anchorRadius) < 0 ? point : (point - anchorRadius);
     }
-    protected void move(double x, double y) {
+    protected void move(Double x, Double y) {
         if ((x < paneSize) && (x > 0))
             this.x = x;
         if ((y < paneSize) && (y > 0))

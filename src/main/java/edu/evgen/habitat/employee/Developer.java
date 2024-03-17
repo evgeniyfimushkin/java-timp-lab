@@ -37,7 +37,8 @@ public class Developer extends Employee {
                     x + xSpeed,
                     y + ySpeed);
     }
-    protected void move(double x, double y) {
+    @Override
+    protected void move(Double x, Double y) {
         if ((x < paneSize) && (x > 0))
             this.x = x;
         else
