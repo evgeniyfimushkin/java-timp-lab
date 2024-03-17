@@ -1,5 +1,7 @@
 package edu.evgen.habitat.employee;
 
+import javafx.application.Platform;
+
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -24,5 +26,15 @@ public class Manager extends Employee {
         return (point + anchorRadius) > paneSize + anchorRadius ?
                 (point - anchorRadius) :
                 (point - anchorRadius) < 0 ? point : (point - anchorRadius);
+    }
+    protected void move(double x, double y) {
+        if ((x < paneSize) && (x > 0))
+            this.x = x;
+        if ((y < paneSize) && (y > 0))
+            this.y = y;
+        Platform.runLater(() -> {
+            imageView.setX(this.x);
+            imageView.setY(this.y);
+        });
     }
 }

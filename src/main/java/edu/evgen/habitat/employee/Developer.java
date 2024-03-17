@@ -1,5 +1,6 @@
 package edu.evgen.habitat.employee;
 
+import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class Developer extends Employee {
 
-    final Double speed = random.nextInt(5) * 0.1;
+    final Double speed = (1 + random.nextInt(5)) * 0.1;
     final Long changeDirectionDelay = random.nextBoolean() ? 1L : 2L;
     Double xSpeed;
     Double ySpeed;
@@ -35,5 +36,19 @@ public class Developer extends Employee {
             move(
                     x + xSpeed,
                     y + ySpeed);
+    }
+    protected void move(double x, double y) {
+        if ((x < paneSize) && (x > 0))
+            this.x = x;
+        else
+            xSpeed = -xSpeed;
+        if ((y < paneSize) && (y > 0))
+            this.y = y;
+        else
+            ySpeed = -ySpeed;
+        Platform.runLater(() -> {
+            imageView.setX(this.x);
+            imageView.setY(this.y);
+        });
     }
 }
