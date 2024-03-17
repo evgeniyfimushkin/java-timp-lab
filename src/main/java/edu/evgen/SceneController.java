@@ -1,6 +1,6 @@
 package edu.evgen;
 
-import edu.evgen.habitat.BaseMoving;
+import edu.evgen.habitat.Simulation;
 import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.employee.*;
 import javafx.application.Platform;
@@ -16,6 +16,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,7 +66,9 @@ public class SceneController {
     Pane habitatPane;
 
     public boolean run = false;
-    Thread livingThread, movingThread;
+    Thread livingThread;
+
+    final Simulation moveSimulation = new Simulation(EmployeesRepository::moveAll,configuration.getMoveDelay(),"moving");
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
@@ -79,14 +82,23 @@ public class SceneController {
 
     public void doSimulation(ActionEvent event) {
 
-//        managerAI.threadStart();
-//        developerAi.threadStart();
         fieldsSetDisable(true);
         livingThread = new Thread(this::living, "living");
         livingThread.start();
-        movingThread = new Thread(new BaseMoving(configuration.getMoveDelay()),"moving");
-        movingThread.start();
+        moveSimulation.getMovingThread().start();
 
+    }
+
+    public void continueSimulation(WindowEvent event) {
+//        livingThread.notify();
+//        movingThread.notify();
+        moveSimulation.continueMoving();
+    }
+
+    @SneakyThrows
+    public void pauseSimulation() {
+        run = false;
+        moveSimulation.run = false;
     }
 
     void living() {
@@ -117,13 +129,10 @@ public class SceneController {
     }
 
     void stopHandler(ActionEvent event) {
-//        managerAI.interruptThread();
-//        developerAi.interruptThread();
         fieldsSetDisable(false);
         log.info("stopRun");
         run = false;
-        livingThread.interrupt();
-        movingThread.interrupt();
+
         log.info("clear");
         EmployeesRepository.clear();
         sleep();
@@ -219,14 +228,6 @@ public class SceneController {
         //стрим не финализирован
     }
 
-    @SneakyThrows
-    void helpMeItemAction(ActionEvent event) {
-        final Stage errorStage = new Stage();
-        log.info("helpMe");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/helpme.fxml"));
-        errorStage.setScene(new Scene(loader.load()));
-        errorStage.show();
-    }
 
     void developersDelayOnChange(ObservableValue<?> observable, String oldValue, String newValue) {
         try {
@@ -271,22 +272,35 @@ public class SceneController {
 
     //Методы новых сцен
     @SneakyThrows
-    void errorSceneStart(Throwable exception) {
+    void helpMeItemAction(ActionEvent event) {
+        pauseSimulation();
+        final Stage helpStage = new Stage();
+        log.info("helpMe");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/helpme.fxml"));
+        helpStage.setScene(new Scene(loader.load()));
+        helpStage.setOnCloseRequest(this::continueSimulation);
+        helpStage.show();
+    }
 
-//        managerAI.interruptThread();
-//        developerAi.interruptThread();
+    @SneakyThrows
+    void errorSceneStart(Throwable exception) {
+        pauseSimulation();
         log.info(exception.getClass().toString());
         final Stage errorStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
         errorStage.setScene(new Scene(loader.load()));
-        errorStage.show();
         ErrorController controller = loader.getController();
         controller.initialize(exception);
         controller.closeErrorWindowButton.setOnAction(event -> errorStage.close());
+        errorStage.setOnCloseRequest(this::continueSimulation);
+
+        errorStage.show();
     }
 
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
+
+        pauseSimulation();
         log.info("new window Stop simulation Info");
 
 
@@ -314,6 +328,7 @@ public class SceneController {
             formStage.close();
             stopHandler(rootEvent);
         });
+        formStage.setOnCloseRequest(this::continueSimulation);
         formStage.show();
 
     }
@@ -321,8 +336,7 @@ public class SceneController {
     @SneakyThrows
     void showObjectsInfoForm(ActionEvent rootEvent) {
 
-//        managerAI.interruptThread();
-//        developerAi.interruptThread();
+        pauseSimulation();
 
         stopButton.setDisable(true);
         objectsInfoButton.setDisable(true);
@@ -350,6 +364,7 @@ public class SceneController {
             formStage.close();
             stopHandler(rootEvent);
         });
+        formStage.setOnCloseRequest(this::continueSimulation);
         formStage.show();
     }
 
@@ -369,7 +384,7 @@ public class SceneController {
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }
 
-    void refreshConfiguration(){
+    void refreshConfiguration() {
         managersDelayTextField.setText(configuration.getManagerDelay().toString());
         developersDelayTextField.setText(configuration.getDeveloperDelay().toString());
 
