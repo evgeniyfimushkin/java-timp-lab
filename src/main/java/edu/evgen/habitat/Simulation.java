@@ -7,14 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 public class Simulation implements Runnable {
     private final Runnable action;
     private final Long moveDelay;
-    private final Thread movingThread;
+    private final Thread thread;
     private final Object runningMutex = new Object();
     public Boolean run = false;
 
     public Simulation(Runnable action, Long moveDelay, String threadName){
         this.action = action;
         this.moveDelay = moveDelay;
-        this.movingThread = new Thread(this,threadName);
+        this.thread = new Thread(this,threadName);
     }
     @Override
     public void run() {
@@ -36,11 +36,14 @@ public class Simulation implements Runnable {
         log.info("stop moving");
     }
 
-    public void continueMoving() {
+    public void continueSimulation() {
         synchronized (runningMutex) {
             run = true;
             runningMutex.notify();
         }
+    }
+    public void pauseSimulation(){
+        run = false;
     }
 
 }

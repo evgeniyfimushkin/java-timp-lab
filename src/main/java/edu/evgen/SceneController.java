@@ -65,15 +65,18 @@ public class SceneController {
     @FXML
     Pane habitatPane;
 
-    public boolean run = false;
-    Thread livingThread;
-
-    final Simulation moveSimulation = new Simulation(EmployeesRepository::moveAll,configuration.getMoveDelay(),"moving");
+    final Simulation moveSimulation = new Simulation(EmployeesRepository::moveAll, configuration.getMoveDelay(), "moving");
+    final Simulation birthSimulation = new Simulation(this::birthAttempt, configuration.getMoveDelay(), "birthing");
+    final Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
 
     //Основные методы работы симуляции
+    private Stream<Simulation> getSimulations() {
+        return Stream.of(moveSimulation, birthSimulation, killSimulation);
+    }
+
     public void startSimulation(ActionEvent event) {
         pausedTime = 0L;
         startSimulationTime = System.currentTimeMillis();
@@ -81,57 +84,34 @@ public class SceneController {
     }
 
     public void doSimulation(ActionEvent event) {
-
         fieldsSetDisable(true);
-        livingThread = new Thread(this::living, "living");
-        livingThread.start();
-        moveSimulation.getMovingThread().start();
-
+        getSimulations()
+                .map(Simulation::getThread)
+                .forEach(Thread::start);
     }
 
     public void continueSimulation(WindowEvent event) {
-//        livingThread.notify();
-//        movingThread.notify();
-        moveSimulation.continueMoving();
+        getSimulations().forEach(Simulation::continueSimulation);
     }
 
     @SneakyThrows
     public void pauseSimulation() {
-        run = false;
-        moveSimulation.run = false;
+        getSimulations().forEach(Simulation::pauseSimulation);
     }
 
-    void living() {
-        log.info("start living");
-        run = true;
-        try {
-            do {
-                sleep();
-                log.info("living:birthAttempt");
-                birthAttempt();
-                habitat.mustDie().forEach(this::kill);
-            } while (run);
-        } catch (Throwable ignore) {
-        }
-        log.info("stop living");
-    }
 
-    void kill(IBehaviour employee) {
-        Platform.runLater(() -> EmployeesRepository.removeEmployee(employee));
+    void kill() {
+        habitat.mustDie().forEach(EmployeesRepository::removeEmployee);
     }
 
     void birthAttempt() {
-        if (run) {
-            log.info("birthAttempt");
-            habitat.birthAttempt()
-                    .ifPresent(employee -> Platform.runLater(this::refreshStatistic));
-        }
+        habitat.birthAttempt()
+                .ifPresent(employee -> Platform.runLater(this::refreshStatistic));
     }
 
     void stopHandler(ActionEvent event) {
         fieldsSetDisable(false);
         log.info("stopRun");
-        run = false;
 
         log.info("clear");
         EmployeesRepository.clear();
@@ -275,7 +255,6 @@ public class SceneController {
     void helpMeItemAction(ActionEvent event) {
         pauseSimulation();
         final Stage helpStage = new Stage();
-        log.info("helpMe");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/helpme.fxml"));
         helpStage.setScene(new Scene(loader.load()));
         helpStage.setOnCloseRequest(this::continueSimulation);
@@ -285,7 +264,6 @@ public class SceneController {
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
         pauseSimulation();
-        log.info(exception.getClass().toString());
         final Stage errorStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/error.fxml"));
         errorStage.setScene(new Scene(loader.load()));
@@ -301,9 +279,6 @@ public class SceneController {
     void showSimulationInfoForm(ActionEvent rootEvent) {
 
         pauseSimulation();
-        log.info("new window Stop simulation Info");
-
-
         final Stage formStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/stopSimulationInfo.fxml"));
         formStage.setScene(new Scene(loader.load()));
@@ -311,7 +286,6 @@ public class SceneController {
         controller.setAllTheLabels(habitat);
         controller.simulationTime.setText("Simulation time: " + getSimulationTime());
         startPauseTime = System.currentTimeMillis();
-        run = false;
         controller.stopButtonFromInfo.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             formStage.close();
@@ -347,7 +321,6 @@ public class SceneController {
         ObjectsInfoController controller = loader.getController();
 
         startPauseTime = System.currentTimeMillis();
-        run = false;
         controller.stopButtonFromInfo.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             formStage.close();
