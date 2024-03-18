@@ -79,11 +79,11 @@ public class SceneController {
     @FXML
     Pane habitatPane;
 
-    Simulation moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
-    Simulation moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
-    Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthDev");
-    Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthMgr");
-    Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
+    Simulation moveDevelopers;
+    Simulation moveManagers;
+    Simulation developerBirthSimulation;
+    Simulation managerBirthSimulation;
+    Simulation killSimulation;
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
@@ -103,9 +103,9 @@ public class SceneController {
 
         moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
 
-        developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthDev");
+        developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay()*1000, "birthDev");
 
-        managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthMgr");
+        managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay()*1000, "birthMgr");
 
         killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
 

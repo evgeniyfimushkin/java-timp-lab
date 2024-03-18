@@ -42,7 +42,7 @@ public class HabitatImpl implements Habitat {
 
     @Override
     public Optional<? extends Employee> developerBirthAttempt() {
-
+        log.info("Developer birth attempt <-");
         if (
                 (getDevelopers().isEmpty() || getDevelopers().getLast().getBirthTime().plusSeconds(configuration.getDeveloperDelay()).isBefore(LocalDateTime.now())) &&
                         (random.nextDouble() <= configuration.getDeveloperProbability())
