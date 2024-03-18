@@ -43,9 +43,20 @@ public class SceneController {
             .moveDelay(1L)
             .build();
     @FXML
-    public Button startButton, stopButton, objectsInfoButton;
+    public Button
+            startButton,
+            stopButton,
+            objectsInfoButton,
+            devThreadStopButton,
+            devThreadStartButton,
+            mgrThreadStopButton,
+            mgrThreadStartButton;
     @FXML
-    public MenuButton developersProbabilityMenu, managersRatioMenu;
+    public MenuButton
+            developersProbabilityMenu,
+            managersRatioMenu,
+            devPriorityMenuButton,
+            mgrPriorityMenuButton;
     @FXML
     public RadioButton radioButtonHideTime, radioButtonShowTime;
     @FXML
@@ -68,11 +79,11 @@ public class SceneController {
     @FXML
     Pane habitatPane;
 
-    final Simulation moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
-    final Simulation moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
-    final Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthDev");
-    final Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthMgr");
-    final Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
+    Simulation moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
+    Simulation moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
+    Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthDev");
+    Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthMgr");
+    Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
@@ -88,6 +99,16 @@ public class SceneController {
     }
 
     public void startSimulation(ActionEvent event) {
+        moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
+
+        moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
+
+        developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getMoveDelay(), "birthDev");
+
+        managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getMoveDelay(), "birthMgr");
+
+        killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
+
         pausedTime = 0L;
         startSimulationTime = System.currentTimeMillis();
         doSimulation(event);
@@ -100,7 +121,13 @@ public class SceneController {
                 .forEach(Thread::start);
     }
 
-    public void continueSimulation(WindowEvent event) {
+    //    public void continueSimulation(WindowEvent event) {
+//        fieldsSetDisable(false);
+//        getSimulations().forEach(Simulation::continueSimulation);
+//    }
+    public void continueSimulation() {
+        stopButton.setDisable(false);
+        objectsInfoButton.setDisable(false);
         getSimulations().forEach(Simulation::continueSimulation);
     }
 
@@ -108,7 +135,6 @@ public class SceneController {
     public void pauseSimulation() {
         getSimulations().forEach(Simulation::pauseSimulation);
     }
-
 
     void kill() {
         habitat.mustDie().forEach(EmployeesRepository::removeEmployee);
@@ -120,15 +146,11 @@ public class SceneController {
     }
 
     void stopHandler(ActionEvent event) {
+        getSimulations().forEach(Simulation::stopSimulation);
         fieldsSetDisable(false);
         log.info("stopRun");
-
         log.info("clear");
         EmployeesRepository.clear();
-        sleep();
-        sleep();
-        sleep();
-        sleep();
         log.info("refresh");
         Platform.runLater(this::refreshStatistic);
         log.info("stopRun ->");
@@ -141,7 +163,6 @@ public class SceneController {
         managerLivingTime.setDisable(value);
         stopButton.setDisable(!value);
         startButton.setDisable(value);
-        objectsInfoButton.setDisable(!value);
     }
 
     @FXML
@@ -152,7 +173,6 @@ public class SceneController {
         developerLivingTime.textProperty().addListener((this::developerLivingTimeOnChange));
         managerLivingTime.textProperty().addListener(this::managerLivingTimeOnChange);
 
-        objectsInfoButton.setDisable(true);
         stopButton.setDisable(true);
         log.info("controller init");
         simulationInfoCheckBox.setOnAction(this::toggleCheckBoxHandler);
@@ -167,6 +187,18 @@ public class SceneController {
         developersProbabilityMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupDevelopersProbability));
         managersRatioMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupManagersRatio));
 
+        devThreadStartButton.setOnAction(event -> {
+            moveDevelopers.continueSimulation();
+        });
+        devThreadStopButton.setOnAction(event -> {
+            moveDevelopers.pauseSimulation();
+        });
+        mgrThreadStartButton.setOnAction(event -> {
+            moveManagers.continueSimulation();
+        });
+        mgrThreadStopButton.setOnAction(event -> {
+            moveManagers.pauseSimulation();
+        });
 
         helpMeItem.setOnAction(this::helpMeItemAction);
         radioButtonShowTime.fire();
@@ -188,6 +220,8 @@ public class SceneController {
             stopButton.setText("Stop");
             stopButton.setOnAction(this::stopHandler);
             menuStopItem.setOnAction(this::stopHandler);
+//            stopButton.setOnAction(e -> pauseSimulation());
+//            menuStopItem.setOnAction(e -> pauseSimulation());
         }
     }
 
@@ -263,11 +297,15 @@ public class SceneController {
     //Методы новых сцен
     @SneakyThrows
     Pair<Stage, FXMLLoader> createNewForm(String fxmlFile) {
+        startPauseTime = System.currentTimeMillis();
         pauseSimulation();
         final Stage formStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
         formStage.setScene(new Scene(loader.load()));
-        formStage.setOnCloseRequest(this::continueSimulation);
+        formStage.setOnCloseRequest(e -> {
+            continueSimulation();
+            pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
+        });
         return new Pair<>(formStage, loader);
     }
 
@@ -287,6 +325,7 @@ public class SceneController {
 
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
+        objectsInfoButton.setDisable(true);
         Pair<Stage, FXMLLoader> scene = createNewForm("/stopSimulationInfo.fxml");
         StopSimulationInfoController controller = scene.getValue().getController();
         controller.setAllTheLabels(habitat);
@@ -301,14 +340,13 @@ public class SceneController {
         controller.continueButton.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             scene.getKey().close();
-            doSimulation(rootEvent);
+            continueSimulation();
         });
         scene.getKey().setOnCloseRequest(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             scene.getKey().close();
-            stopHandler(rootEvent);
+            continueSimulation();
         });
-        scene.getKey().setOnCloseRequest(this::continueSimulation);
         scene.getKey().show();
 
     }
@@ -316,10 +354,8 @@ public class SceneController {
     @SneakyThrows
     void showObjectsInfoForm(ActionEvent rootEvent) {
         stopButton.setDisable(true);
-        objectsInfoButton.setDisable(true);
         Pair<Stage, FXMLLoader> scene = createNewForm("/objectsInfo.fxml");
         ObjectsInfoController controller = scene.getValue().getController();
-
         startPauseTime = System.currentTimeMillis();
         controller.stopButtonFromInfo.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
@@ -330,23 +366,16 @@ public class SceneController {
         controller.continueButton.setOnAction(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
             scene.getKey().close();
-            doSimulation(rootEvent);
+            continueSimulation();
         });
         scene.getKey().setOnCloseRequest(event -> {
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
-            scene.getKey().close();
-            stopHandler(rootEvent);
+            continueSimulation();
         });
-        scene.getKey().setOnCloseRequest(this::continueSimulation);
         scene.getKey().show();
     }
 
     //    Методы обновления
-    @SneakyThrows
-    void sleep() {
-        Thread.sleep(habitat.getConfiguration().getProcessDelay());
-    }
-
     void refreshStatistic() {
 
         log.info("RefreshStatistics");

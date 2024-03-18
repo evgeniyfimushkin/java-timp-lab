@@ -20,7 +20,7 @@ public class StopSimulationInfoController {
     @FXML
     Button continueButton, stopButtonFromInfo;
     public void setAllTheLabels(Habitat habitat){
-        developersCountLabel.setText(String.valueOf(EmployeesRepository.getDevelopers().toString()));
+        developersCountLabel.setText(String.valueOf(EmployeesRepository.getDevelopers().size()));
         managersCountLabel.setText(String.valueOf(EmployeesRepository.getManagers().size()));
         managersDelayLabel.setText("Delay: " + habitat.getConfiguration().getManagerDelay().toString());
         developersDelayLabel.setText("Delay: " + habitat.getConfiguration().getDeveloperDelay().toString());
