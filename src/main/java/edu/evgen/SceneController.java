@@ -120,11 +120,6 @@ public class SceneController {
                 .map(Simulation::getThread)
                 .forEach(Thread::start);
     }
-
-    //    public void continueSimulation(WindowEvent event) {
-//        fieldsSetDisable(false);
-//        getSimulations().forEach(Simulation::continueSimulation);
-//    }
     public void continueSimulation() {
         stopButton.setDisable(false);
         objectsInfoButton.setDisable(false);
@@ -182,6 +177,17 @@ public class SceneController {
         objectsInfoButton.setOnAction(this::showObjectsInfoForm);
 
 
+        threadMenuItemStream().forEach(devPriorityMenuButton.getItems()::add);
+        threadMenuItemStream().forEach(mgrPriorityMenuButton.getItems()::add);
+        devPriorityMenuButton.getItems().forEach(menuItem -> menuItem.setOnAction(e -> {
+            developerBirthSimulation.setPriority(Integer.parseInt(menuItem.getText()));
+            devPriorityMenuButton.setText(String.valueOf(developerBirthSimulation.getPriority()));
+        }));
+        mgrPriorityMenuButton.getItems().forEach(menuItem -> menuItem.setOnAction(e -> {
+            managerBirthSimulation.setPriority(Integer.parseInt(menuItem.getText()));
+            mgrPriorityMenuButton.setText(String.valueOf(managerBirthSimulation.getPriority()));
+        }));
+
         menuItemStream().forEach(developersProbabilityMenu.getItems()::add);
         menuItemStream().forEach(managersRatioMenu.getItems()::add);
         developersProbabilityMenu.getItems().forEach(menuItem -> menuItem.setOnAction(this::setupDevelopersProbability));
@@ -220,8 +226,6 @@ public class SceneController {
             stopButton.setText("Stop");
             stopButton.setOnAction(this::stopHandler);
             menuStopItem.setOnAction(this::stopHandler);
-//            stopButton.setOnAction(e -> pauseSimulation());
-//            menuStopItem.setOnAction(e -> pauseSimulation());
         }
     }
 
@@ -241,12 +245,16 @@ public class SceneController {
 
     Stream<MenuItem> menuItemStream() {
         return IntStream.rangeClosed(1, 10)
-                //сделать объект из примитива
                 .boxed()
-                //        Double divide10(Integer i) {
-                //            return i / 10.0;
-                //        }
                 .map(i -> i / 10.0)
+                .map(Object::toString)
+                .map(MenuItem::new);
+        //стрим не финализирован
+    }
+
+    Stream<MenuItem> threadMenuItemStream() {
+        return IntStream.rangeClosed(1, 3)
+                .boxed()
                 .map(Object::toString)
                 .map(MenuItem::new);
         //стрим не финализирован

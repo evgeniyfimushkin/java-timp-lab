@@ -77,7 +77,12 @@
             <TextField fx:id="developerLivingTime" prefHeight="30.0" prefWidth="240.0" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 15;">
                <children>
-                  <MenuButton fx:id="devPriorityMenuButton" mnemonicParsing="false" text="Prioriry"/>
+                  <Label text="Priority: ">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <MenuButton fx:id="devPriorityMenuButton" mnemonicParsing="false" text="Auto" />
                   <Button fx:id="devThreadStopButton" mnemonicParsing="false" text="Wait" />
                   <Button fx:id="devThreadStartButton" mnemonicParsing="false" text="Run" />
                </children>
@@ -138,7 +143,12 @@
                <TextField fx:id="managerLivingTime" prefHeight="30.0" prefWidth="240.0" />
                <HBox alignment="CENTER" prefHeight="60.0" prefWidth="257.0" style="-fx-spacing: 15; -fx-padding: 2;">
                   <children>
-                     <MenuButton fx:id="mgrPriorityMenuButton" mnemonicParsing="false" text="Priority"/>
+                     <Label text="Priority: ">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Label>
+                     <MenuButton fx:id="mgrPriorityMenuButton" mnemonicParsing="false" text="Auto" />
                      <Button fx:id="mgrThreadStopButton" mnemonicParsing="false" text="Wait" />
                      <Button fx:id="mgrThreadStartButton" mnemonicParsing="false" text="Run" />
                   </children>
