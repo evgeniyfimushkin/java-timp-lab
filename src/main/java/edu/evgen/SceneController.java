@@ -14,9 +14,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,8 @@ public class SceneController {
             .developerLivingTime(4L)
             .moveDelay(1L)
             .build();
+    @FXML
+    public AnchorPane root;
     @FXML
     public Button
             startButton,
@@ -312,7 +315,7 @@ public class SceneController {
 
     //Методы новых сцен
     @SneakyThrows
-    Pair<Stage, FXMLLoader> createNewForm(String fxmlFile) {
+    Pair<Stage, FXMLLoader> createNewModalityForm(String fxmlFile) {
         startPauseTime = System.currentTimeMillis();
         pauseSimulation();
         final Stage formStage = new Stage();
@@ -322,17 +325,19 @@ public class SceneController {
             continueSimulation();
             pausedTime = pausedTime + System.currentTimeMillis() - startPauseTime;
         });
+        formStage.initModality(Modality.WINDOW_MODAL);
+        formStage.initOwner(root.getScene().getWindow());
         return new Pair<>(formStage, loader);
     }
 
     @SneakyThrows
     void helpMeItemAction(ActionEvent event) {
-        createNewForm("/helpme.fxml").getKey().show();
+        createNewModalityForm("/helpme.fxml").getKey().show();
     }
 
     @SneakyThrows
     void errorSceneStart(Throwable exception) {
-        Pair<Stage, FXMLLoader> scene = createNewForm("/error.fxml");
+        Pair<Stage, FXMLLoader> scene = createNewModalityForm("/error.fxml");
         ErrorController controller = scene.getValue().getController();
         controller.initialize(exception);
         controller.closeErrorWindowButton.setOnAction(event -> scene.getKey().close());
@@ -342,7 +347,7 @@ public class SceneController {
     @SneakyThrows
     void showSimulationInfoForm(ActionEvent rootEvent) {
         objectsInfoButton.setDisable(true);
-        Pair<Stage, FXMLLoader> scene = createNewForm("/stopSimulationInfo.fxml");
+        Pair<Stage, FXMLLoader> scene = createNewModalityForm("/stopSimulationInfo.fxml");
         StopSimulationInfoController controller = scene.getValue().getController();
         controller.setAllTheLabels(habitat);
         controller.simulationTime.setText("Simulation time: " + getSimulationTime());
@@ -370,7 +375,7 @@ public class SceneController {
     @SneakyThrows
     void showObjectsInfoForm(ActionEvent rootEvent) {
         stopButton.setDisable(true);
-        Pair<Stage, FXMLLoader> scene = createNewForm("/objectsInfo.fxml");
+        Pair<Stage, FXMLLoader> scene = createNewModalityForm("/objectsInfo.fxml");
         ObjectsInfoController controller = scene.getValue().getController();
         startPauseTime = System.currentTimeMillis();
         controller.stopButtonFromInfo.setOnAction(event -> {
