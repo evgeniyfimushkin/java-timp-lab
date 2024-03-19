@@ -38,8 +38,8 @@
      </menus>
    </MenuBar>
 
-   <Pane fx:id="habitatPane" layoutY="25.0" prefHeight="780.0" prefWidth="600" style="-fx-background-color: #009B95; -fx-border-color: #006561;" />
-   <AnchorPane layoutX="600.0" layoutY="34.0" prefHeight="780.0" prefWidth="608.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="34.0">
+   <Pane fx:id="habitatPane" layoutY="25.0" prefHeight="525.0" prefWidth="525.0" style="-fx-background-color: #009B95; -fx-border-color: #006561;" />
+   <AnchorPane id="AnchorRight" layoutX="600.0" layoutY="34.0" prefHeight="780.0" prefWidth="608.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="34.0">
       <children>
       
       
@@ -194,6 +194,7 @@
                <Font size="15.0" />
             </font>
          </Button>
+         
       </children>
    </AnchorPane>
   
