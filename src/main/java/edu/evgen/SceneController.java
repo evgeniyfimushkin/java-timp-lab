@@ -69,7 +69,8 @@ public class SceneController {
     public MenuItem
             menuStartItem,
             menuStopItem,
-            helpMeItem;
+            helpMeItem,
+            terminalMenuItem;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField,
             managerLivingTime, developerLivingTime;
@@ -107,9 +108,9 @@ public class SceneController {
 
         moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
 
-        developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay()*1000, "birthDev");
+        developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay() * 1000, "birthDev");
 
-        managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay()*1000, "birthMgr");
+        managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay() * 1000, "birthMgr");
 
         killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
 
@@ -128,6 +129,7 @@ public class SceneController {
                 .map(Simulation::getThread)
                 .forEach(Thread::start);
     }
+
     public void continueSimulation() {
         stopButton.setDisable(false);
         objectsInfoButton.setDisable(false);
@@ -217,6 +219,7 @@ public class SceneController {
             moveManagers.pauseSimulation();
         });
 
+        terminalMenuItem.setOnAction(this::terminalFormOpen);
         helpMeItem.setOnAction(this::helpMeItemAction);
         radioButtonShowTime.fire();
         radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
@@ -328,6 +331,16 @@ public class SceneController {
         formStage.initModality(Modality.WINDOW_MODAL);
         formStage.initOwner(root.getScene().getWindow());
         return new Pair<>(formStage, loader);
+    }
+
+    @SneakyThrows
+    void terminalFormOpen(ActionEvent event) {
+        final Stage formStage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/terminal.fxml"));
+        formStage.setScene(new Scene(loader.load()));
+        TerminalController controller = loader.getController();
+
+        formStage.show();
     }
 
     @SneakyThrows

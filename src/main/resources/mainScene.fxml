@@ -24,6 +24,11 @@
            <MenuItem fx:id="helpMeItem" mnemonicParsing="false" text="Help me" />
          </items>
        </Menu>
+         <Menu mnemonicParsing="false" text="Terminal">
+           <items>
+             <MenuItem fx:id="terminalMenuItem" mnemonicParsing="false" text="Terminal" />
+           </items>
+         </Menu>
      </menus>
    </MenuBar>
 
