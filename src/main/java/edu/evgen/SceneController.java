@@ -71,7 +71,9 @@ public class SceneController {
             menuStartItem,
             menuStopItem,
             helpMeItem,
-            terminalMenuItem;
+            terminalMenuItem,
+            loadButton,
+            saveButton;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField,
             managerLivingTime, developerLivingTime;
@@ -89,7 +91,8 @@ public class SceneController {
     Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay() * 1000, "birthDev");
     Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay() * 1000, "birthMgr");
     Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
-    Long startSimulationTime = System.currentTimeMillis(),
+    Simulation refreshTime = new Simulation(this::refreshTime, 100L, "timer");
+        Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
 
@@ -100,7 +103,8 @@ public class SceneController {
                 moveManagers,
                 developerBirthSimulation,
                 managerBirthSimulation,
-                killSimulation);
+                killSimulation,
+                refreshTime);
     }
 
     public void startSimulation(ActionEvent event) {
@@ -114,6 +118,8 @@ public class SceneController {
         managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay() * 1000, "birthMgr");
 
         killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
+
+        refreshTime = new Simulation(this::refreshTime, 1000L, "timer");
 
         devPriorityMenuButton.setText(String.valueOf(developerBirthSimulation.getPriority()));
 
@@ -349,7 +355,7 @@ public class SceneController {
         final Stage formStage = new Stage();
         FXMLLoader loader = new FXMLLoader((getClass()
                 .getResource("/terminal.fxml")));
-        loader.setControllerFactory(controllerClass->
+        loader.setControllerFactory(controllerClass ->
                 new TerminalController(formStage, this));
 
         try {
@@ -438,6 +444,9 @@ public class SceneController {
         managersCountLabel.setText(String.valueOf(EmployeesRepository.getManagers().size()));
 
         simulationTime.setText("Simulation time: " + getSimulationTime());
+    }
+    void refreshTime(){
+        Platform.runLater(() -> simulationTime.setText("Simulation time: " + getSimulationTime()));
     }
 
     void refreshConfiguration() {

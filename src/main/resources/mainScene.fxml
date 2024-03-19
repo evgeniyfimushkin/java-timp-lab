@@ -8,12 +8,12 @@
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
    <MenuBar fx:id="mainMenuBar" prefHeight="25.0" prefWidth="1200.0">
      <menus>
-       <Menu fx:id="menuSimulation" mnemonicParsing="false" text="Simulation">
-         <items>
-           <MenuItem fx:id="menuStartItem" mnemonicParsing="false" text="Start" />
-               <MenuItem fx:id="menuStopItem" mnemonicParsing="false" text="Stop" />
-         </items>
-       </Menu>
+         <Menu mnemonicParsing="false" text="File">
+            <items>
+               <MenuItem fx:id="loadButton" mnemonicParsing="false" text="Load" />
+               <MenuItem fx:id="saveButton" mnemonicParsing="false" text="Save" />
+            </items>
+         </Menu>
        <Menu mnemonicParsing="false" text="Edit">
          <items>
            <MenuItem mnemonicParsing="false" text="Delete" />
@@ -22,6 +22,12 @@
        <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
          <items>
            <MenuItem fx:id="helpMeItem" mnemonicParsing="false" text="Help me" />
+         </items>
+       </Menu>
+       <Menu fx:id="menuSimulation" mnemonicParsing="false" text="Simulation">
+         <items>
+           <MenuItem fx:id="menuStartItem" mnemonicParsing="false" text="Start" />
+               <MenuItem fx:id="menuStopItem" mnemonicParsing="false" text="Stop" />
          </items>
        </Menu>
          <Menu mnemonicParsing="false" text="Terminal">

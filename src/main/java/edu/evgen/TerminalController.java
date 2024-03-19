@@ -151,8 +151,9 @@ public class TerminalController {
         textArea.setFocusTraversable(false);
         commandField.requestFocus();
         textArea.setText("""
-                \n\n\n\n\n\n\n\n\n\n\n\n\n
+                \n\n\n\n\n\n\n\n\n\n\n\n
                 Welcome to the Terminal!
+                help - to see commands
                 """);
         textArea.setScrollTop(100);
     }
