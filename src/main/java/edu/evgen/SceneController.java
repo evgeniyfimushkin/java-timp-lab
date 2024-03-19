@@ -22,6 +22,7 @@ import javafx.util.Pair;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -333,14 +334,19 @@ public class SceneController {
         return new Pair<>(formStage, loader);
     }
 
-    @SneakyThrows
     void terminalFormOpen(ActionEvent event) {
         final Stage formStage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/terminal.fxml"));
-        formStage.setScene(new Scene(loader.load()));
-        TerminalController controller = loader.getController();
+        loader.setControllerFactory(controller -> new TerminalController(formStage));
 
-        formStage.show();
+        try {
+            formStage.setScene(new Scene(loader.load()));
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+        formStage.setTitle("Terminal");
+        formStage.setResizable(false);
+        formStage.showAndWait();
     }
 
     @SneakyThrows
