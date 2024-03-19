@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:id="terminalVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.TerminalController">
+<VBox fx:id="terminalVBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.TerminalController">
    <children>
-      <TextArea fx:id="textArea" prefHeight="343.0" prefWidth="600.0" style="-fx-background-color: #1D7471;">
+      <TextArea fx:id="textArea" cache="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="343.0" prefWidth="600.0" style="-fx-background-color: #1D7471;">
          <font>
             <Font size="15.0" />
          </font></TextArea>

@@ -10,19 +10,21 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 @Setter
 public class TerminalController {
-    private final static List<String> commands = new LinkedList<>();
+    private final static List<String> commands = new ArrayList<>();
     Stage stage;
     SceneController sceneController;
     @FXML
     TextField commandField;
     @FXML
     TextArea textArea;
+    private Integer cursorCommand;
 
     public TerminalController(Stage stage, SceneController sceneController){
         this.stage = stage;
@@ -48,24 +50,36 @@ public class TerminalController {
         output(
                 """
                         Availible commands:
-                        hire <employee type> <count> - hire some employee
-                        fire <employee type> <count> - fire some employee
+                        hire <count> - create Managers
+                        fire - delete all the Managers
                         help - display this message
                         exit - exit the terminal session
                         """
         );
     }
 
-    private void commandHire() {
-
-        Manager Carl = new Manager();
-        output("Manager was born!\n Id: "+ Carl.getId() + "\nBirthTime: " + Carl.getBirthTime());
+    private void commandHire(String countString) {
+        Integer count;
+        try {
+            count = Integer.parseInt(countString);
+            if (count <= 0) throw new NumberFormatException();
+        } catch (NumberFormatException e){
+            output("Bad value: "+countString);
+            return;
+        }
+        for (Integer i = 0; i < count; i++){
+            Manager Carl = new Manager();
+            output("Manager born!\n Id: "+ Carl.getId() + "\nBirthTime: " + Carl.getBirthTime());
+        }
+        output("-------------------------------");
+        output(countString + " managers was born!");
         sceneController.refreshStatistic();
 
     }
 
     private void commandFire() {
-        EmployeesRepository.getDevelopers().stream().forEach(EmployeesRepository::removeEmployee);
+        output(EmployeesRepository.getManagers().size()+" managers was deleted.");
+        EmployeesRepository.getManagers().stream().forEach(EmployeesRepository::removeEmployee);
         sceneController.refreshStatistic();
     }
 
@@ -81,14 +95,16 @@ public class TerminalController {
             }
             case "hire" -> {
                 if (checkAmountOfArguments(tokens, 2, 2))
-                    commandHire();
+                    commandHire(tokens[1]);
             }
             case "fire" -> {
-                if (checkAmountOfArguments(tokens, 3, 3))
                     commandFire();
             }
             case "exit" -> {
                 commandExit();
+            }
+            case "" -> {
+
             }
             default -> {
                 output("No such a command: " + command);
@@ -103,20 +119,41 @@ public class TerminalController {
                 textArea.appendText("> " + command + "\n");
                 commandField.clear();
                 commands.add(command);
+                cursorCommand = commands.size();
                 processCommand(command);
+                textArea.setScrollTop(100);
             }
             if (event.getCode() == KeyCode.UP) {
-                commandField.setText(commands.getLast());
+                if (!commands.isEmpty() && cursorCommand>0 && cursorCommand <= commands.size()) {
+                    cursorCommand --;
+                    commandField.setText(commands.get(cursorCommand));
+                    for (Integer i = 0; i < commands.getLast().length(); i++)
+                        commandField.forward();
+                }
+            }
+            if (event.getCode() == KeyCode.DOWN) {
+                if (!commands.isEmpty() && cursorCommand>=0 && cursorCommand < commands.size() - 1) {
+                    cursorCommand ++;
+                    commandField.setText(commands.get(cursorCommand));
+                    for (Integer i = 0; i < commands.getLast().length(); i++)
+                        commandField.forward();
+                }
             }
         });
     }
 
     @FXML
     public void initialize() {
+
         setKeyActions();
         textArea.setWrapText(true);
         textArea.setEditable(false);
         textArea.setFocusTraversable(false);
         commandField.requestFocus();
+        textArea.setText("""
+                \n\n\n\n\n\n\n\n\n\n\n\n\n
+                Welcome to the Terminal!
+                """);
+        textArea.setScrollTop(100);
     }
 }
