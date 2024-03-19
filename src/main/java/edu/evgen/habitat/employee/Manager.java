@@ -15,6 +15,11 @@ public class Manager extends Employee {
         this.anchorPointX = initAnchorPoint(x);
         this.anchorPointY = initAnchorPoint(y);
     }
+    public Manager (){
+        super("/manager.png", 400L, 5L);
+        this.anchorPointX = initAnchorPoint(x);
+        this.anchorPointY = initAnchorPoint(y);
+    }
     @Override
     public void move() {
             alfa += 0.01;

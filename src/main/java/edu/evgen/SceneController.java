@@ -334,19 +334,33 @@ public class SceneController {
         return new Pair<>(formStage, loader);
     }
 
+    @SneakyThrows
     void terminalFormOpen(ActionEvent event) {
+//        final Stage formStage = new Stage();
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/terminal.fxml"));
+//        TerminalController controller = new TerminalController(formStage,this);
+//        controller = loader.getController();
+////        controller.setSceneController(this);
+////        controller.setStage(formStage);
+//        formStage.setScene(new Scene(loader.load()));
+//        formStage.setTitle("Terminal");
+//        formStage.setResizable(false);
+//        formStage.showAndWait();
         final Stage formStage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/terminal.fxml"));
-        loader.setControllerFactory(controller -> new TerminalController(formStage));
+        FXMLLoader loader = new FXMLLoader((getClass()
+                .getResource("/terminal.fxml")));
+        loader.setControllerFactory(controllerClass->
+                new TerminalController(formStage, this));
 
         try {
             formStage.setScene(new Scene(loader.load()));
         } catch (IOException e) {
             throw new RuntimeException();
         }
+
         formStage.setTitle("Terminal");
         formStage.setResizable(false);
-        formStage.showAndWait();
+        formStage.show();
     }
 
     @SneakyThrows

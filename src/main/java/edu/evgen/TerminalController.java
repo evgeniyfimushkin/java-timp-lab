@@ -1,22 +1,32 @@
 package edu.evgen;
 
-import edu.evgen.habitat.employee.Employee;
 import edu.evgen.habitat.employee.EmployeesRepository;
+import edu.evgen.habitat.employee.IBehaviour;
+import edu.evgen.habitat.employee.Manager;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import lombok.Setter;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+
+@Setter
 public class TerminalController {
-    private final Stage stage;
+    private final static List<String> commands = new LinkedList<>();
+    Stage stage;
+    SceneController sceneController;
     @FXML
     TextField commandField;
     @FXML
     TextArea textArea;
 
-    public TerminalController(Stage stage){
+    public TerminalController(Stage stage, SceneController sceneController){
         this.stage = stage;
+        this.sceneController = sceneController;
     }
     private void output(String message) {
         textArea.appendText(message + "\n");
@@ -47,15 +57,20 @@ public class TerminalController {
     }
 
     private void commandHire() {
+
+        Manager Carl = new Manager();
+        output("Manager was born!\n Id: "+ Carl.getId() + "\nBirthTime: " + Carl.getBirthTime());
+        sceneController.refreshStatistic();
+
     }
 
     private void commandFire() {
         EmployeesRepository.getDevelopers().stream().forEach(EmployeesRepository::removeEmployee);
-
+        sceneController.refreshStatistic();
     }
 
     private void commandExit() {
-
+        stage.close();
     }
 
     private void processCommand(String command) {
@@ -65,7 +80,7 @@ public class TerminalController {
                 commandHelp();
             }
             case "hire" -> {
-                if (checkAmountOfArguments(tokens, 3, 3))
+                if (checkAmountOfArguments(tokens, 2, 2))
                     commandHire();
             }
             case "fire" -> {
@@ -87,7 +102,11 @@ public class TerminalController {
                 String command = commandField.getText().trim();
                 textArea.appendText("> " + command + "\n");
                 commandField.clear();
+                commands.add(command);
                 processCommand(command);
+            }
+            if (event.getCode() == KeyCode.UP) {
+                commandField.setText(commands.getLast());
             }
         });
     }
