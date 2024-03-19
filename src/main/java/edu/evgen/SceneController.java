@@ -85,7 +85,7 @@ public class SceneController {
 
     @FXML
     Pane habitatPane;
-
+    Simulation disappear = new Simulation(EmployeesRepository::disappearEmployee, 500L, "moveDev");
     Simulation moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
     Simulation moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
     Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay() * 1000, "birthDev");
@@ -104,10 +104,12 @@ public class SceneController {
                 developerBirthSimulation,
                 managerBirthSimulation,
                 killSimulation,
-                refreshTime);
+                refreshTime,
+                disappear);
     }
 
     public void startSimulation(ActionEvent event) {
+        disappear = new Simulation(EmployeesRepository::disappearEmployee, 1000L, "moveDev");
 
         moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
 

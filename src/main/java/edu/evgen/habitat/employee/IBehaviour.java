@@ -10,6 +10,7 @@ public interface IBehaviour {
     Long getId();
     void setId(Long id);
     ImageView getImageView();
+    void disapear();
     ImageView getImageViewForTable();
     default Boolean mustDie(){
         return getBirthTime().plusSeconds(getLivingTime()).isBefore(LocalDateTime.now());

@@ -60,6 +60,10 @@ public class EmployeesRepository {
         getManagers().forEach(IBehaviour::move);
     }
     @Synchronized
+    public static void disappearEmployee(){
+        employees.forEach(IBehaviour::disapear);
+    }
+    @Synchronized
     public static void clear(){
         employees.clear();
         ids.clear();

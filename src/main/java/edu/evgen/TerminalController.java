@@ -1,7 +1,5 @@
 package edu.evgen;
-
 import edu.evgen.habitat.employee.EmployeesRepository;
-import edu.evgen.habitat.employee.IBehaviour;
 import edu.evgen.habitat.employee.Manager;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -9,11 +7,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import lombok.Setter;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 @Setter
 public class TerminalController {

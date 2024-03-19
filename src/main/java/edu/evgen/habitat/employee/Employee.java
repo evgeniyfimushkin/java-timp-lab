@@ -1,11 +1,8 @@
 package edu.evgen.habitat.employee;
-
 import javafx.scene.image.ImageView;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.Random;
-
 @Data
 public abstract class Employee implements IBehaviour {
     protected double x, y;
@@ -18,6 +15,8 @@ public abstract class Employee implements IBehaviour {
     protected final Long paneSize;
     protected final LocalDateTime birthTime = LocalDateTime.now();
 
+    protected Double disapearCof;
+
     public Employee(String pic, Long paneSize, Long livingTime) {
         this.livingTime = livingTime;
         this.paneSize = paneSize;
@@ -28,6 +27,12 @@ public abstract class Employee implements IBehaviour {
                 paneSize * random.nextDouble());
         this.pic = pic;
         EmployeesRepository.addEmployee(this);
+
+        this.disapearCof = (double)this.livingTime;
     }
     protected abstract void move(Double x, Double y);
+    public void disapear(){
+        disapearCof-=0.5;
+        imageView.setOpacity(disapearCof/livingTime);
+    }
 }
