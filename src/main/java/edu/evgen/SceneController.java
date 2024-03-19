@@ -33,13 +33,13 @@ public class SceneController {
 
     final HabitatConfiguration configuration = HabitatConfiguration.builder()
             .processDelay(100L)
-            .managerRatio(1.0)
+            .managerRatio(0.5)
             .managerDelay(2L)
-            .developerDelay(1L)
-            .developerProbability(1.0)
+            .developerDelay(2L)
+            .developerProbability(0.7)
             .paneSize(400L)
-            .managerLivingTime(4L)
-            .developerLivingTime(2L)
+            .managerLivingTime(5L)
+            .developerLivingTime(4L)
             .moveDelay(1L)
             .build();
     @FXML
@@ -99,6 +99,7 @@ public class SceneController {
     }
 
     public void startSimulation(ActionEvent event) {
+
         moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
 
         moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
@@ -108,6 +109,10 @@ public class SceneController {
         managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay()*1000, "birthMgr");
 
         killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
+
+        devPriorityMenuButton.setText(String.valueOf(developerBirthSimulation.getPriority()));
+
+        mgrPriorityMenuButton.setText(String.valueOf(managerBirthSimulation.getPriority()));
 
         pausedTime = 0L;
         startSimulationTime = System.currentTimeMillis();
@@ -179,13 +184,16 @@ public class SceneController {
 
         threadMenuItemStream().forEach(devPriorityMenuButton.getItems()::add);
         threadMenuItemStream().forEach(mgrPriorityMenuButton.getItems()::add);
+
         devPriorityMenuButton.getItems().forEach(menuItem -> menuItem.setOnAction(e -> {
             developerBirthSimulation.setPriority(Integer.parseInt(menuItem.getText()));
             devPriorityMenuButton.setText(String.valueOf(developerBirthSimulation.getPriority()));
+            mgrPriorityMenuButton.setText(String.valueOf(managerBirthSimulation.getPriority()));
         }));
         mgrPriorityMenuButton.getItems().forEach(menuItem -> menuItem.setOnAction(e -> {
             managerBirthSimulation.setPriority(Integer.parseInt(menuItem.getText()));
             mgrPriorityMenuButton.setText(String.valueOf(managerBirthSimulation.getPriority()));
+            devPriorityMenuButton.setText(String.valueOf(developerBirthSimulation.getPriority()));
         }));
 
         menuItemStream().forEach(developersProbabilityMenu.getItems()::add);
