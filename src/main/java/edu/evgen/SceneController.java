@@ -234,6 +234,9 @@ public class SceneController {
         radioButtonShowTime.setOnAction(event -> simulationTime.setVisible(true));
         radioButtonHideTime.setOnAction(event -> simulationTime.setVisible(false));
 
+        loadButton.setOnAction(event -> EmployeesRepository.loadRepository());
+        saveButton.setOnAction(event -> EmployeesRepository.saveRepository());
+
         EmployeesRepository.habitatPane = this.habitatPane;
 
         refreshConfiguration();
@@ -448,7 +451,11 @@ public class SceneController {
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }
     void refreshTime(){
-        Platform.runLater(() -> simulationTime.setText("Simulation time: " + getSimulationTime()));
+        Platform.runLater(() -> {
+            simulationTime.setText("Simulation time: " + getSimulationTime());
+            developersCountLabel.setText(String.valueOf(EmployeesRepository.getDevelopers().size()));
+            managersCountLabel.setText(String.valueOf(EmployeesRepository.getManagers().size()));
+        });
     }
 
     void refreshConfiguration() {

@@ -25,6 +25,13 @@ public class Developer extends Employee {
         checkPoint = getBirthTime();
     }
 
+    public Developer(Developer employee) {
+        super(employee);
+        this.xSpeed = employee.xSpeed;
+        this.ySpeed = employee.ySpeed;
+        this.checkPoint = employee.checkPoint;
+    }
+
     @Override
     public void move() {
             if (LocalDateTime.now().isAfter(checkPoint.plusSeconds(changeDirectionDelay))) {

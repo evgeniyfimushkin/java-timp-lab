@@ -17,6 +17,15 @@ public class Manager extends Employee {
         this.anchorPointX = initAnchorPoint(x);
         this.anchorPointY = initAnchorPoint(y);
     }
+
+    public Manager(Manager employee) {
+        super(employee);
+        this.alfa = employee.alfa;
+        this.anchorPointX = employee.anchorPointX;
+        this.anchorPointY = employee.anchorPointY;
+        this.direction = employee.direction;
+    }
+
     public Manager (){
         super("/manager.png", 400L, 5L);
         this.anchorPointX = initAnchorPoint(x);

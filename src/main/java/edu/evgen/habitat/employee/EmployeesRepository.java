@@ -3,9 +3,11 @@ package edu.evgen.habitat.employee;
 import edu.evgen.SceneController;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,6 +71,60 @@ public class EmployeesRepository {
         ids.clear();
         birthDays.clear();
         Platform.runLater(habitatPane.getChildren()::clear);
+    }
+    @Synchronized
+    public static void saveRepository(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save");
+        fileChooser.setInitialFileName("employees.bin");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Employees", "*.bin"));
+        File file = fileChooser.showSaveDialog(habitatPane.getScene().getWindow());
+
+        ObjectOutputStream outputStream;
+
+        try {
+            outputStream = new ObjectOutputStream(new FileOutputStream(file));
+            for (int i = 0; i < employees.size(); i++) {
+                outputStream.writeObject(employees.get(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Synchronized
+    public static void loadRepository(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Employees", "*.bin"));
+        File file = fileChooser.showOpenDialog(habitatPane.getScene().getWindow());
+
+        ObjectInputStream inputStream;
+        //habitat.clear();
+
+        try {
+            boolean keepReading = true;
+            inputStream = new ObjectInputStream(new FileInputStream(file));
+            while (keepReading) {
+                try {
+                    //Employee employee = (Employee) inputStream.readObject();
+                    Employee employee = (Employee) inputStream.readObject();
+                    if (employee.getClass().toString().equals("class edu.evgen.habitat.employee.Manager")){
+                        Manager temp = new Manager((Manager) employee);
+                    }
+                    else{
+                        Developer temp = new Developer((Developer) employee);
+                    }
+                        log.info(employee.getClass().toString());
+                } catch (EOFException e) {
+                    keepReading = false;
+                }
+
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
     private static Long getId(){
         Long currentId = random.nextLong();

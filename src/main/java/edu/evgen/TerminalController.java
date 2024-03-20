@@ -63,7 +63,7 @@ public class TerminalController {
             return;
         }
         for (Integer i = 0; i < count; i++){
-            Manager Carl = new Manager();
+            Manager Carl = new Manager(400L,20L);
             output("Manager born!\n Id: "+ Carl.getId() + "\nBirthTime: " + Carl.getBirthTime());
         }
         output("-------------------------------");
