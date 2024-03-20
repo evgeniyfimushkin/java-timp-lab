@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 import java.net.URL;
 
 @Slf4j
@@ -39,7 +41,13 @@ public class Main extends Application {
                         case T-> controller.setSimulationTimeVisible();
                     }
                 });
-
+        rootStage.setOnCloseRequest(ex -> {
+            try {
+                controller.configuration.save();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         rootStage.show();
     }
     private URL getResource(String resource) {

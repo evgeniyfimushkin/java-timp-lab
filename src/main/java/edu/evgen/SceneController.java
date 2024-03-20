@@ -33,7 +33,8 @@ import static edu.evgen.habitat.HabitatImpl.habitat;
 @Slf4j
 public class SceneController {
 
-    final HabitatConfiguration configuration = HabitatConfiguration.builder()
+    final HabitatConfiguration configuration
+            = HabitatConfiguration.builder()
             .processDelay(100L)
             .managerRatio(0.5)
             .managerDelay(2L)
@@ -181,6 +182,11 @@ public class SceneController {
 
     @FXML
     private void initialize() {
+        try {
+            configuration.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         habitat.setConfiguration(configuration);
         developersDelayTextField.textProperty().addListener(this::developersDelayOnChange);
         managersDelayTextField.textProperty().addListener(this::managersDelayOnChange);
