@@ -1,23 +1,19 @@
 package edu.evgen.Network;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import edu.evgen.habitat.HabitatImpl;
+
+import java.io.*;
 import java.net.Socket;
+import java.util.List;
+
+import static edu.evgen.habitat.HabitatImpl.habitat;
 
 public class Client {
-    public static final Integer PORT = 19000;
-    public static final String HOST = "localhost";
-
-    public static void main(String[] args) throws IOException {
-        Socket socket = null;
-
-        try {
-            socket = new Socket(HOST, PORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            socket.close();
-        }
-    }
+    private static final Integer PORT = 19000;
+    private static final String HOST = "localhost";
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+    private Socket socket;
+    private Boolean isConnected;
+    private List<Long> connectedClientsIds;
 }

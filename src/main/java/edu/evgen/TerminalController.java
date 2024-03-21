@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Setter
 public class TerminalController {
@@ -26,16 +27,16 @@ public class TerminalController {
         this.sceneController = sceneController;
     }
     private void output(String message) {
-        textArea.appendText(message + "\n");
+        textArea.appendText(String.format("%s\n", message));
     }
 
     private boolean checkAmountOfArguments(String[] tokens, int min, int max) {
         if (tokens.length < min) {
-            output("Not enough arguments for " + tokens[0]);
+            output(String.format("Not enough arguments for %s", tokens[0]));
             return false;
         }
         if (tokens.length > max) {
-            output("Too many arguments for " + tokens[0]);
+            output(String.format("Too many arguments for %s", tokens[0]));
             return false;
         }
         return true;
@@ -59,22 +60,22 @@ public class TerminalController {
             count = Integer.parseInt(countString);
             if (count <= 0) throw new NumberFormatException();
         } catch (NumberFormatException e){
-            output("Bad value: "+countString);
+            output(String.format("Bad value: %s", countString));
             return;
         }
-        for (Integer i = 0; i < count; i++){
+        IntStream.rangeClosed(0,count-1).forEach(e -> {
             Manager Carl = new Manager(400L,20L);
-            output("Manager born!\n Id: "+ Carl.getId() + "\nBirthTime: " + Carl.getBirthTime());
-        }
+            output(String.format("Manager born!\n Id: %s \nBirthTime: %s",Carl.getId(),Carl.getBirthTime()));
+        });
         output("-------------------------------");
-        output(countString + " managers was born!");
+        output(String.format("%s managers was born!", countString));
         sceneController.refreshStatistic();
 
     }
 
     private void commandFire() {
-        output(EmployeesRepository.getManagers().size()+" managers was deleted.");
-        EmployeesRepository.getManagers().stream().forEach(EmployeesRepository::removeEmployee);
+        output(String.format("%s  managers was deleted.", EmployeesRepository.getManagers().size()));
+        EmployeesRepository.getManagers().forEach(EmployeesRepository::removeEmployee);
         sceneController.refreshStatistic();
     }
 
@@ -102,7 +103,7 @@ public class TerminalController {
 
             }
             default -> {
-                output("No such a command: " + command);
+                output(String.format("No such a command: %s", command));
             }
         }
     }
@@ -111,7 +112,7 @@ public class TerminalController {
         commandField.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 String command = commandField.getText().trim();
-                textArea.appendText("> " + command + "\n");
+                textArea.appendText(String.format("> %s\n", command));
                 commandField.clear();
                 commands.add(command);
                 cursorCommand = commands.size();
@@ -122,16 +123,14 @@ public class TerminalController {
                 if (!commands.isEmpty() && cursorCommand>0 && cursorCommand <= commands.size()) {
                     cursorCommand --;
                     commandField.setText(commands.get(cursorCommand));
-                    for (Integer i = 0; i < commands.getLast().length(); i++)
-                        commandField.forward();
+                    IntStream.rangeClosed(0,commands.getLast().length()).forEach(e -> commandField.forward());
                 }
             }
             if (event.getCode() == KeyCode.DOWN) {
                 if (!commands.isEmpty() && cursorCommand>=0 && cursorCommand < commands.size() - 1) {
                     cursorCommand ++;
                     commandField.setText(commands.get(cursorCommand));
-                    for (Integer i = 0; i < commands.getLast().length(); i++)
-                        commandField.forward();
+                    IntStream.rangeClosed(0,commands.getLast().length()).forEach(e -> commandField.forward());
                 }
             }
         });
