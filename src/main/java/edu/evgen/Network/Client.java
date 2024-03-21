@@ -1,4 +1,4 @@
-package edu.evgen;
+package edu.evgen.Network;
 
 import java.io.IOException;
 import java.io.InputStream;
