@@ -41,9 +41,9 @@
    <Pane fx:id="habitatPane" layoutY="25.0" prefHeight="525.0" prefWidth="525.0" style="-fx-background-color: #009B95; -fx-border-color: #006561;" />
    <AnchorPane id="AnchorRight" layoutX="600.0" layoutY="34.0" prefHeight="780.0" prefWidth="608.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="34.0">
       <children>
-      
-      
-      
+
+
+
             <VBox layoutX="31.0" layoutY="14.0" prefHeight="400.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-background-radius: 10; -fx-spacing: 10; -fx-padding: 10;">
                <Label fx:id="developersOptionsLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="252.0" text="Developers Options">
                   <font>
@@ -194,8 +194,51 @@
                <Font size="15.0" />
             </font>
          </Button>
-         
+
       </children>
    </AnchorPane>
+   <HBox layoutY="550.0" prefHeight="251.0" prefWidth="525.0" style="-fx-padding: 10;">
+      <children>
+         <VBox prefHeight="231.0" prefWidth="274.0" style="-fx-spacing: 5; -fx-padding: 5;">
+            <children>
+               <Label fx:id="networkLabel" prefHeight="24.0" prefWidth="145.0" text="Network: none">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <Label fx:id="networkStatusLabel" prefHeight="38.0" prefWidth="162.0" text="Status: Offline">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <Label fx:id="clientIdLabel" text="Id: none">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <HBox alignment="BOTTOM_LEFT" prefHeight="125.0" prefWidth="211.0" style="-fx-spacing: 15; -fx-padding: 0;">
+                  <children>
+                     <Button fx:id="disconnectButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="90.0" text="Disconnect">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Button>
+                     <Button fx:id="connectButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Connect">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Button>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+         <TableView fx:id="clientsTable" prefHeight="231.0" prefWidth="231.0" style="-fx-background-color: 7183;">
+           <columns>
+             <TableColumn fx:id="clientCol" prefWidth="116.0" text="Clients" />
+             <TableColumn fx:id="actionCol" prefWidth="114.0" text="Action" />
+           </columns>
+         </TableView>
+      </children>
+   </HBox>
   
 </AnchorPane>
