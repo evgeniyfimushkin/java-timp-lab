@@ -1,10 +1,9 @@
-package edu.evgen.Network;
+package edu.evgen.network;
 
 import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -23,12 +22,21 @@ public class Session extends Thread {
             e.printStackTrace();
         }
     }
+    public void sendClientsList(){
+        Server.getSessions().forEach(client -> {
+            try {
+                out.writeObject(client.socket);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
     @Override
     @SneakyThrows
     public void run(){
         try {
             while (!socket.isClosed()){
-                //выполнение сесии
+                sendClientsList();
             }
         }catch (Exception e){
             e.printStackTrace();

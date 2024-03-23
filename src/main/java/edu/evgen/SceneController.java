@@ -1,5 +1,6 @@
 package edu.evgen;
 
+import edu.evgen.network.Client;
 import edu.evgen.habitat.Simulation;
 import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.employee.*;
@@ -97,6 +98,7 @@ public class SceneController {
             startPauseTime = 0L,
             pausedTime = 0L;
 
+        Client client;
     //Основные методы работы симуляции
     private Stream<Simulation> getSimulations() {
         return Stream.of(
@@ -182,11 +184,13 @@ public class SceneController {
 
     @FXML
     private void initialize() {
-        try {
+//        client = new Client();
+//        try {
+//            client.connect("localhost", 19000);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
             configuration.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         habitat.setConfiguration(configuration);
         developersDelayTextField.textProperty().addListener(this::developersDelayOnChange);
         managersDelayTextField.textProperty().addListener(this::managersDelayOnChange);

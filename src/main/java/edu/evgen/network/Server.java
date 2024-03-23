@@ -1,11 +1,8 @@
-package edu.evgen.Network;
+package edu.evgen.network;
 
-import lombok.Data;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -19,10 +16,11 @@ public class Server {
     private static Thread listeningThread;
 
     public static void main(String[] args) throws IOException {
+        run = true;
         while (run) {
-            run = true;
-            ServerSocket serverSocket = null;
+            ServerSocket serverSocket = new ServerSocket(PORT);
             try {
+                System.out.println("Server is waiting for connections...");
                 Socket socket = serverSocket.accept();
                 System.out.println("Client connected: " + socket.getInputStream());
                 sessions.add(new Session(socket, getId()));

@@ -1,9 +1,0 @@
-processDelay=100
-developerLivingTime=4
-managerLivingTime=5
-developerDelay=1
-managerDelay=1
-developerProbability=0.5
-managerRatio=0.5
-paneSize=400
-moveDelay=1

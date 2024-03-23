@@ -1,6 +1,5 @@
 package edu.evgen;
 
-import edu.evgen.habitat.employee.Developer.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,12 +11,8 @@ import java.io.IOException;
 import java.net.URL;
 
 @Slf4j
-public class Main extends Application {
+public abstract class ClientApplication extends Application {
 
-    public static void main(String[] args) {
-        //Запуск апликейшн атакуейшн
-            Application.launch();
-    }
     @Override
     public void start(Stage rootStage) throws Exception {
 
@@ -41,13 +36,7 @@ public class Main extends Application {
                         case T-> controller.setSimulationTimeVisible();
                     }
                 });
-        rootStage.setOnCloseRequest(ex -> {
-            try {
-                controller.configuration.save();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        rootStage.setOnCloseRequest(ex -> controller.configuration.save());
         rootStage.show();
     }
     private URL getResource(String resource) {
