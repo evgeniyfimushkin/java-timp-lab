@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #1D7471;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.evgen.SceneController">
+   <MenuBar fx:id="mainMenuBar" prefHeight="25.0" prefWidth="1200.0">
+     <menus>
+         <Menu mnemonicParsing="false" text="File">
+            <items>
+               <MenuItem fx:id="loadButton" mnemonicParsing="false" text="Load" />
+               <MenuItem fx:id="saveButton" mnemonicParsing="false" text="Save" />
+            </items>
+         </Menu>
+       <Menu mnemonicParsing="false" text="Edit">
+         <items>
+           <MenuItem mnemonicParsing="false" text="Delete" />
+         </items>
+       </Menu>
+       <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
+         <items>
+           <MenuItem fx:id="helpMeItem" mnemonicParsing="false" text="Help me" />
+         </items>
+       </Menu>
+       <Menu fx:id="menuSimulation" mnemonicParsing="false" text="Simulation">
+         <items>
+           <MenuItem fx:id="menuStartItem" mnemonicParsing="false" text="Start" />
+               <MenuItem fx:id="menuStopItem" mnemonicParsing="false" text="Stop" />
+         </items>
+       </Menu>
+         <Menu mnemonicParsing="false" text="Terminal">
+           <items>
+             <MenuItem fx:id="terminalMenuItem" mnemonicParsing="false" text="Terminal" />
+           </items>
+         </Menu>
+     </menus>
+   </MenuBar>
+
+   <Pane fx:id="habitatPane" layoutY="25.0" prefHeight="525.0" prefWidth="525.0" style="-fx-background-color: #009B95; -fx-border-color: #006561;" />
+   <AnchorPane id="AnchorRight" layoutX="600.0" layoutY="34.0" prefHeight="780.0" prefWidth="608.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="34.0">
+      <children>
+
+
+
+            <VBox layoutX="31.0" layoutY="14.0" prefHeight="400.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-background-radius: 10; -fx-spacing: 10; -fx-padding: 10;">
+               <Label fx:id="developersOptionsLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="252.0" text="Developers Options">
+                  <font>
+                     <Font name="System Bold" size="20.0" />
+                  </font>
+            </Label>
+            <HBox fx:id="menuHBox" prefHeight="63.0" prefWidth="240.0">
+               <children>
+                  <ImageView fitHeight="65.0" fitWidth="60.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@developer.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="developersCountLabel" alignment="TOP_RIGHT" contentDisplay="RIGHT" prefHeight="66.0" prefWidth="147.0" text="0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Label fx:id="developersDelayLabel" text="Delay:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="developersDelayTextField" prefHeight="30.0" prefWidth="150.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label fx:id="developersProbabilityLabel" prefHeight="25.0" prefWidth="240.0" text="Probability: ">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
+            <MenuButton fx:id="developersProbabilityMenu" mnemonicParsing="false" text="Probabilities" />
+
+                <Label fx:id="developersLivingTimeLabel" prefHeight="24.0" prefWidth="240.0" text="Living Time: ">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Label>
+            <TextField fx:id="developerLivingTime" prefHeight="30.0" prefWidth="240.0" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 15;">
+               <children>
+                  <Label text="Priority: ">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <MenuButton fx:id="devPriorityMenuButton" mnemonicParsing="false" text="Auto" />
+                  <Button fx:id="devThreadStopButton" mnemonicParsing="false" text="Wait" />
+                  <Button fx:id="devThreadStartButton" mnemonicParsing="false" text="Run" />
+               </children>
+            </HBox>
+            </VBox>
+            <Button fx:id="startButton" layoutX="500.0" layoutY="708.0" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Start">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Button>
+            <Button fx:id="stopButton" layoutX="396.0" layoutY="708.0" prefHeight="58.0" prefWidth="94.0" style="-fx-background-radius: 100;" text="Stop">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Button>
+         <VBox layoutX="313.0" layoutY="14.0" prefHeight="400.0" prefWidth="260.0" style="-fx-background-color: #009B95; -fx-spacing: 10; -fx-background-radius: 10; -fx-padding: 10;">
+            <children>
+                  <Label fx:id="managersOptionLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="30.0" prefWidth="253.0" text="Managers Option">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+               </Label>
+               <HBox prefHeight="64.0" prefWidth="240.0">
+                  <children>
+                     <ImageView fitHeight="61.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@manager.png" />
+                        </image>
+                     </ImageView>
+                     <Label fx:id="managersCountLabel" alignment="TOP_RIGHT" contentDisplay="RIGHT" prefHeight="66.0" prefWidth="160.0" text="0">
+                        <font>
+                           <Font size="45.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+               <Label fx:id="managersDelayLabel" text="Delay:">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Label>
+               <TextField fx:id="managersDelayTextField" prefHeight="31.0" prefWidth="177.0">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </TextField>
+               <Label fx:id="managersRatioLabel" prefHeight="24.0" prefWidth="240.0" text="Ratio: ">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Label>
+               <MenuButton fx:id="managersRatioMenu" mnemonicParsing="false" text="Ratio" />
+                <Label fx:id="managerLivingTimeLabel" prefHeight="24.0" prefWidth="240.0" text="Living Time: ">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Label>
+               <TextField fx:id="managerLivingTime" prefHeight="30.0" prefWidth="240.0" />
+               <HBox alignment="CENTER" prefHeight="60.0" prefWidth="257.0" style="-fx-spacing: 15; -fx-padding: 2;">
+                  <children>
+                     <Label text="Priority: ">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Label>
+                     <MenuButton fx:id="mgrPriorityMenuButton" mnemonicParsing="false" text="Auto" />
+                     <Button fx:id="mgrThreadStopButton" mnemonicParsing="false" text="Wait" />
+                     <Button fx:id="mgrThreadStartButton" mnemonicParsing="false" text="Run" />
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+         <CheckBox fx:id="simulationInfoCheckBox" layoutX="313.0" layoutY="446.0" mnemonicParsing="false" text="Simulation Info">
+            <font>
+               <Font size="17.0" />
+            </font>
+         </CheckBox>
+            <Label fx:id="simulationTime" alignment="TOP_LEFT" contentDisplay="TOP" layoutX="31.0" layoutY="444.0" prefHeight="30.0" prefWidth="197.0" text="SimulationTime">
+               <font>
+                  <Font size="20.0" />
+               </font>
+         </Label>
+         <RadioButton fx:id="radioButtonHideTime" layoutX="145.0" layoutY="494.0" mnemonicParsing="false" text="Hide Time">
+            <font>
+               <Font size="13.0" />
+            </font>
+            <toggleGroup>
+               <ToggleGroup fx:id="simulationTimeGroup" />
+            </toggleGroup>
+         </RadioButton>
+         <RadioButton fx:id="radioButtonShowTime" layoutX="31.0" layoutY="494.0" mnemonicParsing="false" text="Show Time" toggleGroup="$simulationTimeGroup">
+            <font>
+               <Font size="13.0" />
+            </font>
+         </RadioButton>
+         <Button fx:id="objectsInfoButton" layoutX="392.0" layoutY="665.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="197.0" style="-fx-background-radius: 100;" text="Objects info">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Button>
+
+      </children>
+   </AnchorPane>
+   <HBox layoutY="550.0" prefHeight="251.0" prefWidth="525.0" style="-fx-padding: 10;">
+      <children>
+         <VBox prefHeight="231.0" prefWidth="274.0" style="-fx-spacing: 5; -fx-padding: 5;">
+            <children>
+               <Label fx:id="networkLabel" prefHeight="24.0" prefWidth="145.0" text="Network: none">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <Label fx:id="networkStatusLabel" prefHeight="38.0" prefWidth="162.0" text="Status: Offline">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <Label fx:id="clientIdLabel" text="Id: none">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <HBox alignment="BOTTOM_LEFT" prefHeight="125.0" prefWidth="211.0" style="-fx-spacing: 15; -fx-padding: 0;">
+                  <children>
+                     <Button fx:id="disconnectButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="90.0" text="Disconnect">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Button>
+                     <Button fx:id="connectButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Connect">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Button>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+         <TableView fx:id="clientsTable" prefHeight="231.0" prefWidth="231.0" style="-fx-background-color: 7183;">
+           <columns>
+             <TableColumn fx:id="clientCol" prefWidth="116.0" text="Clients" />
+             <TableColumn fx:id="actionCol" prefWidth="114.0" text="Action" />
+           </columns>
+         </TableView>
+      </children>
+   </HBox>
+  
+</AnchorPane>
