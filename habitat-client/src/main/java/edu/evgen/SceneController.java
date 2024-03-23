@@ -24,7 +24,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -34,8 +34,7 @@ import static edu.evgen.habitat.HabitatImpl.habitat;
 @Slf4j
 public class SceneController {
 
-    final HabitatConfiguration configuration
-            = HabitatConfiguration.builder()
+    final HabitatConfiguration configuration = HabitatConfiguration.builder()
             .processDelay(100L)
             .managerRatio(0.5)
             .managerDelay(2L)
@@ -85,20 +84,24 @@ public class SceneController {
             managersDelayLabel, developersDelayLabel,
             developersProbabilityLabel, managersRatioLabel;
 
+
     @FXML
     Pane habitatPane;
-    Simulation disappear = new Simulation(EmployeesRepository::disappearEmployee, 500L, "moveDev");
-    Simulation moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
-    Simulation moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr");
-    Simulation developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay() * 1000, "birthDev");
-    Simulation managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay() * 1000, "birthMgr");
-    Simulation killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying");
-    Simulation refreshTime = new Simulation(this::refreshTime, 100L, "timer");
-        Long startSimulationTime = System.currentTimeMillis(),
+
+    Simulation
+        disappear = new Simulation(EmployeesRepository::disappearEmployee, 500L, "moveDev"),
+        moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev"),
+        moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr"),
+        developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay() * 1000, "birthDev"),
+        managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay() * 1000, "birthMgr"),
+        killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying"),
+        refreshTime = new Simulation(this::refreshTime, 100L, "timer");
+    Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
 
-        Client client;
+    Optional<Client> client;
+
     //Основные методы работы симуляции
     private Stream<Simulation> getSimulations() {
         return Stream.of(
@@ -137,9 +140,7 @@ public class SceneController {
 
     public void doSimulation(ActionEvent event) {
         fieldsSetDisable(true);
-        getSimulations()
-                .map(Simulation::getThread)
-                .forEach(Thread::start);
+        getSimulations().forEach(Simulation::startSimulation);
     }
 
     public void continueSimulation() {
@@ -184,13 +185,7 @@ public class SceneController {
 
     @FXML
     private void initialize() {
-//        client = new Client();
-//        try {
-//            client.connect("localhost", 19000);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-            configuration.load();
+        configuration.load();
         habitat.setConfiguration(configuration);
         developersDelayTextField.textProperty().addListener(this::developersDelayOnChange);
         managersDelayTextField.textProperty().addListener(this::managersDelayOnChange);
@@ -250,6 +245,16 @@ public class SceneController {
         EmployeesRepository.habitatPane = this.habitatPane;
 
         refreshConfiguration();
+
+
+        client = Client.getClient(configuration.getServerPort());
+ }
+
+    Collection<String> getClientIds() {
+        return client
+                .map(Client::getServerMessages)
+                .map(List::getLast)
+                .orElseGet(Collections::emptyList);
     }
 
     //Методы реализующие объекты интерфейса
@@ -460,7 +465,8 @@ public class SceneController {
 
         simulationTime.setText("Simulation time: " + getSimulationTime());
     }
-    void refreshTime(){
+
+    void refreshTime() {
         Platform.runLater(() -> {
             simulationTime.setText("Simulation time: " + getSimulationTime());
             developersCountLabel.setText(String.valueOf(EmployeesRepository.getDevelopers().size()));

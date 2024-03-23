@@ -19,7 +19,7 @@ dependencies {
 
 application {
     mainModule.set('edu.evgen')
-    mainClass.set('edu.evgen.server.Server')
+    mainClass.set('edu.evgen.server.Application')
 }
 
 //java {

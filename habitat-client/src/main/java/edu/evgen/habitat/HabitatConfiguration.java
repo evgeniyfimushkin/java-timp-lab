@@ -21,6 +21,7 @@ public class HabitatConfiguration {
     private Double managerRatio;
     private Long paneSize;
     private Long moveDelay;
+    private Integer serverPort;
     private final String clientName = UUID.randomUUID().toString();
     private final Properties properties = new Properties();
     @SneakyThrows

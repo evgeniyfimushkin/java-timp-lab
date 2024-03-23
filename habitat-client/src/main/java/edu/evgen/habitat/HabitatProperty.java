@@ -17,7 +17,9 @@ public enum HabitatProperty {
     developerProbability(HabitatConfiguration::getDeveloperProbability, (h, s) -> h.setDeveloperProbability(Double.parseDouble(s)) , "0.5"),
     managerRatio(HabitatConfiguration::getManagerRatio, (h, s) -> h.setManagerRatio(Double.parseDouble(s)) , "0.5"),
     paneSize(HabitatConfiguration::getPaneSize, (h, s) -> h.setPaneSize(Long.parseLong(s)), "400"),
-    moveDelay(HabitatConfiguration::getMoveDelay, (h, s) -> h.setMoveDelay(Long.parseLong(s)), "1");
+    moveDelay(HabitatConfiguration::getMoveDelay, (h, s) -> h.setMoveDelay(Long.parseLong(s)), "1"),
+
+    serverPort(HabitatConfiguration::getServerPort, (h, s) -> h.setServerPort(Integer.parseInt(s)), "19000");
 
     final Function<HabitatConfiguration, Number> getter;
 

@@ -45,6 +45,10 @@ public class Simulation implements Runnable {
     public void pauseSimulation(){
         run = false;
     }
+
+    public void startSimulation() {
+        thread.start();
+    }
     public void stopSimulation(){
         thread.interrupt();
     }
