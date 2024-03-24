@@ -228,12 +228,7 @@
                </HBox>
             </children>
          </VBox>
-         <TableView fx:id="clientsTable" prefHeight="231.0" prefWidth="232.0" style="-fx-background-color: 7183;">
-           <columns>
-             <TableColumn fx:id="clientCol" prefWidth="151.0" text="Clients" />
-             <TableColumn fx:id="actionCol" prefWidth="79.0" text="Action" />
-           </columns>
-         </TableView>
+         <TextArea fx:id="clientsTextArea" prefHeight="231.0" prefWidth="362.0" />
       </children>
    </HBox>
   

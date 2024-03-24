@@ -86,10 +86,11 @@ public class Client implements Closeable {
         List<String> ids = new ArrayList<>();
         lines.add(lineReader.readLine());
         while (!"@END@".equals(lines.getLast())){
+            ids.remove(lines.getLast());
             ids.add(lines.getLast());
             lines.add(lineReader.readLine());
         }
-        log.info("getMessage -> {}", lines);
+        log.info("getMessage -> {}", ids);
         serverMessages.add(lines);
         ids.forEach(ServerSession::new);
         controller.refreshClientsTable(ServerSession.getSessions());

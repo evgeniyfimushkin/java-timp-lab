@@ -1,4 +1,6 @@
 package edu.evgen;
+
+import edu.evgen.client.ServerSession;
 import edu.evgen.habitat.employee.EmployeesRepository;
 import edu.evgen.habitat.employee.Manager;
 import javafx.fxml.FXML;
@@ -7,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -22,10 +25,11 @@ public class TerminalController {
     TextArea textArea;
     private Integer cursorCommand;
 
-    public TerminalController(Stage stage, SceneController sceneController){
+    public TerminalController(Stage stage, SceneController sceneController) {
         this.stage = stage;
         this.sceneController = sceneController;
     }
+
     private void output(String message) {
         textArea.appendText(String.format("%s\n", message));
     }
@@ -50,6 +54,8 @@ public class TerminalController {
                         fire - delete all the Managers
                         help - display this message
                         exit - exit the terminal session
+                        clients - show all client in server
+                        exchange <client-id> - swap managers and developers with some client
                         """
         );
     }
@@ -59,13 +65,13 @@ public class TerminalController {
         try {
             count = Integer.parseInt(countString);
             if (count <= 0) throw new NumberFormatException();
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             output(String.format("Bad value: %s", countString));
             return;
         }
-        IntStream.rangeClosed(0,count-1).forEach(e -> {
-            Manager Carl = new Manager(400L,20L);
-            output(String.format("Manager born!\n Id: %s \nBirthTime: %s",Carl.getId(),Carl.getBirthTime()));
+        IntStream.rangeClosed(0, count - 1).forEach(e -> {
+            Manager Carl = new Manager(400L, 20L);
+            output(String.format("Manager born!\n Id: %s \nBirthTime: %s", Carl.getId(), Carl.getBirthTime()));
         });
         output("-------------------------------");
         output(String.format("%s managers was born!", countString));
@@ -79,6 +85,13 @@ public class TerminalController {
         sceneController.refreshStatistic();
     }
 
+    private void commandClients() {
+        output("Clients: ");
+        ServerSession.getSessions().forEach(this::output);
+    }
+    private void commandExchange(String id){
+        
+    }
     private void commandExit() {
         stage.close();
     }
@@ -94,10 +107,17 @@ public class TerminalController {
                     commandHire(tokens[1]);
             }
             case "fire" -> {
-                    commandFire();
+                commandFire();
             }
             case "exit" -> {
                 commandExit();
+            }
+            case "clients" -> {
+                commandClients();
+            }
+            case "exchange" -> {
+                if (checkAmountOfArguments(tokens, 2, 2))
+                    commandExchange(tokens[1]);
             }
             case "" -> {
 
@@ -120,17 +140,17 @@ public class TerminalController {
                 textArea.setScrollTop(100);
             }
             if (event.getCode() == KeyCode.UP) {
-                if (!commands.isEmpty() && cursorCommand>0 && cursorCommand <= commands.size()) {
-                    cursorCommand --;
+                if (!commands.isEmpty() && cursorCommand > 0 && cursorCommand <= commands.size()) {
+                    cursorCommand--;
                     commandField.setText(commands.get(cursorCommand));
-                    IntStream.rangeClosed(0,commands.getLast().length()).forEach(e -> commandField.forward());
+                    IntStream.rangeClosed(0, commands.getLast().length()).forEach(e -> commandField.forward());
                 }
             }
             if (event.getCode() == KeyCode.DOWN) {
-                if (!commands.isEmpty() && cursorCommand>=0 && cursorCommand < commands.size() - 1) {
-                    cursorCommand ++;
+                if (!commands.isEmpty() && cursorCommand >= 0 && cursorCommand < commands.size() - 1) {
+                    cursorCommand++;
                     commandField.setText(commands.get(cursorCommand));
-                    IntStream.rangeClosed(0,commands.getLast().length()).forEach(e -> commandField.forward());
+                    IntStream.rangeClosed(0, commands.getLast().length()).forEach(e -> commandField.forward());
                 }
             }
         });

@@ -84,6 +84,8 @@ public class SceneController {
     public TextField developersDelayTextField, managersDelayTextField,
             managerLivingTime, developerLivingTime;
     @FXML
+    public TextArea clientsTextArea;
+    @FXML
     public Label simulationTime,
             developersCountLabel, managersCountLabel,
             managersDelayLabel, developersDelayLabel,
@@ -94,11 +96,11 @@ public class SceneController {
     @FXML
     Pane habitatPane;
     @FXML
-    TableView<ServerSession> clientsTable;
-    @FXML
-    TableColumn<ServerSession, String> clientCol;
-    @FXML
-    TableColumn<ServerSession, Button> actionCol;
+//    TableView<ServerSession> clientsTable;
+//    @FXML
+//    TableColumn<ServerSession, String> clientCol;
+//    @FXML
+//    TableColumn<ServerSession, Button> actionCol;
 
     Simulation
             disappear = new Simulation(EmployeesRepository::disappearEmployee, 500L, "moveDev"),
@@ -258,8 +260,7 @@ public class SceneController {
 
         refreshConfiguration();
 
-        clientCol.setCellValueFactory(new PropertyValueFactory<ServerSession, String>("id"));
-        actionCol.setCellValueFactory(new PropertyValueFactory<ServerSession,  Button>("button"));
+        clientsTextArea.setEditable(false);
         client = Client.getClient(this, configuration.getServerPort());
     }
 
@@ -499,14 +500,10 @@ public class SceneController {
 
     }
 
-    public void refreshClientsTable(List<ServerSession> sessions) {
-        clientsTable.refresh();
-        ObservableList<ServerSession> idsTable = FXCollections.observableArrayList();
-        idsTable.addAll(sessions);
-        clientsTable.setItems(idsTable);
-        clientsTable.refresh();
-
-
+    public void refreshClientsTable(List<String> sessions) {
+        clientsTextArea.clear();
+        clientsTextArea.appendText("Clients: \n");
+        sessions.forEach(str -> clientsTextArea.appendText(str + "\n"));
     }
 
     Long getSimulationTime() {
