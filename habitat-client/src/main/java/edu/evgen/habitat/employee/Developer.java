@@ -16,7 +16,7 @@ public class Developer extends Employee {
     Double ySpeed;
    private void changeDirection() {
        xSpeed = random.nextBoolean() ? speed : -speed;
-       ySpeed = random.nextBoolean() ? speed : -speed;
+       ySpeed = random.nextBoolean () ? speed : -speed;
     }
     private LocalDateTime checkPoint;
     public Developer(Long paneSize, Long livingTime) {

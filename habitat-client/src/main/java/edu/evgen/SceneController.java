@@ -1,11 +1,15 @@
 package edu.evgen;
 
 import edu.evgen.client.Client;
+import edu.evgen.client.ServerSession;
 import edu.evgen.habitat.Simulation;
 import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.employee.*;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -79,23 +84,30 @@ public class SceneController {
     public TextField developersDelayTextField, managersDelayTextField,
             managerLivingTime, developerLivingTime;
     @FXML
-    Label simulationTime,
+    public Label simulationTime,
             developersCountLabel, managersCountLabel,
             managersDelayLabel, developersDelayLabel,
-            developersProbabilityLabel, managersRatioLabel;
+            developersProbabilityLabel, managersRatioLabel,
+            networkStatusLabel, clientIdLabel, networkLabel;
 
 
     @FXML
     Pane habitatPane;
+    @FXML
+    TableView<ServerSession> clientsTable;
+    @FXML
+    TableColumn<ServerSession, String> clientCol;
+    @FXML
+    TableColumn<ServerSession, Button> actionCol;
 
     Simulation
-        disappear = new Simulation(EmployeesRepository::disappearEmployee, 500L, "moveDev"),
-        moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev"),
-        moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr"),
-        developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay() * 1000, "birthDev"),
-        managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay() * 1000, "birthMgr"),
-        killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying"),
-        refreshTime = new Simulation(this::refreshTime, 100L, "timer");
+            disappear = new Simulation(EmployeesRepository::disappearEmployee, 500L, "moveDev"),
+            moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev"),
+            moveManagers = new Simulation(EmployeesRepository::moveManagers, configuration.getMoveDelay(), "moveMgr"),
+            developerBirthSimulation = new Simulation(() -> birthAttempt(habitat::developerBirthAttempt), configuration.getDeveloperDelay() * 1000, "birthDev"),
+            managerBirthSimulation = new Simulation(() -> birthAttempt(habitat::managerBirthAttempt), configuration.getManagerDelay() * 1000, "birthMgr"),
+            killSimulation = new Simulation(this::kill, configuration.getMoveDelay(), "dying"),
+            refreshTime = new Simulation(this::refreshTime, 100L, "timer");
     Long startSimulationTime = System.currentTimeMillis(),
             startPauseTime = 0L,
             pausedTime = 0L;
@@ -246,9 +258,10 @@ public class SceneController {
 
         refreshConfiguration();
 
-
-        client = Client.getClient(configuration.getServerPort());
- }
+        clientCol.setCellValueFactory(new PropertyValueFactory<ServerSession, String>("id"));
+        actionCol.setCellValueFactory(new PropertyValueFactory<ServerSession,  Button>("button"));
+        client = Client.getClient(this, configuration.getServerPort());
+    }
 
     Collection<String> getClientIds() {
         return client
@@ -483,6 +496,16 @@ public class SceneController {
 
         developersProbabilityMenu.setText(configuration.getDeveloperProbability().toString());
         managersRatioMenu.setText(configuration.getManagerRatio().toString());
+
+    }
+
+    public void refreshClientsTable(List<ServerSession> sessions) {
+        clientsTable.refresh();
+        ObservableList<ServerSession> idsTable = FXCollections.observableArrayList();
+        idsTable.addAll(sessions);
+        clientsTable.setItems(idsTable);
+        clientsTable.refresh();
+
 
     }
 

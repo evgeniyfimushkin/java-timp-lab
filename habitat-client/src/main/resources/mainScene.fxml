@@ -201,21 +201,17 @@
       <children>
          <VBox prefHeight="231.0" prefWidth="274.0" style="-fx-spacing: 5; -fx-padding: 5;">
             <children>
-               <Label fx:id="networkLabel" prefHeight="24.0" prefWidth="145.0" text="Network: none">
+               <Label fx:id="networkLabel" prefHeight="27.0" prefWidth="275.0" text="Network: none">
                   <font>
                      <Font size="18.0" />
                   </font>
                </Label>
-               <Label fx:id="networkStatusLabel" prefHeight="38.0" prefWidth="162.0" text="Status: Offline">
+               <Label fx:id="networkStatusLabel" prefHeight="33.0" prefWidth="272.0" text="Status: Offline">
                   <font>
                      <Font size="18.0" />
                   </font>
                </Label>
-               <Label fx:id="clientIdLabel" text="Id: none">
-                  <font>
-                     <Font size="18.0" />
-                  </font>
-               </Label>
+               <Label fx:id="clientIdLabel" prefHeight="27.0" prefWidth="276.0" text="Id: none" />
                <HBox alignment="BOTTOM_LEFT" prefHeight="125.0" prefWidth="211.0" style="-fx-spacing: 15; -fx-padding: 0;">
                   <children>
                      <Button fx:id="disconnectButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="90.0" text="Disconnect">
@@ -232,10 +228,10 @@
                </HBox>
             </children>
          </VBox>
-         <TableView fx:id="clientsTable" prefHeight="231.0" prefWidth="231.0" style="-fx-background-color: 7183;">
+         <TableView fx:id="clientsTable" prefHeight="231.0" prefWidth="232.0" style="-fx-background-color: 7183;">
            <columns>
-             <TableColumn fx:id="clientCol" prefWidth="116.0" text="Clients" />
-             <TableColumn fx:id="actionCol" prefWidth="114.0" text="Action" />
+             <TableColumn fx:id="clientCol" prefWidth="151.0" text="Clients" />
+             <TableColumn fx:id="actionCol" prefWidth="79.0" text="Action" />
            </columns>
          </TableView>
       </children>

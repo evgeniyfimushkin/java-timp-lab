@@ -15,7 +15,6 @@ import java.util.*;
 public class Server implements Runnable {
     private final List<Session> sessions = new LinkedList<>();
     private final Set<String> ids = new HashSet<>();
-    private final Random random = new Random();
     private final Integer port;
     private Boolean run;
 
@@ -28,6 +27,7 @@ public class Server implements Runnable {
                     log.info("Server is waiting for connections on port {}", port);
                     Socket socket = serverSocket.accept();
                     sessions.add(new Session(socket, getId()));
+                    sendId(sessions.getLast());
                     sessions.forEach(this::sendSessions);
                     log.info("Client connected. Session {}. Clients count {}", sessions.getLast().id(), sessions.size());
                 } catch (IOException e) {
@@ -43,6 +43,13 @@ public class Server implements Runnable {
         ids.stream()
                 .forEach(outputStream::println);
         outputStream.println("@END@");
+    }
+    @SneakyThrows
+    private void sendId(Session session){
+        PrintStream outputStream = new PrintStream(session.socket().getOutputStream());
+        outputStream.println("@SETID@");
+        outputStream.println(session.id());
+        outputStream.println("@END");
     }
     private String getId() {
         String currentId = UUID.randomUUID().toString();
