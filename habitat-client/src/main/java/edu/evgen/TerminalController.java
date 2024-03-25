@@ -1,9 +1,11 @@
 package edu.evgen;
 
+import edu.evgen.client.Client;
 import edu.evgen.client.ServerSession;
 import edu.evgen.habitat.employee.EmployeesRepository;
 import edu.evgen.habitat.employee.Manager;
 import javafx.fxml.FXML;
+import javafx.scene.control.Control;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -90,7 +92,7 @@ public class TerminalController {
         ServerSession.getSessions().forEach(this::output);
     }
     private void commandExchange(String id){
-        
+        sceneController.client.get().sendDevelopers(id);
     }
     private void commandExit() {
         stage.close();

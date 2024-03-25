@@ -60,7 +60,9 @@ public class SceneController {
             devThreadStopButton,
             devThreadStartButton,
             mgrThreadStopButton,
-            mgrThreadStartButton;
+            mgrThreadStartButton,
+            disconnectButton,
+            connectButton;
     @FXML
     public MenuButton
             developersProbabilityMenu,
@@ -95,12 +97,6 @@ public class SceneController {
 
     @FXML
     Pane habitatPane;
-    @FXML
-//    TableView<ServerSession> clientsTable;
-//    @FXML
-//    TableColumn<ServerSession, String> clientCol;
-//    @FXML
-//    TableColumn<ServerSession, Button> actionCol;
 
     Simulation
             disappear = new Simulation(EmployeesRepository::disappearEmployee, 500L, "moveDev"),
@@ -114,7 +110,7 @@ public class SceneController {
             startPauseTime = 0L,
             pausedTime = 0L;
 
-    Optional<Client> client;
+    public Optional<Client> client;
 
     //Основные методы работы симуляции
     private Stream<Simulation> getSimulations() {
@@ -218,6 +214,7 @@ public class SceneController {
         threadMenuItemStream().forEach(devPriorityMenuButton.getItems()::add);
         threadMenuItemStream().forEach(mgrPriorityMenuButton.getItems()::add);
 
+
         devPriorityMenuButton.getItems().forEach(menuItem -> menuItem.setOnAction(e -> {
             developerBirthSimulation.setPriority(Integer.parseInt(menuItem.getText()));
             devPriorityMenuButton.setText(String.valueOf(developerBirthSimulation.getPriority()));
@@ -261,9 +258,27 @@ public class SceneController {
         refreshConfiguration();
 
         clientsTextArea.setEditable(false);
-        client = Client.getClient(this, configuration.getServerPort());
+        //client = Client.getClient(this, configuration.getServerPort());
+
+
+        disconnectButton.setOnAction(e -> client.ifPresent(client1 -> {
+                    client1.close();
+                    connectButton.setDisable(false);
+                }
+        ));
+        connectButton.setOnAction(event -> {
+            connectButton.setDisable(true);
+            client = Client.getClient(this, configuration.getServerPort());
+            if (client.isPresent()){
+                networkStatusLabel.setText("Status: Online");
+                networkLabel.setText("Network: connected");
+            }
+        });
     }
 
+    public void printId(String id){
+        Platform.runLater(() -> clientIdLabel.setText("Id: " + id));
+    };
     Collection<String> getClientIds() {
         return client
                 .map(Client::getServerMessages)

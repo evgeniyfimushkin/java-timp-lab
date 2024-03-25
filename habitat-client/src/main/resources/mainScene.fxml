@@ -228,7 +228,7 @@
                </HBox>
             </children>
          </VBox>
-         <TextArea fx:id="clientsTextArea" prefHeight="231.0" prefWidth="362.0" />
+         <TextArea fx:id="clientsTextArea" prefHeight="231.0" prefWidth="300.0" />
       </children>
    </HBox>
   
