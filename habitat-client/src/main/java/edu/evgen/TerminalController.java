@@ -92,7 +92,7 @@ public class TerminalController {
         ServerSession.getSessions().forEach(this::output);
     }
     private void commandExchange(String id){
-        sceneController.client.get().sendDevelopers(id);
+        sceneController.client.get().sendManagers(id);
     }
     private void commandExit() {
         stage.close();

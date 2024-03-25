@@ -43,6 +43,18 @@ public abstract class Employee implements IBehaviour, Serializable {
 
         EmployeesRepository.addEmployee(this);
     }
+    public Employee(Employee employee, Boolean key){
+        this.x = employee.x;
+        this.y = employee.y;
+        this.livingTime = employee.livingTime;
+        this.pic = employee.pic;
+        this.imageView = null;
+        this.imageViewForTable = null;
+        this.paneSize = employee.paneSize;
+        this.disapearCof = employee.disapearCof;
+
+//        EmployeesRepository.addEmployee(this);
+    }
 
 
 

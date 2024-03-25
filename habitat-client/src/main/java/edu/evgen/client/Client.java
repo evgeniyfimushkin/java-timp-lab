@@ -30,7 +30,7 @@ public class Client implements Closeable {
     public Client(SceneController controller, Integer port) throws IOException {
         this.controller = controller;
         this.socket = new Socket("localhost", port);
-        this.simulation = new Simulation(this::pullMessage, 100L, "client");
+        this.simulation = new Simulation(this::pullMessage, 1L, "client");
         simulation.startSimulation();
     }
 
@@ -45,19 +45,22 @@ public class Client implements Closeable {
 
     @SneakyThrows
     private void exchangeRequest(List<String> lines, BufferedReader lineReader) {
-        log.info("exchangeRequest <- ");
+
+        log.info("switch <- {}", lines.getLast());
         lines.add(lineReader.readLine());
         String clientId = lines.getLast();
+        log.info("exchangeRequest <- from {}", clientId);
 
-        lines.add(lineReader.readLine());
-        while (!(lines.getLast().equals("@END@"))) {
-
-            //Managers
-            new Manager((Manager) lineReader.readLine());
-
-            lines.add(lineReader.readLine());
+        ObjectInputStream objectInputStream;
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
+        Boolean keepReading = true;
+        Object object;
+        while ((object = (Manager) objectInputStream.readObject()) != null) {
+            log.info("ADDDDDEDD");
+            new Manager((Manager) object);
         }
-        log.info("Buffer is empty");
+        log.info("SEND DEVS");
+        //sendDevelopers(clientId);
     }
 
     @SneakyThrows
@@ -83,11 +86,13 @@ public class Client implements Closeable {
         PrintStream outputStreamStr = new PrintStream(socket.getOutputStream());
         outputStreamStr.println("@EXCHANGEREPLY@");
         outputStreamStr.println(recipient);
+
         ObjectOutputStream outputStream;
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         for (int i = 0; i < EmployeesRepository.getDevelopers().size(); i++) {
             outputStream.writeObject(EmployeesRepository.getDevelopers().get(i));
         }
+
         outputStreamStr.println();
         outputStreamStr.println("@END@");
         EmployeesRepository.getDevelopers().forEach(EmployeesRepository::removeEmployee);
@@ -97,14 +102,13 @@ public class Client implements Closeable {
         PrintStream outputStreamStr = new PrintStream(socket.getOutputStream());
         outputStreamStr.println("@EXCHANGEREQUEST@");
         outputStreamStr.println(recipient);
+
         ObjectOutputStream outputStream;
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         for (int i = 0; i < EmployeesRepository.getManagers().size(); i++) {
-            //outputStream.writeObject(EmployeesRepository.getManagers().get(i));
-            outputStreamStr.println(EmployeesRepository.getManagers().get(i).toString());
+            outputStream.writeObject(EmployeesRepository.getManagers().get(i));
         }
-        outputStreamStr.println();
-        outputStreamStr.println("@END@");
+        outputStream.writeObject(null);
         EmployeesRepository.getManagers().forEach(EmployeesRepository::removeEmployee);
     }
         @SneakyThrows
@@ -112,8 +116,8 @@ public class Client implements Closeable {
             BufferedReader lineReader = new BufferedReader(new InputStreamReader((socket.getInputStream())));
             List<String> lines = new ArrayList<>();
             lines.add(lineReader.readLine());
-            while (!(lines.getLast().isEmpty())) {
-                log.info("switch <- {}", lines.getLast());
+            log.info("new message {}" , lines.getLast());
+            while (true) {
                 switch (lines.getLast()) {
                     case "@SESSIONS@":
                         sessionsMessageHandler(lines, lineReader);
@@ -138,7 +142,7 @@ public class Client implements Closeable {
                 }
                 lines.add(lineReader.readLine());
             }
-            log.info("Buffer is empty");
+//            log.info("Buffer is empty");
 
         }
 
