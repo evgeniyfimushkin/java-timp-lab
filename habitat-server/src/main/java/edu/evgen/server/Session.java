@@ -4,10 +4,8 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import javafx.scene.image.ImageView;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,7 @@ public class Session implements Closeable {
         listener.start();
     }
 
+    @Synchronized
     @SneakyThrows
     public void getOut(List<String> lines, BufferedReader lineReader, String clientId,
                        List<Employee> objects ) {
@@ -62,7 +61,7 @@ public class Session implements Closeable {
 
     @SneakyThrows
     @Synchronized
-    public void ricochet(List<String> lines, BufferedReader lineReader) {
+    public void request(List<String> lines, BufferedReader lineReader) {
 
         List<Employee> objects = new ArrayList<>();
         lines.add(lineReader.readLine());
@@ -87,6 +86,33 @@ public class Session implements Closeable {
                 iter.getOut(lines, lineReader, id, objects);
         }
     }
+    @SneakyThrows
+    @Synchronized
+    public void reply(List<String> lines, BufferedReader lineReader) {
+
+        List<Employee> objects = new ArrayList<>();
+        lines.add(lineReader.readLine());
+        String clientId = lines.getLast();
+        log.info("Ricochet");
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+
+        Employee object;
+        while ((object = (Employee) objectInputStream.readObject()) != null) {
+            objects.add((Developer) object);
+            log.info("OBJECT ADDED");
+        }
+
+        log.info("Object size {}",objects.size());
+        log.info("end of reading of {}", clientId);
+//        server.sessions.stream().filter(session -> clientId.equals(session.id))
+//                .peek(session -> session.getOut(lines, lineReader));
+        for (Session iter : server.sessions) {
+            if (clientId.equals(iter.id))
+                iter.getOut(lines, lineReader, id, objects);
+        }
+    }
 
     @SneakyThrows
     public void listen() {
@@ -98,10 +124,10 @@ public class Session implements Closeable {
                 log.info("switch <- {}", lines.getLast());
                 switch (lines.getLast()) {
                     case "@EXCHANGEREQUEST@":
-                        ricochet(lines, lineReader);
+                        request(lines, lineReader);
                         break;
                     case "@EXCHANGEREPLY@":
-                        ricochet(lines, lineReader);
+                        reply(lines, lineReader);
                         break;
                     default:
                         break;

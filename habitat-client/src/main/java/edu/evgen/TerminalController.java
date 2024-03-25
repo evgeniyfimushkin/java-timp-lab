@@ -2,6 +2,7 @@ package edu.evgen;
 
 import edu.evgen.client.Client;
 import edu.evgen.client.ServerSession;
+import edu.evgen.habitat.employee.Developer;
 import edu.evgen.habitat.employee.EmployeesRepository;
 import edu.evgen.habitat.employee.Manager;
 import javafx.fxml.FXML;
@@ -72,8 +73,27 @@ public class TerminalController {
             return;
         }
         IntStream.rangeClosed(0, count - 1).forEach(e -> {
-            Manager Carl = new Manager(400L, 20L);
+            Manager Carl = new Manager(400L, 30L);
             output(String.format("Manager born!\n Id: %s \nBirthTime: %s", Carl.getId(), Carl.getBirthTime()));
+        });
+        output("-------------------------------");
+        output(String.format("%s managers was born!", countString));
+        sceneController.refreshStatistic();
+
+    }
+
+    private void commandHireDevs(String countString) {
+        Integer count;
+        try {
+            count = Integer.parseInt(countString);
+            if (count <= 0) throw new NumberFormatException();
+        } catch (NumberFormatException e) {
+            output(String.format("Bad value: %s", countString));
+            return;
+        }
+        IntStream.rangeClosed(0, count - 1).forEach(e -> {
+            Developer Carl = new Developer(400L, 30L);
+            output(String.format("Developer born!\n Id: %s \nBirthTime: %s", Carl.getId(), Carl.getBirthTime()));
         });
         output("-------------------------------");
         output(String.format("%s managers was born!", countString));
@@ -107,6 +127,10 @@ public class TerminalController {
             case "hire" -> {
                 if (checkAmountOfArguments(tokens, 2, 2))
                     commandHire(tokens[1]);
+            }
+            case "hireDevs" -> {
+                if (checkAmountOfArguments(tokens, 2, 2))
+                    commandHireDevs(tokens[1]);
             }
             case "fire" -> {
                 commandFire();

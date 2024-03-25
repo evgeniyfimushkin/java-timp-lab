@@ -30,7 +30,7 @@ public class Client implements Closeable {
     public Client(SceneController controller, Integer port) throws IOException {
         this.controller = controller;
         this.socket = new Socket("localhost", port);
-        this.simulation = new Simulation(this::pullMessage, 1L, "client");
+        this.simulation = new Simulation(this::pullMessage, 100L, "client");
         simulation.startSimulation();
     }
 
@@ -53,31 +53,30 @@ public class Client implements Closeable {
 
         ObjectInputStream objectInputStream;
         objectInputStream = new ObjectInputStream(socket.getInputStream());
-        Boolean keepReading = true;
         Object object;
         while ((object = (Manager) objectInputStream.readObject()) != null) {
-            log.info("ADDDDDEDD");
+//            log.info("ADDDDDEDD");
             new Manager((Manager) object);
         }
         log.info("SEND DEVS");
-        //sendDevelopers(clientId);
+        sendDevelopers(clientId);
     }
 
     @SneakyThrows
     private void exchangeReply(List<String> lines, BufferedReader lineReader) {
-        log.info("exchangeReply <- ");
+
+        log.info("switch <- {}", lines.getLast());
         lines.add(lineReader.readLine());
         String clientId = lines.getLast();
+        log.info("exchangeReply <- from {}", clientId);
 
-        lines.add(lineReader.readLine());
-        while (!(lines.getLast().equals("@END@"))) {
-
-            //Developers
-
-
-            lines.add(lineReader.readLine());
+        ObjectInputStream objectInputStream;
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
+        Object object;
+        while ((object = (Developer) objectInputStream.readObject()) != null) {
+            new Developer((Developer) object);
         }
-        log.info("Buffer is empty");
+        log.info("DEVS GETS");
 
     }
 
@@ -92,9 +91,7 @@ public class Client implements Closeable {
         for (int i = 0; i < EmployeesRepository.getDevelopers().size(); i++) {
             outputStream.writeObject(EmployeesRepository.getDevelopers().get(i));
         }
-
-        outputStreamStr.println();
-        outputStreamStr.println("@END@");
+        outputStream.writeObject(null);
         EmployeesRepository.getDevelopers().forEach(EmployeesRepository::removeEmployee);
     }
     @SneakyThrows
