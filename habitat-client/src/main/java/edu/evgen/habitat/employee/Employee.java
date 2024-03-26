@@ -22,12 +22,12 @@ public abstract class Employee implements IBehaviour, Serializable {
     public Employee(String pic, Long paneSize, Long livingTime) {
         this.livingTime = livingTime;
         this.paneSize = paneSize;
-        this.imageView = new ImageView(pic);
-        this.imageViewForTable = new ImageView(pic);
+        this.pic = pic;
+        this.imageView = new ImageView(this.pic);
+        this.imageViewForTable = new ImageView(this.pic);
         this.move(
                 paneSize * random.nextDouble(),
                 paneSize * random.nextDouble());
-        this.pic = pic;
         this.disapearCof = (double)this.livingTime;
         EmployeesRepository.addEmployee(this);
     }

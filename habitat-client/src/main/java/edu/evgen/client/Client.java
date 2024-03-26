@@ -2,17 +2,19 @@ package edu.evgen.client;
 
 import edu.evgen.SceneController;
 import edu.evgen.habitat.Simulation;
-import edu.evgen.habitat.employee.Developer;
-import edu.evgen.habitat.employee.EmployeesRepository;
-import edu.evgen.habitat.employee.Manager;
+import edu.evgen.habitat.employee.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
+
+import static edu.evgen.client.MessageMarkers.EXCHANGEREPLY;
+import static edu.evgen.client.MessageMarkers.EXCHANGEREQUEST;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -44,147 +46,107 @@ public class Client implements Closeable {
     }
 
     @SneakyThrows
-    private void exchangeRequest(List<String> lines, BufferedReader lineReader) {
-
-        log.info("switch <- {}", lines.getLast());
-        lines.add(lineReader.readLine());
-        String clientId = lines.getLast();
-        log.info("exchangeRequest <- from {}", clientId);
-
-        ObjectInputStream objectInputStream;
-        objectInputStream = new ObjectInputStream(socket.getInputStream());
-        Object object;
-        while ((object = (Manager) objectInputStream.readObject()) != null) {
-//            log.info("ADDDDDEDD");
-            new Manager((Manager) object);
+    private void exchange(Message message) {
+        if (message.getMarker() == EXCHANGEREQUEST) {
+            for (Object iter : message.getList()) {
+                new Manager((Manager) iter);
+            }
+            List<IBehaviour> list = new ArrayList<>();
+            EmployeesRepository.getDevelopers().forEach(list::add);
+            Message messageReply = new Message(EXCHANGEREPLY, id, message.getSender(), list);
+            ObjectOutputStream outputStream;
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            outputStream.writeObject(messageReply);
+            EmployeesRepository.getDevelopers().forEach(EmployeesRepository::removeEmployee);
+            log.info("REPLY");
+        } else if (message.getMarker() == EXCHANGEREPLY) {
+            for (Object iter : message.getList()) {
+                new Developer((Developer) iter);
+            }
         }
-        log.info("SEND DEVS");
-        sendDevelopers(clientId);
     }
 
-    @SneakyThrows
-    private void exchangeReply(List<String> lines, BufferedReader lineReader) {
-
-        log.info("switch <- {}", lines.getLast());
-        lines.add(lineReader.readLine());
-        String clientId = lines.getLast();
-        log.info("exchangeReply <- from {}", clientId);
-
-        ObjectInputStream objectInputStream;
-        objectInputStream = new ObjectInputStream(socket.getInputStream());
-        Object object;
-        while ((object = (Developer) objectInputStream.readObject()) != null) {
-            new Developer((Developer) object);
-        }
-        log.info("DEVS GETS");
-
-    }
-
-    @SneakyThrows
-    public void sendDevelopers(String recipient) {
-        PrintStream outputStreamStr = new PrintStream(socket.getOutputStream());
-        outputStreamStr.println("@EXCHANGEREPLY@");
-        outputStreamStr.println(recipient);
-
-        ObjectOutputStream outputStream;
-        outputStream = new ObjectOutputStream(socket.getOutputStream());
-        for (int i = 0; i < EmployeesRepository.getDevelopers().size(); i++) {
-            outputStream.writeObject(EmployeesRepository.getDevelopers().get(i));
-        }
-        outputStream.writeObject(null);
-        EmployeesRepository.getDevelopers().forEach(EmployeesRepository::removeEmployee);
-    }
     @SneakyThrows
     public void sendManagers(String recipient) {
-        PrintStream outputStreamStr = new PrintStream(socket.getOutputStream());
-        outputStreamStr.println("@EXCHANGEREQUEST@");
-        outputStreamStr.println(recipient);
-
+        List<IBehaviour> list = new ArrayList<>();
+        EmployeesRepository.getManagers().forEach(list::add);
+        Message message = new Message(EXCHANGEREQUEST, id, recipient, list);
         ObjectOutputStream outputStream;
         outputStream = new ObjectOutputStream(socket.getOutputStream());
-        for (int i = 0; i < EmployeesRepository.getManagers().size(); i++) {
-            outputStream.writeObject(EmployeesRepository.getManagers().get(i));
-        }
-        outputStream.writeObject(null);
+        outputStream.writeObject(message);
         EmployeesRepository.getManagers().forEach(EmployeesRepository::removeEmployee);
     }
-        @SneakyThrows
-        public void pullMessage () {
-            BufferedReader lineReader = new BufferedReader(new InputStreamReader((socket.getInputStream())));
-            List<String> lines = new ArrayList<>();
-            lines.add(lineReader.readLine());
-            log.info("new message {}" , lines.getLast());
-            while (true) {
-                switch (lines.getLast()) {
-                    case "@SESSIONS@":
-                        sessionsMessageHandler(lines, lineReader);
-                        break;
-                    case "@EXCHANGEREQUEST@":
-                        exchangeRequest(lines, lineReader);
-                        break;
-                    case "@EXCHANGEREPLY@":
-                        exchangeReply(lines, lineReader);
-                        break;
-                    case "@SETID@":
-                        getIdFromServer(lines, lineReader);
-                        break;
-                    case "@MANAGERS@":
-                        managersMessageHandler(lines, lineReader);
-                        break;
-                    case "@DEVELOPERS@":
-                        developersMessageHandler(lines, lineReader);
-                        break;
-                    default:
-                        break;
-                }
-                lines.add(lineReader.readLine());
+
+    @Synchronized
+    @SneakyThrows
+    public void pullMessage() {
+        while (true) {
+
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+            Message message = (Message) objectInputStream.readObject();
+
+            if (message == null) {
+                continue;
             }
+
+            switch (message.getMarker()) {
+                case SESSIONS:
+                    sessionsMessageHandler(message);
+                    break;
+                case EXCHANGEREQUEST:
+                    exchange(message);
+                    break;
+                case EXCHANGEREPLY:
+                    exchange(message);
+                    break;
+                case SETID:
+                    getIdFromServer(message);
+                    break;
+//                    case "@MANAGERS@":
+//                        managersMessageHandler(lines, objectInputStream);
+//                        break;
+//                    case "@DEVELOPERS@":
+//                        developersMessageHandler(lines, objectInputStream);
+//                        break;
+                default:
+                    break;
+            }
+//                lines.add((String) objectInputStream.readObject());
+
+        }
 //            log.info("Buffer is empty");
 
-        }
-
-        @SneakyThrows
-        private void getIdFromServer (List < String > lines, BufferedReader lineReader){
-            lines.add(lineReader.readLine());
-            id = lines.getLast();
-            lines.add(lineReader.readLine());
-            serverMessages.add(lines);
-            log.info("getIdFromServer -> {}", id);
-            controller.printId(id);
-        }
-
-        @SneakyThrows
-        private void sessionsMessageHandler (List < String > lines, BufferedReader lineReader){
-            List<String> ids = new ArrayList<>();
-            lines.add(lineReader.readLine());
-            while (!"@END@".equals(lines.getLast())) {
-                ids.remove(lines.getLast());
-                ids.add(lines.getLast());
-                lines.add(lineReader.readLine());
-            }
-            log.info("getMessage -> {}", ids);
-            serverMessages.add(lines);
-            ids.forEach(ServerSession::new);
-            controller.refreshClientsTable(ServerSession.getSessions());
-        }
-
-        @SneakyThrows
-        private void managersMessageHandler (List < String > lines, BufferedReader lineReader){
-
-        }
-
-        @SneakyThrows
-        private void developersMessageHandler (List < String > lines, BufferedReader lineReader){
-
-        }
-
-
-        @Override
-        @SneakyThrows
-        public void close () {
-            controller.clientsTextArea.setText("Connection Lost");
-            controller.clientIdLabel.setText("id: null");
-            controller.networkStatusLabel.setText("Status: Offline");
-            socket.close();
-        }
     }
+
+    @SneakyThrows
+    private void getIdFromServer(Message message) {
+        id = (String) message.getList().getLast();
+        log.info("getIdFromServer -> {}", id);
+        controller.printId(id);
+    }
+
+    @SneakyThrows
+    private void sessionsMessageHandler(Message message) {
+        controller.refreshClientsTable((List<String>) message.getList());
+    }
+
+    @SneakyThrows
+    private void managersMessageHandler(List<String> lines, ObjectInputStream objectInputStream) {
+
+    }
+
+    @SneakyThrows
+    private void developersMessageHandler(List<String> lines, ObjectInputStream objectInputStream) {
+
+    }
+
+
+    @Override
+    @SneakyThrows
+    public void close() {
+        controller.clientsTextArea.setText("Connection Lost");
+        controller.clientIdLabel.setText("id: null");
+        controller.networkStatusLabel.setText("Status: Offline");
+        socket.close();
+    }
+}

@@ -3,12 +3,13 @@ package edu.evgen.habitat.employee;
 import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
 @Slf4j
 
-public class Developer extends Employee {
+public class Developer extends Employee implements Serializable {
 
     final Double speed = (1 + random.nextInt(5)) * 0.1;
     final Long changeDirectionDelay = random.nextBoolean() ? 1L : 2L;

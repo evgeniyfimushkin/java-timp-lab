@@ -2,10 +2,12 @@ package edu.evgen.habitat.employee;
 
 import javafx.application.Platform;
 
+import java.io.Serializable;
+
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class Manager extends Employee {
+public class Manager extends Employee implements Serializable {
     private final Integer anchorRadius = 80;
     private Double alfa = 0.0;
     private final Double speed = 0.01 * (random.nextDouble()+0.3);
@@ -39,6 +41,8 @@ public class Manager extends Employee {
         this.anchorPointX = initAnchorPoint(x);
         this.anchorPointY = initAnchorPoint(y);
     }
+
+
     @Override
     public void move() {
             alfa += direction*speed;

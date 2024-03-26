@@ -1,16 +1,19 @@
 package edu.evgen.server;
 
+import edu.evgen.client.Message;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+
+import static edu.evgen.client.MessageMarkers.SESSIONS;
+import static edu.evgen.client.MessageMarkers.SETID;
+
 @RequiredArgsConstructor
 @Slf4j
 public class Server implements Runnable {
@@ -19,7 +22,6 @@ public class Server implements Runnable {
     private final Set<String> ids = new HashSet<>();
     private final Integer port;
     private Boolean run;
-
     @SneakyThrows
     public void run() {
         run = true;
@@ -40,25 +42,20 @@ public class Server implements Runnable {
     }
     @SneakyThrows
     public void sendSessions(Session session){
-        PrintStream outputStream = new PrintStream(session.getSocket().getOutputStream());
-        outputStream.println("@SESSIONS@");
-        ids.stream()
-                .forEach(outputStream::println);
-        outputStream.println("@END@");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(session.socket.getOutputStream());
+        List<String> list = new ArrayList<>();
+        list.addAll(ids);
+        Message message = new Message(SESSIONS, session.id, session.id, list);
+        objectOutputStream.writeObject(message);
     }
     @SneakyThrows
     private void sendId(Session session){
-        PrintStream outputStream = new PrintStream(session.getSocket().getOutputStream());
-        outputStream.println("@SETID@");
-        outputStream.println(session.getId());
-        outputStream.println("@END");
-    }
-    @SneakyThrows
-    private void sendDevelopers(Session session){
-        PrintStream outputStream = new PrintStream(session.getSocket().getOutputStream());
-        outputStream.println("@SETID@");
-        outputStream.println(session.getId());
-        outputStream.println("@END");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(session.socket.getOutputStream());
+        List<String> list = new ArrayList<>();
+        list.add(session.getId());
+        Message message = new Message(SETID,session.id,session.id,list);
+        objectOutputStream.writeObject(message);
+        objectOutputStream.flush();
     }
     private String getId() {
         String currentId = UUID.randomUUID().toString();
