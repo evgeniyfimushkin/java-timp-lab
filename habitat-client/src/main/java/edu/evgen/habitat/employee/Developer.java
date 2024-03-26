@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Slf4j
 
-public class Developer extends Employee implements Serializable {
+public class Developer extends Employee{
 
     final Double speed = (1 + random.nextInt(5)) * 0.1;
     final Long changeDirectionDelay = random.nextBoolean() ? 1L : 2L;
@@ -33,12 +33,6 @@ public class Developer extends Employee implements Serializable {
         this.checkPoint = employee.checkPoint;
     }
 
-    public Developer(Developer employee,Boolean key) {
-        super(employee, key);
-        this.xSpeed = employee.xSpeed;
-        this.ySpeed = employee.ySpeed;
-        this.checkPoint = employee.checkPoint;
-    }
     @Override
     public void move() {
             if (LocalDateTime.now().isAfter(checkPoint.plusSeconds(changeDirectionDelay))) {

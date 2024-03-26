@@ -13,8 +13,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-import static edu.evgen.client.MessageMarkers.EXCHANGEREPLY;
-import static edu.evgen.client.MessageMarkers.EXCHANGEREQUEST;
+import static edu.evgen.client.MessageMarkers.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,12 +21,13 @@ public class Client implements Closeable {
 
     private final Socket socket;
 
-    private final Simulation simulation;
+    private Simulation simulation;
 
     @Getter
     private final List<List<String>> serverMessages = new ArrayList<>();
     private final SceneController controller;
     public String id;
+    private Boolean run=true;
 
     public Client(SceneController controller, Integer port) throws IOException {
         this.controller = controller;
@@ -68,6 +68,7 @@ public class Client implements Closeable {
 
     @SneakyThrows
     public void sendManagers(String recipient) {
+        log.info("REQUEST");
         List<IBehaviour> list = new ArrayList<>();
         EmployeesRepository.getManagers().forEach(list::add);
         Message message = new Message(EXCHANGEREQUEST, id, recipient, list);
@@ -80,8 +81,7 @@ public class Client implements Closeable {
     @Synchronized
     @SneakyThrows
     public void pullMessage() {
-        while (true) {
-
+        while (run) {
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
             Message message = (Message) objectInputStream.readObject();
 
@@ -102,51 +102,39 @@ public class Client implements Closeable {
                 case SETID:
                     getIdFromServer(message);
                     break;
-//                    case "@MANAGERS@":
-//                        managersMessageHandler(lines, objectInputStream);
-//                        break;
-//                    case "@DEVELOPERS@":
-//                        developersMessageHandler(lines, objectInputStream);
-//                        break;
                 default:
                     break;
             }
-//                lines.add((String) objectInputStream.readObject());
-
         }
-//            log.info("Buffer is empty");
-
     }
-
+    @SneakyThrows
+    public void disconnectClient(){
+        log.info("DISCONNECT");
+        run = false;
+        Thread.sleep(1000L);
+        simulation.stopSimulation();
+        simulation = null;
+        Message message = new Message(DISCONNECT, id, id, null);
+        ObjectOutputStream outputStream;
+        outputStream = new ObjectOutputStream(socket.getOutputStream());
+        outputStream.writeObject(message);
+        close();
+    }
     @SneakyThrows
     private void getIdFromServer(Message message) {
         id = (String) message.getList().getLast();
         log.info("getIdFromServer -> {}", id);
         controller.printId(id);
     }
-
     @SneakyThrows
     private void sessionsMessageHandler(Message message) {
         controller.refreshClientsTable((List<String>) message.getList());
     }
-
-    @SneakyThrows
-    private void managersMessageHandler(List<String> lines, ObjectInputStream objectInputStream) {
-
-    }
-
-    @SneakyThrows
-    private void developersMessageHandler(List<String> lines, ObjectInputStream objectInputStream) {
-
-    }
-
-
     @Override
     @SneakyThrows
     public void close() {
         controller.clientsTextArea.setText("Connection Lost");
         controller.clientIdLabel.setText("id: null");
         controller.networkStatusLabel.setText("Status: Offline");
-        socket.close();
     }
 }

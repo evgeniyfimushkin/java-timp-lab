@@ -1,12 +1,9 @@
 package edu.evgen;
 
-import edu.evgen.client.Client;
-import edu.evgen.client.ServerSession;
 import edu.evgen.habitat.employee.Developer;
 import edu.evgen.habitat.employee.EmployeesRepository;
 import edu.evgen.habitat.employee.Manager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Control;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -107,10 +104,6 @@ public class TerminalController {
         sceneController.refreshStatistic();
     }
 
-    private void commandClients() {
-        output("Clients: ");
-        ServerSession.getSessions().forEach(this::output);
-    }
     private void commandExchange(String id){
         sceneController.client.get().sendManagers(id);
     }
@@ -137,9 +130,6 @@ public class TerminalController {
             }
             case "exit" -> {
                 commandExit();
-            }
-            case "clients" -> {
-                commandClients();
             }
             case "exchange" -> {
                 if (checkAmountOfArguments(tokens, 2, 2))

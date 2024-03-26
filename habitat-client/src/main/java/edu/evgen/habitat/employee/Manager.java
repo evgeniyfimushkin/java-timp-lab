@@ -7,7 +7,7 @@ import java.io.Serializable;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class Manager extends Employee implements Serializable {
+public class Manager extends Employee{
     private final Integer anchorRadius = 80;
     private Double alfa = 0.0;
     private final Double speed = 0.01 * (random.nextDouble()+0.3);
@@ -22,14 +22,6 @@ public class Manager extends Employee implements Serializable {
 
     public Manager(Manager employee) {
         super(employee);
-        this.alfa = employee.alfa;
-        this.anchorPointX = employee.anchorPointX;
-        this.anchorPointY = employee.anchorPointY;
-        this.direction = employee.direction;
-    }
-
-    public Manager(Manager employee, Boolean key) {
-        super(employee,key);
         this.alfa = employee.alfa;
         this.anchorPointX = employee.anchorPointX;
         this.anchorPointY = employee.anchorPointY;

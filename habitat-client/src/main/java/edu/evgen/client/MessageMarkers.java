@@ -3,6 +3,7 @@ package edu.evgen.client;
 public enum MessageMarkers {
     SETID("@SETID@"),
     SESSIONS("@SESSIONS@"),
+    DISCONNECT("@DISCONNECT@"),
     EXCHANGEREPLY("@EXCHANGEREPLY@"),
     EXCHANGEREQUEST("@EXCHANGEREQUEST@");
 

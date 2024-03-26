@@ -1,15 +1,11 @@
 package edu.evgen;
 
 import edu.evgen.client.Client;
-import edu.evgen.client.ServerSession;
 import edu.evgen.habitat.Simulation;
 import edu.evgen.habitat.HabitatConfiguration;
 import edu.evgen.habitat.employee.*;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -262,23 +257,27 @@ public class SceneController {
 
 
         disconnectButton.setOnAction(e -> client.ifPresent(client1 -> {
-                    client1.close();
+                    client1.disconnectClient();
+                    client1 = null;
                     connectButton.setDisable(false);
                 }
         ));
         connectButton.setOnAction(event -> {
             connectButton.setDisable(true);
             client = Client.getClient(this, configuration.getServerPort());
-            if (client.isPresent()){
+            if (client.isPresent()) {
                 networkStatusLabel.setText("Status: Online");
                 networkLabel.setText("Network: connected");
             }
         });
     }
 
-    public void printId(String id){
+    public void printId(String id) {
         Platform.runLater(() -> clientIdLabel.setText("Id: " + id));
-    };
+    }
+
+    ;
+
     Collection<String> getClientIds() {
         return client
                 .map(Client::getServerMessages)

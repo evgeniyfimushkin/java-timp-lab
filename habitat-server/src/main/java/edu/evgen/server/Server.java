@@ -19,7 +19,7 @@ import static edu.evgen.client.MessageMarkers.SETID;
 public class Server implements Runnable {
     @Getter
     public final List<Session> sessions = new LinkedList<>();
-    private final Set<String> ids = new HashSet<>();
+    public final Set<String> ids = new HashSet<>();
     private final Integer port;
     private Boolean run;
     @SneakyThrows
