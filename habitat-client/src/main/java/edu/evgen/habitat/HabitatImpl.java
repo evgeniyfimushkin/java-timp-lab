@@ -2,6 +2,7 @@ package edu.evgen.habitat;
 
 import edu.evgen.habitat.employee.*;
 import lombok.Data;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -18,13 +19,6 @@ public class HabitatImpl implements Habitat {
     HabitatConfiguration configuration;
 
     private HabitatImpl() {
-    }
-
-    @Override
-    public Collection<IBehaviour> mustDie() {
-        return EmployeesRepository.employees.stream()
-                .filter(IBehaviour::mustDie)
-                .toList();
     }
 
     @Override

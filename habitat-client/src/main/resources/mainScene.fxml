@@ -12,6 +12,9 @@
             <items>
                <MenuItem fx:id="loadButton" mnemonicParsing="false" text="Load" />
                <MenuItem fx:id="saveButton" mnemonicParsing="false" text="Save" />
+               <MenuItem fx:id="loadDevsFromDB" mnemonicParsing="false" text="loadDevsFromDB" />
+               <MenuItem fx:id="loadMgrFromDb" mnemonicParsing="false" text="loadMgrFromDB" />
+               <MenuItem fx:id="saveToDB" mnemonicParsing="false" text="saveToDB" />
             </items>
          </Menu>
        <Menu mnemonicParsing="false" text="Edit">

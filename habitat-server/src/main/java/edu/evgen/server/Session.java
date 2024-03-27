@@ -1,6 +1,7 @@
 package edu.evgen.server;
 
 import edu.evgen.client.Message;
+import edu.evgen.client.MessageMarkers;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
@@ -8,6 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import static edu.evgen.client.MessageMarkers.SESSIONS;
+import static edu.evgen.client.MessageMarkers.SETID;
 
 @Slf4j
 @Data
@@ -26,10 +32,11 @@ public class Session implements Closeable {
         listener.start();
         run = true;
     }
+
     @SneakyThrows
     @Synchronized
     private void transport(Message message) {
-        log.info("Transport with marker {}",message.getMarker());
+        log.info("Transport with marker {}", message.getMarker());
         if (id.equals(message.getRecipient())) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(message);
@@ -42,12 +49,22 @@ public class Session implements Closeable {
     }
 
     @SneakyThrows
-    private void disconnect(){
+    private void disconnect() {
         server.ids.remove(id);
         server.sessions.remove(this);
+        server.sessions.forEach(server::sendSessions);
         run = false;
         listener.interrupt();
         socket.close();
+    }
+    @SneakyThrows
+    public void sendId(){
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        List<String> list = new ArrayList<>();
+        list.add(getId());
+        Message message = new Message(SETID,id,id,list);
+        objectOutputStream.writeObject(message);
+        objectOutputStream.flush();
     }
     @SneakyThrows
     public void listen() {

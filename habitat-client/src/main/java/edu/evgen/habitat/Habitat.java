@@ -5,7 +5,6 @@ import java.util.Optional;
 
 public interface Habitat {
     HabitatConfiguration getConfiguration();
-    Collection<IBehaviour> mustDie();
     void setConfiguration(HabitatConfiguration configuration);
     Optional<? extends IBehaviour> developerBirthAttempt();
     Optional<? extends IBehaviour> managerBirthAttempt();

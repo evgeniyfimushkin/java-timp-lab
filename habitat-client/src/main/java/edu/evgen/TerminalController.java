@@ -104,9 +104,11 @@ public class TerminalController {
         sceneController.refreshStatistic();
     }
 
-    private void commandExchange(String id){
-        sceneController.client.get().sendManagers(id);
+    private void commandExchange(String id) {
+        if (sceneController.client.get() != null)
+            sceneController.client.get().sendManagers(id);
     }
+
     private void commandExit() {
         stage.close();
     }

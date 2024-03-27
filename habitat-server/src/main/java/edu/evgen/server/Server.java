@@ -31,8 +31,8 @@ public class Server implements Runnable {
                     log.info("Server is waiting for connections on port {}", port);
                     Socket socket = serverSocket.accept();
                     sessions.add(new Session(this,socket, getId()));
-                    sendId(sessions.getLast());
                     sessions.forEach(this::sendSessions);
+                    sessions.getLast().sendId();
                     log.info("Client connected. Session {}. Clients count {}", sessions.getLast().getId(), sessions.size());
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -43,19 +43,8 @@ public class Server implements Runnable {
     @SneakyThrows
     public void sendSessions(Session session){
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(session.socket.getOutputStream());
-        List<String> list = new ArrayList<>();
-        list.addAll(ids);
-        Message message = new Message(SESSIONS, session.id, session.id, list);
+        Message message = new Message(SESSIONS, session.id, session.id, new ArrayList<>(ids));
         objectOutputStream.writeObject(message);
-    }
-    @SneakyThrows
-    private void sendId(Session session){
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(session.socket.getOutputStream());
-        List<String> list = new ArrayList<>();
-        list.add(session.getId());
-        Message message = new Message(SETID,session.id,session.id,list);
-        objectOutputStream.writeObject(message);
-        objectOutputStream.flush();
     }
     private String getId() {
         String currentId = UUID.randomUUID().toString();

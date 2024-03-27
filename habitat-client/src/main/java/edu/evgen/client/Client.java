@@ -27,7 +27,7 @@ public class Client implements Closeable {
     private final List<List<String>> serverMessages = new ArrayList<>();
     private final SceneController controller;
     public String id;
-    private Boolean run=true;
+    private Boolean run = true;
 
     public Client(SceneController controller, Integer port) throws IOException {
         this.controller = controller;
@@ -68,14 +68,16 @@ public class Client implements Closeable {
 
     @SneakyThrows
     public void sendManagers(String recipient) {
-        log.info("REQUEST");
-        List<IBehaviour> list = new ArrayList<>();
-        EmployeesRepository.getManagers().forEach(list::add);
-        Message message = new Message(EXCHANGEREQUEST, id, recipient, list);
-        ObjectOutputStream outputStream;
-        outputStream = new ObjectOutputStream(socket.getOutputStream());
-        outputStream.writeObject(message);
-        EmployeesRepository.getManagers().forEach(EmployeesRepository::removeEmployee);
+        if (run) {
+            log.info("REQUEST");
+            List<IBehaviour> list = new ArrayList<>();
+            EmployeesRepository.getManagers().forEach(list::add);
+            Message message = new Message(EXCHANGEREQUEST, id, recipient, list);
+            ObjectOutputStream outputStream;
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            outputStream.writeObject(message);
+            EmployeesRepository.getManagers().forEach(EmployeesRepository::removeEmployee);
+        }
     }
 
     @Synchronized
@@ -107,11 +109,11 @@ public class Client implements Closeable {
             }
         }
     }
+
     @SneakyThrows
-    public void disconnectClient(){
+    public void disconnectClient() {
         log.info("DISCONNECT");
         run = false;
-        Thread.sleep(1000L);
         simulation.stopSimulation();
         simulation = null;
         Message message = new Message(DISCONNECT, id, id, null);
@@ -120,21 +122,25 @@ public class Client implements Closeable {
         outputStream.writeObject(message);
         close();
     }
+
     @SneakyThrows
     private void getIdFromServer(Message message) {
         id = (String) message.getList().getLast();
         log.info("getIdFromServer -> {}", id);
         controller.printId(id);
     }
+
     @SneakyThrows
     private void sessionsMessageHandler(Message message) {
         controller.refreshClientsTable((List<String>) message.getList());
     }
+
     @Override
     @SneakyThrows
     public void close() {
         controller.clientsTextArea.setText("Connection Lost");
         controller.clientIdLabel.setText("id: null");
         controller.networkStatusLabel.setText("Status: Offline");
+        socket.close();
     }
 }

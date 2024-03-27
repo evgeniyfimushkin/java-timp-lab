@@ -24,6 +24,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -76,7 +77,10 @@ public class SceneController {
             helpMeItem,
             terminalMenuItem,
             loadButton,
-            saveButton;
+            saveButton,
+            loadDevsFromDB,
+            loadMgrFromDB,
+            saveToDB;
     @FXML
     public TextField developersDelayTextField, managersDelayTextField,
             managerLivingTime, developerLivingTime;
@@ -160,7 +164,7 @@ public class SceneController {
     }
 
     void kill() {
-        habitat.mustDie().forEach(EmployeesRepository::removeEmployee);
+        EmployeesRepository.mustDie().forEach(EmployeesRepository::removeEmployee);
     }
 
     void birthAttempt(Supplier<Optional<? extends IBehaviour>> employeeProducer) {
@@ -247,6 +251,15 @@ public class SceneController {
 
         loadButton.setOnAction(event -> EmployeesRepository.loadRepository());
         saveButton.setOnAction(event -> EmployeesRepository.saveRepository());
+        loadDevsFromDB.setOnAction(event -> EmployeesRepository.indexDevelopers());
+//        loadMgrFromDB.setOnAction(event -> EmployeesRepository.indexManagers());
+        saveToDB.setOnAction(event -> {
+            try {
+                EmployeesRepository.saveDB();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         EmployeesRepository.habitatPane = this.habitatPane;
 
@@ -263,11 +276,15 @@ public class SceneController {
                 }
         ));
         connectButton.setOnAction(event -> {
-            connectButton.setDisable(true);
             client = Client.getClient(this, configuration.getServerPort());
             if (client.isPresent()) {
+                connectButton.setDisable(true);
                 networkStatusLabel.setText("Status: Online");
                 networkLabel.setText("Network: connected");
+            }else {
+
+                clientsTextArea.clear();
+                clientsTextArea.setText("SERVER NOT FOUND");
             }
         });
     }
