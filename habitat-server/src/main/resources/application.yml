@@ -1,0 +1,7 @@
+app:
+  port: 1700
+
+
+logging.level:
+  edu.evgen: debug
+#  root: trace

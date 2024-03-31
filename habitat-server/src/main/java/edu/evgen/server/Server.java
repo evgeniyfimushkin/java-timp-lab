@@ -1,10 +1,17 @@
 package edu.evgen.server;
 
 import edu.evgen.client.Message;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -14,44 +21,33 @@ import java.util.*;
 import static edu.evgen.client.MessageMarkers.SESSIONS;
 import static edu.evgen.client.MessageMarkers.SETID;
 
-@RequiredArgsConstructor
+@Service
+//@RequiredArgsConstructor
 @Slf4j
-public class Server implements Runnable {
-    @Getter
-    public final List<Session> sessions = new LinkedList<>();
-    public final Set<String> ids = new HashSet<>();
-    private final Integer port;
-    private Boolean run;
+@NoArgsConstructor
+public class Server {
+    @Value("${app.port:1900}")
+    private Integer port;
+//    private Boolean run;
+
+    @Autowired
+    Processor processor;
+
+
+    ServerSocket serverSocket;
+
+    @PostConstruct
     @SneakyThrows
-    public void run() {
-        run = true;
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            while (run) {
-                try {
-                    log.info("Server is waiting for connections on port {}", port);
-                    Socket socket = serverSocket.accept();
-                    sessions.add(new Session(this,socket, getId()));
-                    sessions.forEach(this::sendSessions);
-                    sessions.getLast().sendId();
-                    log.info("Client connected. Session {}. Clients count {}", sessions.getLast().getId(), sessions.size());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public void init() {
+       log.info("I'm created on port {}", port);
+        serverSocket = new ServerSocket(port);
     }
+
     @SneakyThrows
-    public void sendSessions(Session session){
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(session.socket.getOutputStream());
-        Message message = new Message(SESSIONS, session.id, session.id, new ArrayList<>(ids));
-        objectOutputStream.writeObject(message);
-    }
-    private String getId() {
-        String currentId = UUID.randomUUID().toString();
-        if (!ids.contains(currentId)) {
-            ids.add(currentId);
-            return currentId;
-        } else return getId();
+    @Scheduled(fixedDelay = 1)
+    public void acceptClient() {
+        log.info("Server is waiting for connections on port {}", port);
+        processor.processSocket(serverSocket.accept());
     }
 
 }

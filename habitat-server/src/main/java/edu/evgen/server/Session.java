@@ -1,10 +1,13 @@
 package edu.evgen.server;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.evgen.client.Message;
 import edu.evgen.client.MessageMarkers;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -17,15 +20,26 @@ import static edu.evgen.client.MessageMarkers.SETID;
 
 @Slf4j
 @Data
+@ToString(of = {"id", "run"} )
 public class Session implements Closeable {
-    private final Server server;
+
+    @JsonIgnore
+    private final Processor server;
+
+    @JsonIgnore
     public final Socket socket;
+
+    @JsonProperty
     public String id;
+
+    @JsonProperty
     Boolean run;
+
+    @JsonIgnore
     Thread listener = new Thread(this::listen);
 
 
-    public Session(Server server, Socket socket, String id) {
+    public Session(Processor server, Socket socket, String id) {
         this.server = server;
         this.socket = socket;
         this.id = id;

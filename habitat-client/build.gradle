@@ -20,7 +20,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     implementation 'org.postgresql:postgresql:42.7.3'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.12'
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.12'
+//    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.12'
 }
 
 application {
