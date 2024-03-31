@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.evgen.client.Message;
 import edu.evgen.client.MessageMarkers;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
@@ -29,10 +32,15 @@ public class Session implements Closeable {
     @JsonIgnore
     public final Socket socket;
 
+
+    @NotNull
+    @NotBlank
+    @Size(min = 32, max = 32)
     @JsonProperty
     public String id;
 
     @JsonProperty
+    @NotNull
     Boolean run;
 
     @JsonIgnore
