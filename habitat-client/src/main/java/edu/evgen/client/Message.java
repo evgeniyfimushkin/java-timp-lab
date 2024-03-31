@@ -10,6 +10,7 @@ import java.util.Objects;
 @Data
 public class Message implements Serializable {
     private List<?> list;
+    //DTO
     private MessageMarkers marker;
     private String sender;
     private String recipient;

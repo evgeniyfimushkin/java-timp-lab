@@ -16,7 +16,7 @@ public abstract class Employee implements IBehaviour, Serializable {
     protected final String pic;
     protected final Long paneSize;
     protected transient final LocalDateTime birthTime = LocalDateTime.now();
-
+    //protobuf, messagepack
     protected Double disapearCof;
 
     public Employee(String pic, Long paneSize, Long livingTime) {

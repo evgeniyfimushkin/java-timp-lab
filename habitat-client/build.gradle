@@ -27,7 +27,3 @@ application {
     mainModule.set('edu.evgen')
     mainClass.set('edu.evgen.ClientApplication1')
 }
-
-//java {
-//    modularity.inferModulePath.set(true)
-//}

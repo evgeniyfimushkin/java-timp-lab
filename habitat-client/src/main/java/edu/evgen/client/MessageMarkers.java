@@ -16,4 +16,6 @@ public enum MessageMarkers {
     public String getMarker() {
         return marker;
     }
+    // на 4 сетевое
+    // на 5 сетевое и сложное
 }

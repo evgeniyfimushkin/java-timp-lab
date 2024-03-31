@@ -196,25 +196,28 @@ public class EmployeesRepository {
     }
 
     public static void saveDB() throws SQLException {
+//        PreparedStatement
+//        Statement statementDevs = connection.createStatement();
+//        getDevelopers().forEach(developer -> {
+//            String SQL = "INSERT INTO developers VALUES(" + developer.getId() + "," + developer.getLivingTime() + "," + 400 + ")";
+//            try {
+//                statementDevs.executeUpdate(SQL);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//
+//        Statement statementMgr = connection.createStatement();
+//        getManagers().forEach(manager -> {
+//            String SQL = "INSERT INTO managers VALUES(" + manager.getId() + ",'" + manager.getLivingTime() + ",'" + 400 + "')";
+//            try {
+//                statementMgr.executeUpdate(SQL);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
         Statement statementDevs = connection.createStatement();
-        getDevelopers().forEach(developer -> {
-            String SQL = "INSERT INTO developers VALUES(" + developer.getId() + "," + developer.getLivingTime() + "," + 400 + ")";
-            try {
-                statementDevs.executeUpdate(SQL);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        Statement statementMgr = connection.createStatement();
-        getManagers().forEach(manager -> {
-            String SQL = "INSERT INTO managers VALUES(" + manager.getId() + ",'" + manager.getLivingTime() + ",'" + 400 + "')";
-            try {
-                statementMgr.executeUpdate(SQL);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        statementDevs.executeUpdate("select * from developers");
     }
 
     private static Long getId() {

@@ -91,7 +91,8 @@ public class SceneController {
             developersCountLabel, managersCountLabel,
             managersDelayLabel, developersDelayLabel,
             developersProbabilityLabel, managersRatioLabel,
-            networkStatusLabel, clientIdLabel, networkLabel;
+            networkStatusLabel, clientIdLabel, networkLabel,
+            labelStopSimulation1, labelStopSimulation2, labelStopSimulation3;
 
 
     @FXML
@@ -124,6 +125,9 @@ public class SceneController {
     }
 
     public void startSimulation(ActionEvent event) {
+        labelStopSimulation1.setText("");
+        labelStopSimulation2.setText("");
+        labelStopSimulation3.setText("");
         disappear = new Simulation(EmployeesRepository::disappearEmployee, 1000L, "moveDev");
 
         moveDevelopers = new Simulation(EmployeesRepository::moveDevelopers, configuration.getMoveDelay(), "moveDev");
@@ -173,6 +177,12 @@ public class SceneController {
     }
 
     void stopHandler(ActionEvent event) {
+
+        labelStopSimulation1.setText("Managers: " + EmployeesRepository.getManagers().size());
+        labelStopSimulation2.setText("Developers: " + EmployeesRepository.getDevelopers().size());
+        labelStopSimulation3.setText("Simulation time" + getSimulationTime());
+
+
         getSimulations().forEach(Simulation::stopSimulation);
         fieldsSetDisable(false);
         log.info("stopRun");
@@ -281,7 +291,7 @@ public class SceneController {
                 connectButton.setDisable(true);
                 networkStatusLabel.setText("Status: Online");
                 networkLabel.setText("Network: connected");
-            }else {
+            } else {
 
                 clientsTextArea.clear();
                 clientsTextArea.setText("SERVER NOT FOUND");

@@ -41,7 +41,25 @@
      </menus>
    </MenuBar>
 
-   <Pane fx:id="habitatPane" layoutY="25.0" prefHeight="525.0" prefWidth="525.0" style="-fx-background-color: #009B95; -fx-border-color: #006561;" />
+   <Pane fx:id="habitatPane" layoutY="25.0" prefHeight="525.0" prefWidth="525.0" style="-fx-background-color: #009B95; -fx-border-color: #006561;">
+      <children>
+
+      </children></Pane>
+    <Label fx:id="labelStopSimulation1" layoutX="16.0" layoutY="50.0" prefHeight="49.0" prefWidth="350.0" text="Label" textFill="RED">
+        <font>
+            <Font name="Bauhaus 93" size="22.0" />
+        </font>
+    </Label>
+    <Label fx:id="labelStopSimulation2" layoutX="23.0" layoutY="163.0" prefHeight="43.0" prefWidth="292.0" text="Label" textFill="#00ff3c">
+        <font>
+            <Font name="Bradley Hand ITC" size="27.0" />
+        </font>
+    </Label>
+    <Label fx:id="labelStopSimulation3" layoutX="16.0" layoutY="93.0" prefHeight="60.0" prefWidth="337.0" text="Label">
+        <font>
+            <Font size="27.0" />
+        </font>
+    </Label>
    <AnchorPane id="AnchorRight" layoutX="600.0" layoutY="34.0" prefHeight="780.0" prefWidth="608.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="34.0">
       <children>
 
