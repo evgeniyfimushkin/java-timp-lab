@@ -24,7 +24,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -78,7 +77,7 @@ public class SceneController {
             terminalMenuItem,
             loadButton,
             saveButton,
-            loadDevsFromDB,
+            loadFromDB,
             loadMgrFromDB,
             saveToDB;
     @FXML
@@ -261,15 +260,8 @@ public class SceneController {
 
         loadButton.setOnAction(event -> EmployeesRepository.loadRepository());
         saveButton.setOnAction(event -> EmployeesRepository.saveRepository());
-        loadDevsFromDB.setOnAction(event -> EmployeesRepository.indexDevelopers());
-//        loadMgrFromDB.setOnAction(event -> EmployeesRepository.indexManagers());
-        saveToDB.setOnAction(event -> {
-            try {
-                EmployeesRepository.saveDB();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        loadFromDB.setOnAction(event -> EmployeesRepository.loadEmployeesDB());
+        saveToDB.setOnAction(event -> EmployeesRepository.saveDB());
 
         EmployeesRepository.habitatPane = this.habitatPane;
 

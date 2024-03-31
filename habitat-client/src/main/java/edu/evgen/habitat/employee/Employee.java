@@ -1,6 +1,7 @@
 package edu.evgen.habitat.employee;
 import javafx.scene.image.ImageView;
 import lombok.Data;
+import lombok.Getter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,12 +26,25 @@ public abstract class Employee implements IBehaviour, Serializable {
         this.pic = pic;
         this.imageView = new ImageView(this.pic);
         this.imageViewForTable = new ImageView(this.pic);
-        this.move(
+        this.point(
                 paneSize * random.nextDouble(),
                 paneSize * random.nextDouble());
         this.disapearCof = (double)this.livingTime;
         EmployeesRepository.addEmployee(this);
     }
+
+    public Employee(String pic,double x, double y, Long id, Long livingTime, Long paneSize) {
+        this.id = id;
+        this.livingTime = livingTime;
+        this.paneSize = paneSize;
+        this.pic = pic;
+        this.imageView = new ImageView(this.pic);
+        this.imageViewForTable = new ImageView(this.pic);
+        this.point(x, y);
+
+        EmployeesRepository.addEmployee(this);
+    }
+
     public Employee(Employee employee){
         this.x = employee.x;
         this.y = employee.y;
@@ -44,7 +58,7 @@ public abstract class Employee implements IBehaviour, Serializable {
         EmployeesRepository.addEmployee(this);
     }
 
-    protected abstract void move(Double x, Double y);
+    protected abstract void point(Double x, Double y);
     public void disapear(){
         disapearCof-=0.5;
         imageView.setOpacity(disapearCof/livingTime);

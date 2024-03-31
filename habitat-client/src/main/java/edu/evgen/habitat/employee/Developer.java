@@ -3,7 +3,6 @@ package edu.evgen.habitat.employee;
 import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
@@ -32,7 +31,9 @@ public class Developer extends Employee{
         this.ySpeed = employee.ySpeed;
         this.checkPoint = employee.checkPoint;
     }
-
+    public Developer(double x, double y, Long id, Long livingTime, Long paneSize) {
+        super("/developer.png", x, y, id, livingTime, paneSize);
+    }
     @Override
     public void move() {
             if (LocalDateTime.now().isAfter(checkPoint.plusSeconds(changeDirectionDelay))) {
@@ -41,12 +42,12 @@ public class Developer extends Employee{
                 log.info("X = {}", this.xSpeed);
                 log.info("Y = {}", this.ySpeed);
             }
-            move(
+            point(
                     x + xSpeed,
                     y + ySpeed);
     }
     @Override
-    protected void move(Double x, Double y) {
+    protected void point(Double x, Double y) {
         if ((x < paneSize) && (x > 0))
             this.x = x;
         else

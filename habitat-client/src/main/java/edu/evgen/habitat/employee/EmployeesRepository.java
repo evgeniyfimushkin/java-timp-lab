@@ -1,12 +1,11 @@
 package edu.evgen.habitat.employee;
 
-import edu.evgen.SceneController;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import lombok.SneakyThrows;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.Driver;
 
 import java.io.*;
 import java.sql.*;
@@ -20,20 +19,14 @@ public class EmployeesRepository {
     private static final String DataBase = "jdbc:postgresql://localhost:5433/employees";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "underpender";
-    private static Connection connection;
 
 
-    static {
+    static Optional<Connection> getConnection() {
         try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            connection = DriverManager.getConnection(DataBase, USERNAME, PASSWORD);
+            return Optional.of(DriverManager.getConnection(DataBase, USERNAME, PASSWORD));
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.warn("Cannot connect DataBase: {} {} {}", DataBase, USERNAME, PASSWORD);
+            return Optional.empty();
         }
     }
 
@@ -163,61 +156,87 @@ public class EmployeesRepository {
         }
     }
 
-    public static void indexManagers() {
-        try {
-            Statement statement = connection.createStatement();
-            String SQL = "SELECT * FROM managers";
-            ResultSet resultSet = statement.executeQuery(SQL);
-            while (resultSet.next()) {
-                Manager manager = new Manager(resultSet.getLong("paneSize"),
-                        resultSet.getLong("livingTime"));
-                manager.setId(resultSet.getLong("id"));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void indexDevelopers() {
-        try {
-            Statement statement = connection.createStatement();
-            String SQL = "SELECT * FROM developers";
-            ResultSet resultSet = statement.executeQuery(SQL);
-            while (resultSet.next()) {
-                Developer developer = new Developer(resultSet.getLong("paneSize"),
-                        resultSet.getLong("livingTime"));
-                developer.setId(resultSet.getLong("id"));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void saveDB() throws SQLException {
-//        PreparedStatement
-//        Statement statementDevs = connection.createStatement();
-//        getDevelopers().forEach(developer -> {
-//            String SQL = "INSERT INTO developers VALUES(" + developer.getId() + "," + developer.getLivingTime() + "," + 400 + ")";
-//            try {
-//                statementDevs.executeUpdate(SQL);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
+    //    public static void indexManagers() {
+//        try {
+//            Statement statement = connection.createStatement();
+//            String SQL = "SELECT * FROM managers";
+//            ResultSet resultSet = statement.executeQuery(SQL);
+//            while (resultSet.next()) {
+//                Manager manager = new Manager(resultSet.getLong("paneSize"),
+//                        resultSet.getLong("livingTime"));
+//                manager.setId(resultSet.getLong("id"));
 //            }
-//        });
 //
-//        Statement statementMgr = connection.createStatement();
-//        getManagers().forEach(manager -> {
-//            String SQL = "INSERT INTO managers VALUES(" + manager.getId() + ",'" + manager.getLivingTime() + ",'" + 400 + "')";
-//            try {
-//                statementMgr.executeUpdate(SQL);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-        Statement statementDevs = connection.createStatement();
-        statementDevs.executeUpdate("select * from developers");
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    @SneakyThrows
+    public static void loadEmployeesDB() {
+        getConnection()
+                .ifPresentOrElse(
+                        connection -> {
+                            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM employees")) {
+                                statement.execute();
+                                ResultSet resultSet = statement.getResultSet();
+                                while (resultSet.next()) {
+                                    Employee employee = resultSet.getString("type").equals("manager") ?
+                                            new Manager(resultSet.getLong("x"),
+                                                    resultSet.getLong("y"),
+                                                    resultSet.getLong("id"),
+                                                    resultSet.getLong("livingTime"),
+                                                    resultSet.getLong("paneSize")) :
+                                            new Developer(resultSet.getLong("x"),
+                                                    resultSet.getLong("y"),
+                                                    resultSet.getLong("id"),
+                                                    resultSet.getLong("livingTime"),
+                                                    resultSet.getLong("paneSize"));
+                                }
+                            } catch (SQLException e) {
+                                log.error("LOAD ERROR {}", e);
+                            }
+                        },
+                        () -> log.info("No DB, NO SAVE"));
+    }
+
+    /**
+     * CREATE TABLE public.employees (
+     * id numeric primary key,
+     * type varchar(32) not null,
+     * livingtime integer not null,
+     * panesize integer not null,
+     * x integer not null,
+     * y integer not null,
+     */
+    @SneakyThrows
+    public static void saveDB(){
+        log.info("SAVE DB <-");
+        getConnection()
+                .ifPresentOrElse(
+                        connection -> {
+                            try (PreparedStatement statement = connection.prepareStatement("insert into employees values(?,?,?,?,?,?)")) {
+                                employees.forEach(employee -> {
+                                    saveEmployee((Employee) employee, statement);
+                                });
+                            } catch (SQLException e) {
+                                log.error("SAVE ERROR: {}", e);
+                            }
+                        },
+                        () -> log.info("No DB, NO SAVE")
+                );
+    }
+
+    @SneakyThrows
+    private static void saveEmployee(Employee employee, PreparedStatement statement) {
+        log.info("SAVE EMPLOYEE <- {}", employee);
+        statement.setLong(1, employee.getId());
+        statement.setString(2, employee.getClass().getSimpleName());
+        statement.setLong(3, employee.getLivingTime());
+        statement.setLong(4, employee.getPaneSize());
+        statement.setDouble(5, employee.getX());
+        statement.setDouble(6, employee.getY());
+        statement.execute();
     }
 
     private static Long getId() {
