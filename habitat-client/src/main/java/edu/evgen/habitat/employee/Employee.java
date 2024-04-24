@@ -1,4 +1,5 @@
 package edu.evgen.habitat.employee;
+
 import javafx.scene.image.ImageView;
 import lombok.Data;
 import lombok.Getter;
@@ -6,6 +7,7 @@ import lombok.Getter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Random;
+
 @Data
 public abstract class Employee implements IBehaviour, Serializable {
     protected double x, y;
@@ -18,7 +20,7 @@ public abstract class Employee implements IBehaviour, Serializable {
     protected final Long paneSize;
     protected transient final LocalDateTime birthTime = LocalDateTime.now();
     //protobuf, messagepack
-    protected Double disapearCof;
+    protected Double disapearCof = 100.0;
 
     public Employee(String pic, Long paneSize, Long livingTime) {
         this.livingTime = livingTime;
@@ -29,11 +31,11 @@ public abstract class Employee implements IBehaviour, Serializable {
         this.point(
                 paneSize * random.nextDouble(),
                 paneSize * random.nextDouble());
-        this.disapearCof = (double)this.livingTime;
+        this.disapearCof = (double) this.livingTime;
         EmployeesRepository.addEmployee(this);
     }
 
-    public Employee(String pic,double x, double y, Long id, Long livingTime, Long paneSize) {
+    public Employee(String pic, double x, double y, Long id, Long livingTime, Long paneSize) {
         this.id = id;
         this.livingTime = livingTime;
         this.paneSize = paneSize;
@@ -45,7 +47,7 @@ public abstract class Employee implements IBehaviour, Serializable {
         EmployeesRepository.addEmployee(this);
     }
 
-    public Employee(Employee employee){
+    public Employee(Employee employee) {
         this.x = employee.x;
         this.y = employee.y;
         this.livingTime = employee.livingTime;
@@ -59,8 +61,9 @@ public abstract class Employee implements IBehaviour, Serializable {
     }
 
     protected abstract void point(Double x, Double y);
-    public void disapear(){
-        disapearCof-=0.5;
-        imageView.setOpacity(disapearCof/livingTime);
+
+    public void disapear() {
+        disapearCof -= 0.5;
+        imageView.setOpacity(disapearCof / livingTime);
     }
 }

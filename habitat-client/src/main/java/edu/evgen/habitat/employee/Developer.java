@@ -23,6 +23,7 @@ public class Developer extends Employee{
         super("/developer.png", paneSize, livingTime);
         changeDirection();
         checkPoint = getBirthTime();
+        changeDirection();
     }
 
     public Developer(Developer employee) {
@@ -33,9 +34,13 @@ public class Developer extends Employee{
     }
     public Developer(double x, double y, Long id, Long livingTime, Long paneSize) {
         super("/developer.png", x, y, id, livingTime, paneSize);
+        this.checkPoint = super.getBirthTime();
+        xSpeed = speed;
+        ySpeed = speed;
     }
     @Override
     public void move() {
+//        log.info("Dev Moving");
             if (LocalDateTime.now().isAfter(checkPoint.plusSeconds(changeDirectionDelay))) {
                 checkPoint = LocalDateTime.now();
                 changeDirection();

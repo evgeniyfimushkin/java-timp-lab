@@ -181,7 +181,7 @@ public class EmployeesRepository {
                                 statement.execute();
                                 ResultSet resultSet = statement.getResultSet();
                                 while (resultSet.next()) {
-                                    Employee employee = resultSet.getString("type").equals("manager") ?
+                                    Employee employee = resultSet.getString("type").equals("Manager") ?
                                             new Manager(resultSet.getLong("x"),
                                                     resultSet.getLong("y"),
                                                     resultSet.getLong("id"),
